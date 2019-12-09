@@ -188,7 +188,7 @@ public class GroupedFDRCalculator {
         float pfdrP = 0;
         float lfdrP = 0;
 
-        for (int i=0;i<10;i++) {
+        for (int i=0;i<=10;i++) {
             lfdr = i*0.1f;
             pfdr = calcGlobalFDR(lfdr, group);
             if (pfdr>=pFDR) break;
@@ -200,6 +200,7 @@ public class GroupedFDRCalculator {
         float eps = Math.abs(pfdr-pFDR);
         if (eps<0.0001) return lfdr;
 
+        if (pfdr<pFDR) return 1f;
 
         return calcLocalFDRThreshold(lfdrP, pfdrP, lfdr, pfdr, pFDR, eps, group);
     }
@@ -215,7 +216,7 @@ public class GroupedFDRCalculator {
         if (epsN<0.0001 || epsN >= eps) return lfdr;
 
         float lfdrN = 0;
-        if (pfdr>pFDR)
+        if (pfdr<pFDR)
             lfdrN = calcLocalFDRThreshold(lfdr, pfdr, lFDRRight, pFDRRight, pFDR, epsN, group);
         else
             lfdrN = calcLocalFDRThreshold(lFDRLeft, pFDRLeft, lfdr, pfdr, pFDR, epsN, group);

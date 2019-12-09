@@ -93,7 +93,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
         if (params.getFdrControlMethod().equals("global")) {
             controlFDRGlobally(groupedFDRCalculator, cometPsmConverter, maxQuantPsmConverter);
         } else {
-
+            controlFDRGroupwise(groupedFDRCalculator, cometPsmConverter, maxQuantPsmConverter);
         }
 
         writePeptideProteinGroupReport(uniProtDB);
@@ -414,7 +414,8 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
         Set<String> allowedStrValues = new HashSet<>();
         allowedStrValues.add("global");
         allowedStrValues.add("groupwise");
-        this.params.setFdrControlMethod(checkDefinedStringOption(line,"fdrM", allowedStrValues));
+        String fdrCtrlMethod = checkDefinedStringOption(line,"fdrM", allowedStrValues);
+        if (!fdrCtrlMethod.isEmpty()) this.params.setFdrControlMethod(fdrCtrlMethod);
     }
 
 }

@@ -118,9 +118,15 @@ public class HistogramTree {
 
         int tCnt = (int)scoreHistogram.getTotTargetCnt();
         int dCnt = (int)scoreHistogram.getTotDecoyCnt();
-        float[] cnts = scoreHistogram.getTargetDecoyCounts(grpThresholdMap.get(group));
-        String txt = String.format("totT=%d, totD=%d, selT=%d, selD=%d, grpFDR=%.4f, V=%d Pi_1= %.4f, Pi_0= %.4f",tCnt,dCnt,(int)cnts[1],(int)cnts[0],2*cnts[0]/(cnts[0]+cnts[1]),
-                scoreHistogram.canCalculateFDR()?1:0,scoreHistogram.getPi_1(),scoreHistogram.getPi_0());
+        String txt = "";
+        if (grpThresholdMap.containsKey(group)) {
+            float[] cnts = scoreHistogram.getTargetDecoyCounts(grpThresholdMap.get(group));
+            txt += String.format("totT=%d, totD=%d, selT=%d, selD=%d, grpFDR=%.4f, V=%d Pi_1= %.4f, Pi_0= %.4f", tCnt, dCnt, (int) cnts[1], (int) cnts[0], 2 * cnts[0] / (cnts[0] + cnts[1]),
+                    scoreHistogram.canCalculateFDR() ? 1 : 0, scoreHistogram.getPi_1(), scoreHistogram.getPi_0());
+        } else {
+            txt += String.format("totT=%d, totD=%d, V=%d Pi_1= %.4f, Pi_0= %.4f", tCnt, dCnt, 
+                    scoreHistogram.canCalculateFDR() ? 1 : 0, scoreHistogram.getPi_1(), scoreHistogram.getPi_0());
+        }
 
         treeString += tab+"{";
         if (!children.isEmpty()) {

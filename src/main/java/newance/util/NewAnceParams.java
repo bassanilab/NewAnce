@@ -63,7 +63,7 @@ public class NewAnceParams implements Serializable {
     private double maxSpScore = 2500.0;
     private int nrSpScoreBins = nrBins3D;
 
-    private String fdrControlMethod;
+    private String fdrControlMethod = "global";
 
     private String version = "version 1.3.0";
 
