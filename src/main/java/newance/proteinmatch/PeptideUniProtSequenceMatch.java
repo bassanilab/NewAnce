@@ -1,8 +1,11 @@
 package newance.proteinmatch;
 
 /**
- * Created by markusmueller on 16.11.17.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class PeptideUniProtSequenceMatch {
     protected final int start;
     protected final int end;

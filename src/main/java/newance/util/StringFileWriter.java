@@ -11,7 +11,9 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 /**
- * Created by markusmueller on 03.12.19.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
 
 public class StringFileWriter implements Consumer<String> {

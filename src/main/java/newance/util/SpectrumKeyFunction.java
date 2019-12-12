@@ -33,9 +33,11 @@ import org.expasy.mzjava.proteomics.ms.ident.SpectrumIdentifier;
 import java.io.Serializable;
 
 /**
- * @author Oliver Horlacher
- * @version sqrt -1
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public interface SpectrumKeyFunction <S extends MsnSpectrum> extends Serializable {
 
     public String apply(SpectrumIdentifier identifier);

@@ -4,8 +4,11 @@ import java.io.*;
 import java.util.logging.Logger;
 
 /**
- * Created by markusmueller on 19.02.18.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class ExtractVarSequFromPEFF {
 
     private static final Logger LOGGER = Logger.getLogger(ExtractVarSequFromPEFF.class.getName());

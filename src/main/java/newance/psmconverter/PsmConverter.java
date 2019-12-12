@@ -8,8 +8,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 /**
- * @author Markus Muller
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public abstract class PsmConverter {
 
     protected final String psmRootDirName;

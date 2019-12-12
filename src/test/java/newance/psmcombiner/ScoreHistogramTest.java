@@ -6,8 +6,11 @@ import org.junit.Test;
 import java.util.*;
 
 /**
- * Created by markusmueller on 15.11.19.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class ScoreHistogramTest {
 
     @Test

@@ -3,8 +3,11 @@ package newance.proteinmatch;
 import java.io.Serializable;
 
 /**
- * Created by markusmueller on 17.11.17.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class UniProtProtein implements Serializable{
     final protected String uniProtAC;
     final protected String uniProtName;

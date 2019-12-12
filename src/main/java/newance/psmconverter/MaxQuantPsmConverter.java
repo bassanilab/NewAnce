@@ -14,9 +14,11 @@ import java.util.regex.Pattern;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * @author Markus Muller
- * @version sqrt -1
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class MaxQuantPsmConverter extends PsmConverter {
 
 

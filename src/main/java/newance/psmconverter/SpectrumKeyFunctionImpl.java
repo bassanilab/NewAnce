@@ -7,8 +7,9 @@ import newance.util.SpectrumKeyFunction;
 import java.util.regex.Pattern;
 
 /**
- * @author Oliver Horlacher
- * @version sqrt -1
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
 
 public class SpectrumKeyFunctionImpl implements SpectrumKeyFunction<MsnSpectrum> {

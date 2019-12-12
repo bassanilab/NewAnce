@@ -13,8 +13,11 @@ import org.expasy.mzjava.proteomics.ms.ident.*;
 import java.util.List;
 
 /**
- * Created by markusmueller on 06.03.17.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class CometPepXMLReader extends PepXmlReader {
     public CometPepXMLReader(ModMassStorage modMassStorage, boolean discardAmbiguousSequences) {
         super(modMassStorage, discardAmbiguousSequences);

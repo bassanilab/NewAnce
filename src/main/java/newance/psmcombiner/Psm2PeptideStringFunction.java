@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 /**
- * Created by markusmueller on 09.03.17.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class Psm2PeptideStringFunction implements BiFunction<String, List<PeptideMatchData>, List<String>> {
 
     public enum StringMode {SEQUENCE, MODIF};

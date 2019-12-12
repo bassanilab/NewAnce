@@ -14,9 +14,11 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
- * @author Oliver Horlacher
- * @version sqrt -1
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class CometPepXmlEntryConverter implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(CometPepXmlEntryConverter.class.getName());
@@ -44,9 +46,9 @@ public class CometPepXmlEntryConverter implements Runnable {
         PsmPredicate psmPredicate = new PsmPredicate(params.getMinCharge(), params.getMaxCharge(), params.getMinPeptideLength(), params.getMaxPeptideLength(), params.getMaxRank(),
                 "xcorr", 1.0f, PsmPredicate.ScoreOrder.LARGER);
 
-        PSMReaderCallbackImpl callback = new PSMReaderCallbackImpl(params, new SpectrumKeyFunctionImpl(), psmPredicate, psmMap);
+        PSMReaderCallbackImpl callback = new PSMReaderCallbackImpl(new SpectrumKeyFunctionImpl(), psmPredicate, psmMap);
 
-        Collection<Modification> modifications = Arrays.asList(params.getModificationStr().split(",")).stream().map(mod -> mod.trim()).map(Modification::parseModification).collect(Collectors.toSet());
+        Collection<Modification> modifications = params.getModifications();
         ModListModMatchResolver modMatchResolver = new ModListModMatchResolver(new AbsoluteTolerance(params.getModifMatchMassTol()), modifications);
 
         CometPepXMLReader psmReader = new CometPepXMLReader(PepXmlReader.ModMassStorage.AA_MASS_PLUS_MOD_MASS, true, modMatchResolver);

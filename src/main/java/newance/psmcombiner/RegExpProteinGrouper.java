@@ -9,8 +9,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by markusmueller on 08.05.18.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class RegExpProteinGrouper extends PsmGrouper {
     private final Pattern regExp;
     private final Set<String> exclude;

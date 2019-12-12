@@ -14,8 +14,11 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * Created by markusmueller on 20.11.19.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class GroupedFDRCalculatorTest {
     @Test
     public void test_print() {

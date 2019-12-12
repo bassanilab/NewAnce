@@ -7,8 +7,11 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Created by markusmueller on 29.03.18.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public abstract class ScoreHistogram implements Serializable {
 
     protected final List<Float> gamma;
@@ -129,6 +132,7 @@ public abstract class ScoreHistogram implements Serializable {
         }
 
         pi_1 = 1.05f*i/n;
+        if (pi_1>1.0) pi_1 = 1.0;
 
 //        if (totTargetCnt>0) {
 //            pi_0 = (2.0 * totDecoyCnt) / (totTargetCnt+totDecoyCnt);

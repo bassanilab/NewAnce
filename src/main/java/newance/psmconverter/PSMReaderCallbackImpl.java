@@ -16,9 +16,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author Markus Mueller
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
-
 
 public class PSMReaderCallbackImpl implements PSMReaderCallback {
 
@@ -33,18 +34,17 @@ public class PSMReaderCallbackImpl implements PSMReaderCallback {
     protected final PsmPredicate psmPredicate;
 
 
-    public PSMReaderCallbackImpl(NewAnceParams params,
-                                 SpectrumKeyFunction<MsnSpectrum> spectrumKeyFunction,
+    public PSMReaderCallbackImpl(SpectrumKeyFunction<MsnSpectrum> spectrumKeyFunction,
                                  PsmPredicate psmPredicate,
                                  Map<String, List<PeptideMatchData>> psmMap) {
 
         this.psmMap = psmMap;
-        this.params = params;
+        this.params = NewAnceParams.getInstance();
 
-        if (!params.getDecoyProtPattern().isEmpty()) this.decoyProtPattern = Pattern.compile(params.getDecoyProtPattern());
+        if (!params.getCometDecoyProtPrefix().isEmpty()) this.decoyProtPattern = Pattern.compile(params.getCometDecoyProtPrefix());
         else this.decoyProtPattern = null;
 
-        if (!params.getExcludedProtPattern().isEmpty()) this.excludedProtPattern = Pattern.compile(params.getExcludedProtPattern());
+        if (params.getExcludedProtPattern()!=null) this.excludedProtPattern = params.getExcludedProtPattern();
         else this.excludedProtPattern = null;
 
         this.spectrumKeyFunction = spectrumKeyFunction;

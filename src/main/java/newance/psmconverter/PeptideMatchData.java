@@ -9,9 +9,11 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * @author Markus Mueller
- * @version sqrt -1
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class PeptideMatchData {
 
     private final Peptide peptide;

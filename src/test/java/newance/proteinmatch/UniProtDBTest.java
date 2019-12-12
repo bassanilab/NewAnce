@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by markusmueller on 17.11.17.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class UniProtDBTest {
 
     private String fastaStr =">sp|P61513|RL37A_HUMAN 60S ribosomal protein L37a OS=Homo sapiens OX=9606 GN=RPL37A PE=1 SV=2\n" +

@@ -8,8 +8,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by markusmueller on 08.05.18.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class UniProtProteinGrouper extends PsmGrouper {
     private final UniProtDB uniProtDB;
     private final String masterGroup;

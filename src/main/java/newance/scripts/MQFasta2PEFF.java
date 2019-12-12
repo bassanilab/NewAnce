@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Created by markusmueller on 19.02.18.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class MQFasta2PEFF {
 
     private class SAAV {

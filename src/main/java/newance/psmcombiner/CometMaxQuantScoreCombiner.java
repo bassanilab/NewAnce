@@ -12,26 +12,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 
 /**
- * Created by markusmueller on 12.03.18.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class CometMaxQuantScoreCombiner extends ExecutableOptions {
 
-    protected String cometPsmDir;
-    protected String maxquantPsmDir;
-    protected Pattern cometPsmRegExp;
-    protected Pattern maxquantPsmRegExp;
-    protected boolean includeMaxQuant;
-    protected String outputDir;
-    protected boolean reportHistos;
-    protected String searchFastaFile;
-    protected String uniprotFastaFile;
     protected PsmGrouper psmGrouper;
     protected NewAnceParams params;
     protected SpectrumAccumulator spectrumAccumulator;
-    protected boolean doPeptideProteinGrouping;
+    protected String readParamsFile;
 
 
     public CometMaxQuantScoreCombiner() {
@@ -44,11 +37,8 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
 
         CometMaxQuantScoreCombiner cometScoreCombiner =  new CometMaxQuantScoreCombiner();
         try {
-            cometScoreCombiner.parseOptions(args).init().run();
+            cometScoreCombiner.init(args).parseOptions(args).run();
         } catch (MissingOptionException e) {
-            cometScoreCombiner.checkHelpOption(args, "-h");
-            cometScoreCombiner.checkVersionOption(args, NewAnceParams.getInstance().getVersion(), "-v");
-            cometScoreCombiner.printOptions(args,e.getMessage());
         } catch (ParseException e) {
             cometScoreCombiner.printOptions(args, e.getMessage());
         } catch (Exception e) {
@@ -56,33 +46,28 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
         }
     }
 
-    public CometMaxQuantScoreCombiner init() throws IOException {
-
-        return this;
-    }
-
     public int run() throws IOException {
 
         System.out.println("Parsing Comet pep.xml files ...");
-        CometPsmConverter cometPsmConverter = new CometPsmConverter(cometPsmDir, cometPsmRegExp);
+        CometPsmConverter cometPsmConverter = new CometPsmConverter(params.getCometPsmDir(), params.getCometPsmRegExp());
         cometPsmConverter.run();
 
         MaxQuantPsmConverter maxQuantPsmConverter = null;
-        if (includeMaxQuant) {
+        if (params.isIncludeMaxQuant()) {
             System.out.println("Parsing MaxQuant msms.txt and peptides.txt files ...");
-            maxQuantPsmConverter = new MaxQuantPsmConverter(maxquantPsmDir, maxquantPsmRegExp);
+            maxQuantPsmConverter = new MaxQuantPsmConverter(params.getMaxquantPsmDir(), params.getMaxquantPsmRegExp());
             maxQuantPsmConverter.run();
         }
 
-        System.out.println("Matching peptides to fasta file: "+uniprotFastaFile+" ...");
-        System.out.println("Loading protein data from fasta file: "+uniprotFastaFile+" ...");
+        System.out.println("Matching peptides to fasta file: "+params.getUniprotFastaFile()+" ...");
+        System.out.println("Loading protein data from fasta file: "+params.getUniprotFastaFile()+" ...");
 
-        UniProtDB uniProtDB = new UniProtDB(uniprotFastaFile);
+        UniProtDB uniProtDB = new UniProtDB(params.getUniprotFastaFile());
         long start = System.currentTimeMillis();
         cometPsmConverter.addDBProteins(uniProtDB);
         System.out.println("Comet DB matching ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
 
-        if (includeMaxQuant) {
+        if (params.isIncludeMaxQuant()) {
             start = System.currentTimeMillis();
             maxQuantPsmConverter.addDBProteins(uniProtDB);
             System.out.println("MaxQuant DB matching ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
@@ -108,11 +93,11 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
 
     protected GroupedFDRCalculator buildGroupedFDRCalculator(ConcurrentHashMap<String, List<PeptideMatchData>> allPsms ) {
 
-        if (params.getStdProtRegExp()!=null) {
-            if (params.getExcludedProtPattern().isEmpty())
-                psmGrouper = new RegExpProteinGrouper(params.getStdProtRegExp(), params.getStandartGroup(), params.getCrypticGroup());
+        if (params.getCodingProtRegExp()!=null) {
+            if (params.getForcedNoncanonicalProts().isEmpty())
+                psmGrouper = new RegExpProteinGrouper(params.getCodingProtRegExp(), params.getProtCodingGroup(), params.getNoncanonicalGroup());
             else
-                psmGrouper = new RegExpProteinGrouper(params.getStdProtRegExp(), params.getForcedCrypticProts(), params.getStandartGroup(), params.getCrypticGroup());
+                psmGrouper = new RegExpProteinGrouper(params.getCodingProtRegExp(), params.getForcedNoncanonicalProts(), params.getProtCodingGroup(), params.getNoncanonicalGroup());
         } else {
             psmGrouper = new ModificationPSMGrouper();
         }
@@ -121,16 +106,10 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
         groupedFDRCalculator.addAll(allPsms);
         groupedFDRCalculator.setCanCalculateFDR(params.getMinNrPsmsPerHisto());
         groupedFDRCalculator.calcClassProbs();
-        if (reportHistos) groupedFDRCalculator.writeHistograms(outputDir+File.separator+"histos", params.getOutputPrefix());
+        if (params.isReportHistos()) groupedFDRCalculator.writeHistograms(params.getOutputDir()+File.separator+"histos", params.getOutputPrefix());
         groupedFDRCalculator.smoothHistogram(3);
         groupedFDRCalculator.calcLocalFDR();
-        if (reportHistos) groupedFDRCalculator.writeHistograms(outputDir+File.separator+"histos", params.getOutputPrefix()+"_smoothed");
-
-//        float dfdr = 1f/100;
-//        for (int i=0;i<100;i++) {
-//            float fdr = i*dfdr;
-//            System.out.println("lFDR = "+fdr+", pFDR = "+groupedFDRCalculator.calcGlobalFDR(fdr));
-//        }
+        if (params.isReportHistos()) groupedFDRCalculator.writeHistograms(params.getOutputDir()+File.separator+"histos", params.getOutputPrefix()+"_smoothed");
 
         return groupedFDRCalculator;
     }
@@ -142,7 +121,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
         System.out.print(groupedFDRCalculator.printTree(lFDRThreshold));
         test(cometPsmConverter.getPsms(),groupedFDRCalculator,lFDRThreshold);
 
-        SummaryReportWriter summaryReportWriter = new SummaryReportWriter(outputDir +File.separator+ "SummaryReport.txt", includeMaxQuant);
+        SummaryReportWriter summaryReportWriter = new SummaryReportWriter(params.getOutputDir() +File.separator+ "SummaryReport.txt", params.isIncludeMaxQuant());
 
         for (String group : groupedFDRCalculator.getGroups()) {
 
@@ -155,8 +134,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
 
             ConcurrentHashMap<String, List<PeptideMatchData>> combined;
             ConcurrentHashMap<String, List<PeptideMatchData>> maxQuantPsms = null;
-            if (includeMaxQuant) {
-
+            if (params.isIncludeMaxQuant()) {
                 maxQuantPsms = ProcessPsmUtils.extractGroupPsms(psmGrouper,maxQuantPsmConverter.getPsms(),group);
 
                 start = System.currentTimeMillis();
@@ -172,7 +150,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
             writeToCombTabFile(combined, group+"_CometMaxQuantComb.txt");
             System.out.println(combined.size()+" spectra combined for group " + group);
 
-            if (includeMaxQuant) {
+            if (params.isIncludeMaxQuant()) {
                 summaryReportWriter.write(group, combined, filteredCometPsms, maxQuantPsms);
             } else {
                 summaryReportWriter.write(group, combined);
@@ -190,7 +168,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
 
         System.out.print(groupedFDRCalculator.printTree(grpThresholdMap));
 
-        SummaryReportWriter summaryReportWriter = new SummaryReportWriter(outputDir +File.separator+ "SummaryReport.txt", includeMaxQuant);
+        SummaryReportWriter summaryReportWriter = new SummaryReportWriter(params.getOutputDir() +File.separator+ "SummaryReport.txt", params.isIncludeMaxQuant());
 
         for (String group : groupedFDRCalculator.getGroups()) {
 
@@ -200,7 +178,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
 
             ConcurrentHashMap<String, List<PeptideMatchData>> combined;
             ConcurrentHashMap<String, List<PeptideMatchData>> maxQuantPsms = null;
-            if (includeMaxQuant) {
+            if (params.isIncludeMaxQuant()) {
 
                 maxQuantPsms = ProcessPsmUtils.extractGroupPsms(psmGrouper,maxQuantPsmConverter.getPsms(),group);
 
@@ -217,7 +195,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
             writeToCombTabFile(combined, group+"_CometMaxQuantComb.txt");
             System.out.println(combined.size()+" spectra combined for group " + group);
 
-            if (includeMaxQuant) {
+            if (params.isIncludeMaxQuant()) {
                 summaryReportWriter.write(group, combined, filteredCometPsms, maxQuantPsms);
             } else {
                 summaryReportWriter.write(group, combined);
@@ -275,7 +253,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
 
         final Psm2StringFunction stringFunction = new Psm2StringFunction("tab");
 
-        StringFileWriter writer = new StringFileWriter(outputDir +"/"+filename, stringFunction);
+        StringFileWriter writer = new StringFileWriter(params.getOutputDir() +"/"+filename, stringFunction);
 
         psms.forEach(10000, stringFunction, writer);
 
@@ -286,7 +264,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
 
         final Psm2StringFunction stringFunction = new Psm2StringFunction("tab", Psm2StringFunction.TabStringMode.COMET);
 
-        StringFileWriter writer = new StringFileWriter(outputDir +"/"+filename, stringFunction);
+        StringFileWriter writer = new StringFileWriter(params.getOutputDir() +"/"+filename, stringFunction);
 
         psms.forEach(10000, stringFunction, writer);
 
@@ -297,7 +275,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
 
         final Psm2StringFunction stringFunction = new Psm2StringFunction("tab", Psm2StringFunction.TabStringMode.MAXQUANT);
 
-        StringFileWriter writer = new StringFileWriter(outputDir +"/"+filename, stringFunction);
+        StringFileWriter writer = new StringFileWriter(params.getOutputDir() +"/"+filename, stringFunction);
 
         psms.forEach(10000, stringFunction, writer);
 
@@ -309,7 +287,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
 
         final Psm2StringFunction stringFunction = new Psm2StringFunction("fasta");
 
-        StringFileWriter writer = new StringFileWriter(outputDir +"/"+filename, stringFunction, true);
+        StringFileWriter writer = new StringFileWriter(params.getOutputDir() +"/"+filename, stringFunction, true);
 
         psms.forEach(10000, stringFunction, writer);
 
@@ -321,7 +299,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
 
         final Psm2StringFunction stringFunction = new Psm2StringFunction("txt");
 
-        StringFileWriter writer = new StringFileWriter(outputDir +"/"+filename, stringFunction, true);
+        StringFileWriter writer = new StringFileWriter(params.getOutputDir() +"/"+filename, stringFunction, true);
 
         psms.forEach(10000, stringFunction, writer);
 
@@ -330,10 +308,12 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
 
     protected void writePeptideProteinGroupReport(UniProtDB uniProtDB) {
 
-        if (searchFastaFile !=null) uniProtDB.addFastaFile(searchFastaFile);
+        if (!params.isDoPeptideProteinGrouping()) return;
+
+        if (params.getSearchFastaFile() !=null) uniProtDB.addFastaFile(params.getSearchFastaFile());
         OccamRazorSpectrumCounter spectrumCounter = new OccamRazorSpectrumCounter(spectrumAccumulator, uniProtDB);
 
-        String reportFileName = outputDir + File.separator +"PeptideProteinGroupingReport.txt";
+        String reportFileName = params.getOutputDir() + File.separator+params.getOutputPrefix()+"PeptideProteinGroupingReport.txt";
         try {
             spectrumCounter.write(new File(reportFileName));
         } catch (IOException e) {
@@ -349,15 +329,16 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("coD").required().hasArg().longOpt("cometPsmDir").desc("Comet psm root directory (required)").build());
         cmdLineOpts.addOption(Option.builder("mqD").required(false).hasArg().longOpt("maxquantPsmDir").desc("MaxQuant psm root directory. If not provided only Comet is used.").hasArg().build());
         cmdLineOpts.addOption(Option.builder("coRE").required().hasArg().longOpt("cometPsmRegex").desc("Regular expression of Comet psm files (e.g. \\.xml$)").build());
-        cmdLineOpts.addOption(Option.builder("mqRE").required(false).hasArg().longOpt("maxquantPsmRegex").desc("Regular expression of MaxQuant psm files (e.g. msms\\.txt$). If not provided only Comet is used.").build());
         cmdLineOpts.addOption(Option.builder("coFDR").required().hasArg().longOpt("cometFDR").desc("FDR for filtering Comet PSMs before combination (required)").build());
         cmdLineOpts.addOption(Option.builder("outD").required().hasArg().longOpt("outputDir").desc("Output directory for results (required)").build());
         cmdLineOpts.addOption(Option.builder("repH").required(false).hasArg(false).longOpt("reportHistogram").desc("Report histograms to text files").build());
         cmdLineOpts.addOption(Option.builder("protG").required(false).hasArg().longOpt("proteinGroup").desc("Name of group with protein coding or canonical sequences").build());
-        cmdLineOpts.addOption(Option.builder("crypG").required(false).hasArg().longOpt("crypticGroup").desc("Name of group with non-canonical or cryptic sequences").build());
-        cmdLineOpts.addOption(Option.builder("stdRE").required(false).hasArg().longOpt("stdProtRegExp").desc("Regular expression to match fasta name of coding proteins (e.g. sp\\||tr\\| ").build());
+        cmdLineOpts.addOption(Option.builder("noncG").required(false).hasArg().longOpt("noncanonicalGroup").desc("Name of group with non-canonical or cryptic sequences").build());
+        cmdLineOpts.addOption(Option.builder("protRE").required(false).hasArg().longOpt("protRegExp").desc("Regular expression to match fasta name of coding proteins (e.g. sp\\||tr\\| ").build());
         cmdLineOpts.addOption(Option.builder("spRE").required(false).hasArg().longOpt("spectrumFilter").desc("If this option is set, only spectrum files that match the regexp are used").build());
-        cmdLineOpts.addOption(Option.builder("exclP").required(false).hasArg().longOpt("excludeCodingProts").desc("Comma separated list of protein names to be excluded from coding prots (e.g. PGBD5_HUMAN,POGZ_HUMAN,PGBD1_HUMAN)").build());
+        cmdLineOpts.addOption(Option.builder("exclP").required(false).hasArg().longOpt("excludeProts").desc("Regular expression of proteins excluded from analysis").build());
+        cmdLineOpts.addOption(Option.builder("noncP").required(false).hasArg().longOpt("noncanonicalProts").desc("Comma separated list of protein names to be included in noncanonical group (e.g. PGBD5_HUMAN,POGZ_HUMAN,PGBD1_HUMAN)").build());
+        cmdLineOpts.addOption(Option.builder("mod").required(false).hasArg().longOpt("modifications").desc("Comma separated list of additional peptide modifications used in search (e.g. Cysteinyl:C3H5NO2S,Oxidation:O )").build());
         cmdLineOpts.addOption(Option.builder("seFa").required(false).hasArg().longOpt("searchFastaFile").desc("Fasta file used for search (for protein grouping export)").build());
         cmdLineOpts.addOption(Option.builder("upFa").required(false).hasArg().longOpt("uniProtFastaFile").desc("Fasta file with coding or canonical proteins (e.g. UniProt fasta file)").build());
         cmdLineOpts.addOption(Option.builder("ppG").required(false).hasArg(false).longOpt("peptideProteinGrouping").desc("Perform peptide protein grouping export").build());
@@ -370,6 +351,17 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("outP").required(false).hasArg().longOpt("outputPrefix").desc("Prefix for output files. If this option is not set no prefix is used.").build());
         cmdLineOpts.addOption(Option.builder("minPH").required(false).hasArg().longOpt("minPsm4Histo").desc("Minimal number of psms to calculate local FDR in histogram (default 100000).").build());
         cmdLineOpts.addOption(Option.builder("fdrM").required(false).hasArg().longOpt("fdrControlMethod").desc("Method to control pFDR: global or groupwise (default global).").build());
+        cmdLineOpts.addOption(Option.builder("minXC").required(false).hasArg().longOpt("minXCorr").desc("Minimal Comet XCorr in histogram").build());
+        cmdLineOpts.addOption(Option.builder("maxXC").required(false).hasArg().longOpt("maxXCorr").desc("Maximal Comet XCorr in histogram").build());
+        cmdLineOpts.addOption(Option.builder("nrXCB").required(false).hasArg().longOpt("nrXCorrBins").desc("Number of Comet XCorr bins in histogram").build());
+        cmdLineOpts.addOption(Option.builder("minSP").required(false).hasArg().longOpt("minSpScore").desc("Minimal Comet SpScore in histogram").build());
+        cmdLineOpts.addOption(Option.builder("maxSP").required(false).hasArg().longOpt("maxSpScore").desc("Maximal Comet SpScore in histogram").build());
+        cmdLineOpts.addOption(Option.builder("nrSPB").required(false).hasArg().longOpt("nrSpScoreBins").desc("Number of Comet SpScore bins in histogram").build());
+        cmdLineOpts.addOption(Option.builder("minDC").required(false).hasArg().longOpt("minDeltaCn").desc("Minimal Comet DeltaCn in histogram").build());
+        cmdLineOpts.addOption(Option.builder("maxDC").required(false).hasArg().longOpt("maxDeltaCn").desc("Maximal Comet DeltaCn in histogram").build());
+        cmdLineOpts.addOption(Option.builder("nrDCB").required(false).hasArg().longOpt("nrDeltaCnBins").desc("Number of Comet DeltaCn bins in histogram").build());
+        cmdLineOpts.addOption(Option.builder("wP").required(false).hasArg().longOpt("write2ParamFile").desc("Filename where parameters should to written.").build());
+        cmdLineOpts.addOption(Option.builder("rP").required(false).hasArg().longOpt("readParamFile").desc("Name of file from which parameters should to read.").build());
         cmdLineOpts.addOption(Option.builder("h").required(false).hasArg(false).longOpt("help").desc("Help option for command line help").build());
         cmdLineOpts.addOption(Option.builder("v").required(false).hasArg(false).longOpt("version").desc("Version of NewAnce software").build());
     }
@@ -377,45 +369,51 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
     @Override
     protected void check(CommandLine line) throws ParseException {
 
-        this.cometPsmDir = checkExistFileOption(line,"coD");
-        this.cometPsmRegExp = checkRegExOption(line, "coRE");
-
-        this.maxquantPsmDir = checkExistFileOption(line,"mqD");
-        this.maxquantPsmRegExp = checkRegExOption(line, "mqRE");
-
-        if (maxquantPsmDir.isEmpty() || maxquantPsmRegExp==null) this.includeMaxQuant = false;
-        else this.includeMaxQuant = true;
-
-        this.reportHistos = checkBooleanOption(line, "repH");
-        this.outputDir = checkOutputDirOption(line, "outD");
-        this.searchFastaFile = checkExistFileOption(line, "seFa");
-        this.uniprotFastaFile = checkExistFileOption(line, "upFa");
-        this.doPeptideProteinGrouping = checkBooleanOption(line, "ppG");
+        if (optionsSet) return;
 
         this.params = NewAnceParams.getInstance();
 
-        this.params.setMaxRank(checkIntOption(line,"maxR",1,100,1));
-        this.params.setMinCharge(checkIntOption(line,"minZ",1,100,1));
-        this.params.setMaxCharge(checkIntOption(line,"maxZ",1,100,5));
-        this.params.setMinPeptideLength(checkIntOption(line,"minL",1,1000,8));
-        this.params.setMaxPeptideLength(checkIntOption(line,"maxL",1,1000,25));
-        this.params.setFdrCometThreshold(checkDoubleOption(line,"coFDR",0.0,100000000.0,0.03));
-        this.params.setStandartGroup(checkStringOption(line,"protG"));
-        this.params.setCrypticGroup(checkStringOption(line,"crypG"));
-        this.params.setForcedCrypticProts(checkStringListOption(line,"exclP"));
-        this.params.setSpectrumRegExp(checkRegExOption(line,"spRE"));
-        this.params.setStdProtRegExp(checkRegExOption(line,"stdRE"));
-        this.params.setOutputPrefix(checkStringOption(line,"outP"));
-        this.params.setMinNrPsmsPerHisto(checkIntOption(line,"minPH",1,1000000000,50000));
+        params.add("cometPsmDir", getOptionString(line,"coD"));
+        params.add("cometPsmRegExp", getOptionString(line,"coRE"));
 
-        int nrProcs = Runtime.getRuntime().availableProcessors();
-        this.params.setNrThreads(checkIntOption(line,"nrTh",1,nrProcs,nrProcs-2));
+        String mqDir = getOptionString(line,"mqD");
+        params.add("includeMaxQuant", mqDir.isEmpty()?"false":"true");
+        params.add("maxquantPsmDir", mqDir);
 
-        Set<String> allowedStrValues = new HashSet<>();
-        allowedStrValues.add("global");
-        allowedStrValues.add("groupwise");
-        String fdrCtrlMethod = checkDefinedStringOption(line,"fdrM", allowedStrValues);
-        if (!fdrCtrlMethod.isEmpty()) this.params.setFdrControlMethod(fdrCtrlMethod);
+        params.add("reportHistos", getOptionString(line,"repH"));
+        params.add("outputDir", getOptionString(line,"outD"));
+        params.add("searchFastaFile", getOptionString(line,"seFa"));
+        params.add("uniprotFastaFile", getOptionString(line,"upFa"));
+        params.add("doPeptideProteinGrouping", getOptionString(line,"ppG"));
+        params.add("writeParamsFile", getOptionString(line,"wP"));
+        params.add("readParamsFile", getOptionString(line,"rP"));
+        params.add("maxRank", getOptionString(line,"maxR"));
+        params.add("minCharge", getOptionString(line,"minZ"));
+        params.add("maxCharge", getOptionString(line,"maxZ"));
+        params.add("minPeptideLength", getOptionString(line,"minL"));
+        params.add("maxPeptideLength", getOptionString(line,"maxL"));
+        params.add("fdrCometThreshold", getOptionString(line,"coFDR"));
+        params.add("protCodingGroup", getOptionString(line,"protG"));
+        params.add("noncanonicalGroup", getOptionString(line,"noncG"));
+        params.add("excludedProtPattern", getOptionString(line,"exclP"));
+        params.add("forcedNoncanonicalProts", getOptionString(line,"noncP"));
+        params.add("spectrumRegExp", getOptionString(line,"spRE"));
+        params.add("codingProtRegExp", getOptionString(line,"protRE"));
+        params.add("outputPrefix", getOptionString(line,"outP"));
+        params.add("modifications", getOptionString(line,"mod"));
+        params.add("minNrPsmsPerHisto", getOptionString(line,"minPH"));
+        params.add("minXCorr", getOptionString(line,"minXC"));
+        params.add("maxXCorr", getOptionString(line,"maxXC"));
+        params.add("nrXCorrBins", getOptionString(line,"nrXCB"));
+        params.add("minDeltaCn", getOptionString(line,"minDC"));
+        params.add("maxDeltaCn", getOptionString(line,"maxDC"));
+        params.add("nrDeltaCnBins", getOptionString(line,"nrDCB"));
+        params.add("minSpScore", getOptionString(line,"minSP"));
+        params.add("maxSpScore", getOptionString(line,"maxSP"));
+        params.add("nrSpScoreBins", getOptionString(line,"nrSPB"));
+        params.add("nrThreads", getOptionString(line,"nrTh"));
+        params.add("fdrControlMethod", getOptionString(line,"fdrM"));
+
+        params.finalize();
     }
-
 }

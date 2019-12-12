@@ -7,8 +7,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
 /**
- * Created by markusmueller on 07.01.19.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class SpectrumAccumulator implements BiConsumer<String, List<PeptideMatchData>> {
 
     protected final ConcurrentHashMap<String,Set<String>> proteinPeptideMap;

@@ -10,8 +10,11 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 /**
- * Created by markusmueller on 06.07.18.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class AddUniProtIds implements BiConsumer<String,List<PeptideMatchData>> {
 
     private final UniProtDB uniProtDB;

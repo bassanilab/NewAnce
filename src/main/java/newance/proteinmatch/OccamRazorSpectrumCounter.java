@@ -11,8 +11,13 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by markusmueller on 07.01.19.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
+
+
 public class OccamRazorSpectrumCounter {
 
     class MapValueComparator implements Comparator<Map.Entry<String,Double>> {

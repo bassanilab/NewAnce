@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by markusmueller on 29.03.18.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public abstract class SmoothedScoreHistogram extends ScoreHistogram {
 
     protected float tmpCnt;

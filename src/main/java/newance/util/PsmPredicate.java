@@ -6,8 +6,11 @@ import org.expasy.mzjava.proteomics.ms.ident.PeptideMatch;
 import java.io.Serializable;
 
 /**
- * PeptideMatchData Predicate that accepts only peptides which have no modifications or carbamidomethyl on C
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class PsmPredicate implements Serializable {
 
     public enum ScoreOrder {LARGER,SMALLER};

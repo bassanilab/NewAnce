@@ -9,9 +9,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
 
 /**
- * @author Oliver Horlacher
- * @version sqrt -1
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class MaxQuantMSMSEntryConverter  implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(MaxQuantMSMSEntryConverter.class.getName());
@@ -38,7 +40,7 @@ public class MaxQuantMSMSEntryConverter  implements Runnable {
         PsmPredicate psmPredicate = new PsmPredicate(params.getMinCharge(), params.getMaxCharge(), params.getMinPeptideLength(), params.getMaxPeptideLength(), params.getMaxRank(),
                 "score", 10.0f, PsmPredicate.ScoreOrder.LARGER);
 
-        PSMReaderCallbackImpl callback = new PSMReaderCallbackImpl(params, new SpectrumKeyFunctionImpl(), psmPredicate, psmMap);
+        PSMReaderCallbackImpl callback = new PSMReaderCallbackImpl(new SpectrumKeyFunctionImpl(), psmPredicate, psmMap);
 
         MaxQuantPsmReader2 psmReader = new MaxQuantPsmReader2();
         psmReader.parse(msmsFile, callback);

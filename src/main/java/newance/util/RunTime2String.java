@@ -3,8 +3,11 @@ package newance.util;
 import java.text.SimpleDateFormat;
 
 /**
- * Created by markusmueller on 04.11.19.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class RunTime2String {
 
     private static final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");

@@ -13,9 +13,11 @@ import java.util.regex.Pattern;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * @author Oliver Horlacher
- * @version sqrt -1
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class CometPsmConverter extends PsmConverter {
 
     public CometPsmConverter(String psmRootDirName, Pattern regex) {

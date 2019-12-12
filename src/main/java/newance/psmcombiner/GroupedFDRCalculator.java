@@ -9,8 +9,11 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by Markus Muller on 18.11.19.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class GroupedFDRCalculator {
 
     protected final HistogramTree histogramTreeRoot;

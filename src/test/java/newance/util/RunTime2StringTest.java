@@ -4,8 +4,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Created by markusmueller on 06.11.19.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class RunTime2StringTest {
 
     @Test

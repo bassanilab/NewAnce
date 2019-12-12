@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 /**
- * Created by markusmueller on 09.03.17.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class Psm2StringFunction implements BiFunction<String, List<PeptideMatchData>, String> {
 
     public enum TabStringMode {COMBINED, COMET, MAXQUANT};
@@ -55,7 +58,7 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideMatchD
                     "MaxQuant.DeltaMass(ppm)\tMaxQuant.Score\tMaxQuant.DeltaScore\tMaxQuant.Localisation.Prob";
     }
 
-    protected String getTabString(String specID, PeptideMatchData psm) {
+    public String getTabString(String specID, PeptideMatchData psm) {
 
         if (tabStringMode == TabStringMode.COMET)
             return specID+"\t"+psm.getCharge()+"\t"+psm.getScore("rt")+"\t"+String.format("%.0f",psm.getScore("rank"))

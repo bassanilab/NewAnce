@@ -7,8 +7,11 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by markusmueller on 03.12.19.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class ProcessPsmUtils {
 
     public static ConcurrentHashMap<String, List<PeptideMatchData>>  removeDecoys(ConcurrentHashMap<String, List<PeptideMatchData>>  psms) {

@@ -1,5 +1,6 @@
 package newance.util;
 
+import newance.psmcombiner.CometMaxQuantScoreCombiner;
 import org.apache.commons.cli.*;
 import org.apache.commons.io.FileUtils;
 
@@ -12,11 +13,15 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
- * Created by markusmueller on 07.12.18.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public abstract class ExecutableOptions {
 
     protected Options cmdLineOpts;
+    protected boolean optionsSet;
 
     abstract protected void createOptions();
 
@@ -29,240 +34,34 @@ public abstract class ExecutableOptions {
         return false;
     }
 
-    protected Set<String> checkStringListOption(CommandLine line, String optionId) throws MissingOptionException {
-
-        Set<String> strSet = new HashSet<>();
-
-        String string = "";
-        if (line.hasOption(optionId)) {
-            string = line.getOptionValue(optionId);
-
-            if (string.isEmpty()) {
-                String optStr = "-" + optionId + ",--" + cmdLineOpts.getOption(optionId).getLongOpt();
-                throw new MissingOptionException(line.getOptionValue(optionId) + " for option " + optStr + ". Missing option string");
-            }
-
-            String[] items = string.split(",");
-
-            for (String str : items) {
-                strSet.add(str);
-            }
-        }
-
-        return strSet;
-    }
-
-
-    protected String checkStringOption(CommandLine line, String optionId) throws MissingOptionException{
+    // if option is present in cmd line, returns option string if option has argument and "true" otherwise.
+    // if option is not present in cmd line, returns empty string if option has argument and "false" otherwise.
+    protected String getOptionString(CommandLine line, String optionId) throws MissingOptionException{
 
         String string = "";
         if( line.hasOption( optionId ) ) {
-            string = line.getOptionValue( optionId );
 
-            if (string.isEmpty()) {
-                String optStr = "-"+optionId+",--"+cmdLineOpts.getOption(optionId).getLongOpt();
-                throw new MissingOptionException(line.getOptionValue(optionId)+" for option "+optStr+". Missing option string");
-            }
-        }
+            if (cmdLineOpts.getOption(optionId).hasArg()) {
+                string = line.getOptionValue(optionId);
 
-        return string;
-    }
-
-
-    protected String checkDefinedStringOption(CommandLine line, String optionId, Set<String> allowedStrings) throws MissingOptionException{
-
-        String string = "";
-        if( line.hasOption( optionId ) ) {
-            string = line.getOptionValue( optionId ).toLowerCase();
-
-            if (string.isEmpty()) {
-                String optStr = "-"+optionId+",--"+cmdLineOpts.getOption(optionId).getLongOpt();
-                throw new MissingOptionException(line.getOptionValue(optionId)+" for option "+optStr+". Missing option string");
-            } else if (!allowedStrings.contains(string)) {
-                String optStr = "-"+optionId+",--"+cmdLineOpts.getOption(optionId).getLongOpt();
-                throw new MissingOptionException(line.getOptionValue(optionId)+" for option "+optStr+". Option string has to be one of "+allowedStrings.toString());
-            }
-        }
-
-        return string;
-    }
-
-    protected int checkIntOption(CommandLine line,String optionId, int min, int max, int defaultValue) {
-
-        int value = defaultValue;
-
-        if( line.hasOption( optionId ) ) {
-
-            String optStr = "-"+optionId+",--"+cmdLineOpts.getOption(optionId).getLongOpt();
-            try {
-                value = Integer.parseInt(line.getOptionValue(optionId));
-            } catch(NumberFormatException e) {
-                throw new NumberFormatException(optStr+": bad format for integer option value "+line.getOptionValue(optionId));
-            }
-
-            if (value<min || value>max) {
-                throw new NumberFormatException(optStr+" option value must be >="+min+" && <="+max);
-            }
-        }
-
-        return value;
-    }
-
-    protected float checkFloatOption(CommandLine line,String optionId, float min, float max, float defaultValue) {
-        float value = defaultValue;
-
-        if( line.hasOption( optionId ) ) {
-
-            String optStr = "-"+optionId+",--"+cmdLineOpts.getOption(optionId).getLongOpt();
-            try {
-                value = Float.parseFloat(line.getOptionValue(optionId));
-            } catch(NumberFormatException e) {
-                throw new NumberFormatException(optStr+": bad format for integer option value "+line.getOptionValue(optionId));
-            }
-
-            if (value<min || value>max) {
-                throw new NumberFormatException(optStr+" option value must be >="+min+" && <="+max);
-            }
-        }
-
-        return value;
-    }
-
-    protected double checkDoubleOption(CommandLine line,String optionId, double min, double max, double defaultValue) {
-        double value = defaultValue;
-
-        if( line.hasOption( optionId ) ) {
-
-            String optStr = "-"+optionId+",--"+cmdLineOpts.getOption(optionId).getLongOpt();
-            try {
-                value = Double.parseDouble(line.getOptionValue(optionId));
-            } catch(NumberFormatException e) {
-                throw new NumberFormatException(optStr+": bad format for integer option value "+line.getOptionValue(optionId));
-            }
-
-            if (value<min || value>max) {
-                throw new NumberFormatException(optStr+" option value must be >="+min+" && <="+max);
-            }
-        }
-
-        return value;
-    }
-
-    protected String checkExistFileOption(CommandLine line, String optionId) {
-
-        String fileName = "";
-        if( line.hasOption( optionId ) ) {
-            fileName = line.getOptionValue( optionId );
-
-            if (!(new File(fileName).exists())) {
-                String optStr = "-"+optionId+",--"+cmdLineOpts.getOption(optionId).getLongOpt();
-                throw new InvalidPathException(line.getOptionValue(optionId)+" for option "+optStr+". ", "File does not exist");
-            }
-        }
-
-        return fileName;
-    }
-
-    protected String checkCanWriteFileOption(CommandLine line, String optionId) {
-
-        String fileName = "";
-        if( line.hasOption( optionId ) ) {
-            fileName = line.getOptionValue( optionId );
-
-            File file = new File(fileName);
-            if (file.exists()) {
-                if (!file.canWrite()) {
+                if (string.isEmpty()) {
                     String optStr = "-" + optionId + ",--" + cmdLineOpts.getOption(optionId).getLongOpt();
-                    throw new InvalidPathException(line.getOptionValue(optionId) + " for option " + optStr+". ", "File does not exist");
+                    throw new MissingOptionException(line.getOptionValue(optionId) + " for option " + optStr + ". Missing option string");
                 }
             } else {
-                if (!(new File(file.getParent())).canWrite()) {
-                    String optStr = "-" + optionId + ",--" + cmdLineOpts.getOption(optionId).getLongOpt();
-                    throw new InvalidPathException(line.getOptionValue(optionId) + " for option " + optStr+". ", "File does not exist");
-                }
+                string = "true";
+            }
+        } else {
+
+            if (!cmdLineOpts.getOption(optionId).hasArg()) {
+                string = "false";
             }
         }
 
-        return fileName;
+        return string;
     }
 
-    protected String checkExistDirOption(CommandLine line, String optionId) {
 
-        String fileName = "";
-        if( line.hasOption( optionId ) ) {
-            fileName = line.getOptionValue( optionId );
-
-            File dir = new File(fileName);
-            if (!dir.isDirectory()) {
-                String optStr = "-"+optionId+",--"+cmdLineOpts.getOption(optionId).getLongOpt();
-                throw new InvalidPathException(line.getOptionValue(optionId)+" for option "+optStr+"."," Directory does not exist. Please create directory.");
-            }
-
-        }
-
-        return fileName;
-    }
-
-    protected String checkNotExistDirOption(CommandLine line, String optionId) {
-
-        String fileName = "";
-        if( line.hasOption( optionId ) ) {
-            fileName = line.getOptionValue( optionId );
-
-            File dir = new File(fileName);
-            if (dir.isDirectory()) {
-                String optStr = "-"+optionId+",--"+cmdLineOpts.getOption(optionId).getLongOpt();
-                throw new InvalidPathException(line.getOptionValue(optionId)+" for option "+optStr+"."," Directory does already exist. Please choose another directory or delete old one.");
-            }
-
-        }
-
-        return fileName;
-    }
-
-    protected String checkDeleteOldDirOption(CommandLine line, String optionId, boolean forceDeleteDir) {
-
-        String dirName = "";
-        if( line.hasOption( optionId ) ) {
-            dirName = line.getOptionValue( optionId );
-
-            File dir = new File(dirName);
-            try {
-                if (dir.isDirectory()) {
-                    if (forceDeleteDir) {
-                        FileUtils.deleteDirectory(dir);
-                    } else {
-                        String optStr = "-"+optionId+",--"+cmdLineOpts.getOption(optionId).getLongOpt();
-                        throw new InvalidPathException(line.getOptionValue(optionId)+" for option "+optStr+"."," Directory does already exist. Please choose another directory, delete old one or use -fd,--forceDelete option.");
-                    }
-                }
-            } catch (IOException e) {
-                String optStr = "-"+optionId+",--"+cmdLineOpts.getOption(optionId).getLongOpt();
-                throw new InvalidPathException(line.getOptionValue(optionId)+" for option "+optStr+"."," Cannot writeHistograms hadoop file to directory");
-            }
-        }
-
-        return dirName;
-    }
-
-    protected String checkOutputDirOption(CommandLine line, String optionId) {
-
-        String dirName = "";
-        if( line.hasOption( optionId ) ) {
-            dirName = line.getOptionValue( optionId );
-
-            File dir = new File(dirName);
-            try {
-                if (!dir.exists())
-                    dir.mkdirs();
-            } catch (SecurityException e) {
-                String optStr = "-"+optionId+",--"+cmdLineOpts.getOption(optionId).getLongOpt();
-                throw new InvalidPathException(line.getOptionValue(optionId)+" for option "+optStr+"."," Cannot delete directory");
-            }
-        }
-
-        return dirName;
-    }
 
 
     protected void checkHelpOption(String[] args, String optionId) {
@@ -302,30 +101,30 @@ public abstract class ExecutableOptions {
 
     }
 
-    protected Pattern checkRegExOption(CommandLine line, String optionId) {
+    protected boolean checkReadParamsOption(String[] args,  String optionId) {
 
-        Pattern regExp = null;
-        if( line.hasOption( optionId ) ) {
-            String regexStr = line.getOptionValue( optionId );
+        for (int i=0;i<args.length-1;i++) {
+            if (args[i].equalsIgnoreCase(optionId) || args[i].equalsIgnoreCase(cmdLineOpts.getOption(optionId).getLongOpt())) {
+                if (!(new File(args[i+1]).exists())) {
+                    String optStr = "-"+optionId+",--"+cmdLineOpts.getOption(optionId).getLongOpt();
+                    throw new InvalidPathException(args[i+1]+" for option "+optStr+". ", "File does not exist");
+                }
 
-            try {
-                if (!regexStr.isEmpty()) regExp = Pattern.compile(regexStr);
-            } catch (PatternSyntaxException exception) {
-                String optStr = "-"+optionId+",--"+cmdLineOpts.getOption(optionId).getLongOpt();
-                throw new PatternSyntaxException(regexStr+" invalid regex for option "+optStr,regexStr,exception.getIndex());
+                NewAnceParams.getInstance().read(args[i+1]);
+                return true;
             }
         }
 
-        return regExp;
+        return false;
     }
-
 
     public ExecutableOptions parseOptions(String[] args) throws ParseException {
 
-        CommandLineParser parser = new DefaultParser();
-        CommandLine line = parser.parse(cmdLineOpts, args);
-
-        check(line);
+        if (!optionsSet) {
+            CommandLineParser parser = new DefaultParser();
+            CommandLine line = parser.parse(cmdLineOpts, args);
+            check(line);
+        }
 
         return this;
     }
@@ -340,8 +139,19 @@ public abstract class ExecutableOptions {
         formatter.printHelp( this.getClass().getName(), cmdLineOpts );
     }
 
+    public ExecutableOptions init(String[] args) throws IOException {
+
+        optionsSet = false;
+        if (!checkReadParamsOption(args,"-rP")) {
+            checkHelpOption(args, "-h");
+            checkVersionOption(args, NewAnceParams.getInstance().getVersion(), "-v");
+        } else {
+            optionsSet = true;
+        }
+        return this;
+    }
+
     protected abstract void check(CommandLine line) throws ParseException;
-    public abstract ExecutableOptions init() throws IOException;
     public abstract int run() throws IOException;
 
 }

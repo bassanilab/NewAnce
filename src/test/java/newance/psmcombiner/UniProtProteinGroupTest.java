@@ -4,8 +4,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Created by markusmueller on 17.06.18.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class UniProtProteinGroupTest {
     @Test
     public void test_reverse() {

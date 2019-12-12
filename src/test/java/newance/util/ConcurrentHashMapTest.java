@@ -5,8 +5,11 @@ import org.junit.Test;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by markusmueller on 02.12.19.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class ConcurrentHashMapTest {
 
     @Test

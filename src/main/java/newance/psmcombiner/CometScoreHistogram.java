@@ -9,8 +9,11 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by markusmueller on 18.11.19.
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class CometScoreHistogram extends SmoothedScoreHistogram {
 
     protected static List<List<Integer>> nnIndexMap = null;

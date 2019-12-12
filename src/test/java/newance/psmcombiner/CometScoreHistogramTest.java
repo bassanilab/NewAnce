@@ -14,8 +14,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by markusmueller on 18.11.19.
+ * /**
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class CometScoreHistogramTest {
 
     @Test

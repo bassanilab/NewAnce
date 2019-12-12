@@ -5,9 +5,11 @@ import java.io.FileFilter;
 import java.util.regex.Pattern;
 
 /**
- * @author Markus Muller
- * @version 0.0
+ * Copyright (C) 2019
+ * @author Markus Müller
+ * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
+
 public class RegExpFileFilter implements FileFilter {
 
     private final Pattern regex;
