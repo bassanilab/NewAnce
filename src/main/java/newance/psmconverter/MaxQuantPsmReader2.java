@@ -55,9 +55,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Copyright (C) 2019
  * @author Markus Müller
- * @Institutions: SIB, Swiss Institute of Bioinformatics; Ludwig Institute for Cancer Research
  */
 
 public class MaxQuantPsmReader2 implements PsmReader {
