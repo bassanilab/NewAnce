@@ -134,7 +134,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
         groupedFDRCalculator.setCanCalculateFDR(params.getMinNrPsmsPerHisto());
         groupedFDRCalculator.calcClassProbs();
         if (params.isReportHistos()) groupedFDRCalculator.writeHistograms(params.getOutputDir()+File.separator+"histos", params.getOutputPrefix());
-        groupedFDRCalculator.smoothHistogram(3);
+        groupedFDRCalculator.smoothHistogram(params.getSmoothDegree());
         groupedFDRCalculator.calcLocalFDR();
         if (params.isReportHistos()) groupedFDRCalculator.writeHistograms(params.getOutputDir()+File.separator+"histos", params.getOutputPrefix()+"_smoothed");
 
@@ -375,8 +375,9 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("minL").required(false).hasArg().longOpt("minLength").desc("Minimal length of peptide (default value: 8)").build());
         cmdLineOpts.addOption(Option.builder("maxL").required(false).hasArg().longOpt("maxLength").desc("Maximal length of peptide (default value: 25)").build());
         cmdLineOpts.addOption(Option.builder("nrTh").required(false).hasArg().longOpt("nrThreads").desc("Number of threads used by NewAnce (default value: nr of available processors - 2)").build());
-        cmdLineOpts.addOption(Option.builder("outP").required(false).hasArg().longOpt("outputPrefix").desc("Prefix for output files. If this option is not set no prefix is used.").build());
-        cmdLineOpts.addOption(Option.builder("minPH").required(false).hasArg().longOpt("minPsm4Histo").desc("Minimal number of psms to calculate local FDR in histogram (default 100000).").build());
+        cmdLineOpts.addOption(Option.builder("smD").required(false).hasArg().longOpt("smoothDegree").desc("Number of threads used by NewAnce (default value: nr of available processors - 2)").build());
+        cmdLineOpts.addOption(Option.builder("outP").required(false).hasArg().longOpt("outputPrefix").desc("Number of smoothing steps. Higher value mean more smoothing (default value: 0).").build());
+        cmdLineOpts.addOption(Option.builder("minPH").required(false).hasArg().longOpt("minPsm4Histo").desc("Minimal number of psms to calculate local FDR in histogram (default value: 100000).").build());
         cmdLineOpts.addOption(Option.builder("fdrM").required(false).hasArg().longOpt("fdrControlMethod").desc("Method to control pFDR: global or groupwise (default global).").build());
         cmdLineOpts.addOption(Option.builder("minXC").required(false).hasArg().longOpt("minXCorr").desc("Minimal Comet XCorr in histogram").build());
         cmdLineOpts.addOption(Option.builder("maxXC").required(false).hasArg().longOpt("maxXCorr").desc("Maximal Comet XCorr in histogram").build());
@@ -439,6 +440,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
         params.add("maxSpScore", getOptionString(line,"maxSP"));
         params.add("nrSpScoreBins", getOptionString(line,"nrSPB"));
         params.add("nrThreads", getOptionString(line,"nrTh"));
+        params.add("smoothDegree", getOptionString(line,"smD"));
         params.add("fdrControlMethod", getOptionString(line,"fdrM"));
 
         params.finalize();

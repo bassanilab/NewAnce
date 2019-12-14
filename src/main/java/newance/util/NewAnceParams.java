@@ -69,7 +69,7 @@ public class NewAnceParams implements Serializable {
     private int maxCharge = 5;
     private int minPeptideLength = 8;
     private int maxPeptideLength = 25;
-    private int maxRank = 2;
+    private int maxRank = 1;
 
     private int nrThreads = 1;
 
@@ -81,7 +81,7 @@ public class NewAnceParams implements Serializable {
     private Pattern codingProtRegExp = null;
     private Set<String> forcedNoncanonicalProts = new HashSet<>();
 
-    private int minNrPsmsPerHisto = 50000;
+    private int minNrPsmsPerHisto = 100000;
 
     private String outputPrefix = "";
 
@@ -95,6 +95,8 @@ public class NewAnceParams implements Serializable {
     private double minSpScore = 0.0;
     private double maxSpScore = 2500.0;
     private int nrSpScoreBins = nrBins3D;
+
+    private int smoothDegree = 0;
 
     private String fdrControlMethod = "global";
 
@@ -145,6 +147,7 @@ public class NewAnceParams implements Serializable {
         res +=  "minPeptideLength="+minPeptideLength+"\n";
         res +=  "maxPeptideLength="+maxPeptideLength+"\n";
         res +=  "maxRank="+maxRank+"\n";
+        res +=  "smoothDegree="+smoothDegree+"\n";
         res +=  "nrThreads="+nrThreads+"\n";
         res +=  "fdrCometThreshold="+fdrCometThreshold+"\n";
         res +=  "protCodingGroup="+ protCodingGroup +"\n";
@@ -258,6 +261,10 @@ public class NewAnceParams implements Serializable {
         } else {
             int nrProc = Runtime.getRuntime().availableProcessors();
             nrThreads = (nrProc>2)?nrProc-2:1;
+        }
+
+        if (variableValueMap.containsKey("smoothDegree")) {
+            smoothDegree = getIntegerValue("smoothDegree",variableValueMap.get("smoothDegree"));
         }
 
         if (variableValueMap.containsKey("fdrCometThreshold")) {
@@ -756,5 +763,9 @@ public class NewAnceParams implements Serializable {
 
     public String getReadParamsFile() {
         return readParamsFile;
+    }
+
+    public int getSmoothDegree() {
+        return smoothDegree;
     }
 }
