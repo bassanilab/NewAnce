@@ -110,8 +110,6 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
 
         writePeptideProteinGroupReport(uniProtDB);
 
-//        groupedFDRCalculator.calcPValuesFDR();
-
         System.out.println("RunTime after Psm parsing: " + RunTime2String.getRuntimeString(Runtime.getRuntime()));
 
 
