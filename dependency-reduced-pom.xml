@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.expasy.mzjava</groupId>
   <artifactId>NewAnce</artifactId>
-  <version>1.3.0-SNAPSHOT</version>
+  <version>1.3.1-SNAPSHOT</version>
   <developers>
     <developer>
       <id>Markus Muller</id>
