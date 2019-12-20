@@ -125,11 +125,11 @@ public class PSMReaderCallbackImpl implements PSMReaderCallback {
                 searchResult.getScoreMap(),identifier.getAssumedCharge().get(),isDecoy);
 
 
-        if (!psmMap.containsKey(key)) {
-            psmMap.put(key,new ArrayList<>());
-        }
+        psmMap.putIfAbsent(key,new ArrayList<>());
 
         psmMap.get(key).add(psm);
+
+//        System.out.println(key+"\t"+psm.getPeptide().toString());
     }
 
     private Set<String> removeProt(Set<String> acs, Pattern proteinPattern) {

@@ -52,6 +52,25 @@ public class CometPsmConverter extends PsmConverter {
         super(psmRootDirName, regex);
     }
 
+    public void run2() throws IOException{
+
+        long start = System.currentTimeMillis();
+
+        System.out.println("Comet psm input path " + psmRootDirName);
+        List<File> psmFileList = Arrays.asList(new File(psmRootDirName).listFiles(new RegExpFileFilter(regex)));
+        checkState(!psmFileList.isEmpty());
+
+        int nrTasks = psmFileList.size();
+
+        for (int i = 0; i < nrTasks; i++) {
+//            new CometPepXmlEntryConverter(psmFileList.get(i), psms, latch));
+            (new CometPepXmlEntryConverter(psmFileList.get(i), psms, null)).run();
+        }
+
+        System.out.println("Number of Comet spectra converted: "+psms.size());
+        System.out.println("Comet PepXML conversion ran in " + (System.currentTimeMillis() - start) / 1000d + "s");
+
+    }
     public void run() throws IOException{
 
         long start = System.currentTimeMillis();

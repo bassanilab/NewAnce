@@ -155,6 +155,15 @@ public class GroupedFDRCalculator {
         }
     }
 
+    public float getLocalFDR(PeptideMatchData peptideMatchData) {
+        String id = getNodeID(peptideMatchData);
+
+        HistogramTree histogramTree = histogramMap.get(id);
+
+        return histogramTree.getScoreHistogram().getLocalFDR(peptideMatchData);
+    }
+
+
     public void calcClassProbs() {
         histogramTreeRoot.calcClassProbs();
     }

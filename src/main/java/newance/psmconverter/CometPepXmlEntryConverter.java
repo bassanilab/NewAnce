@@ -82,8 +82,8 @@ public class CometPepXmlEntryConverter implements Runnable {
 
         addPsms(psmMap);
 
-        latch.countDown();
-        System.out.println("Finished reading " + pepXmlFile+". Latch count: "+latch.getCount());
+        if (latch!=null) latch.countDown();
+        System.out.println("Finished reading " + pepXmlFile+". Latch count: "+((latch!=null)?latch.getCount():-1));
     }
 
     protected void addPsms(Map<String, List<PeptideMatchData>> psmMap) {

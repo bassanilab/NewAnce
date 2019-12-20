@@ -96,7 +96,7 @@ public class NewAnceParams implements Serializable {
     private double maxSpScore = 2500.0;
     private int nrSpScoreBins = nrBins3D;
 
-    private int smoothDegree = 0;
+    private int smoothDegree = 1;
 
     private String fdrControlMethod = "global";
 
@@ -528,12 +528,12 @@ public class NewAnceParams implements Serializable {
 
         File dir = new File(value);
 
-        if (!dir.isDirectory()) {
-            throw new InvalidPathException("Invalid value "+value+" for variable "+variable+"."," Is not a directory.");
-        }
-
         if (!dir.exists()) {
             dir.mkdirs();
+        }
+
+        if (!dir.isDirectory()) {
+            throw new InvalidPathException("Invalid value "+value+" for variable "+variable+"."," Is not a directory.");
         }
 
         return value;
