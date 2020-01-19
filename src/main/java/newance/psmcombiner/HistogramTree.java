@@ -41,7 +41,7 @@ import java.util.Map;
  */
 public class HistogramTree {
 
-    private final SmoothedScoreHistogram scoreHistogram;
+    private SmoothedScoreHistogram scoreHistogram;
     private final List<HistogramTree> children;
     private final HistogramTree parent;
     private final String id;
@@ -81,6 +81,10 @@ public class HistogramTree {
 
     public ScoreHistogram getScoreHistogram() {
         return scoreHistogram;
+    }
+
+    public void setScoreHistogram(SmoothedScoreHistogram scoreHistogram) {
+        this.scoreHistogram = scoreHistogram;
     }
 
     public List<HistogramTree> getChildren() {
@@ -207,6 +211,8 @@ public class HistogramTree {
     }
 
     public void smoothHistogram(int degree) {
+
+        if (degree<=0) return;
 
         for (int i=0;i<degree-1;i++) scoreHistogram.smoothHistogram(false);
         scoreHistogram.smoothHistogram(true);

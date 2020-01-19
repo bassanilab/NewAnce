@@ -46,15 +46,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Markus Müller
  */
 
-public class CometMaxQuantScoreCombiner extends ExecutableOptions {
+public class CometMaxQuantCombiner extends ExecutableOptions {
 
     protected PsmGrouper psmGrouper;
     protected NewAnceParams params;
     protected SpectrumAccumulator spectrumAccumulator;
-    protected String readParamsFile;
 
 
-    public CometMaxQuantScoreCombiner() {
+    public CometMaxQuantCombiner() {
 
         createOptions();
         spectrumAccumulator = new SpectrumAccumulator();
@@ -62,7 +61,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
 
     public static void main(String[] args) {
 
-        CometMaxQuantScoreCombiner cometScoreCombiner =  new CometMaxQuantScoreCombiner();
+        CometMaxQuantCombiner cometScoreCombiner =  new CometMaxQuantCombiner();
         try {
             cometScoreCombiner.init(args).parseOptions(args).run();
         } catch (MissingOptionException e) {
@@ -146,7 +145,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
         System.out.print(groupedFDRCalculator.printTree(lFDRThreshold));
         test(cometPsmConverter.getPsms(),groupedFDRCalculator,lFDRThreshold);
 
-        SummaryReportWriter summaryReportWriter = new SummaryReportWriter(params.getOutputDir() +File.separator+ "SummaryReport.txt", params.isIncludeMaxQuant());
+        SummaryReportWriter summaryReportWriter = new SummaryReportWriter(params.getOutputDir() +File.separator+params.getOutputPrefix()+"_SummaryReport.txt", params.isIncludeMaxQuant());
 
         for (String group : groupedFDRCalculator.getGroups()) {
 
@@ -172,7 +171,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
 
             combined.forEach(10000,spectrumAccumulator);
 
-            writeToCombTabFile(combined, group+"_CometMaxQuantComb.txt");
+            writeToCombTabFile(combined, groupedFDRCalculator, group+"_"+params.getOutputPrefix()+"_NewAncePSMs.txt");
             System.out.println(combined.size()+" spectra combined for group " + group);
 
             if (params.isIncludeMaxQuant()) {
@@ -217,7 +216,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
 
             combined.forEach(10000,spectrumAccumulator);
 
-            writeToCombTabFile(combined, group+"_CometMaxQuantComb.txt");
+            writeToCombTabFile(combined, groupedFDRCalculator, group+"_"+params.getOutputPrefix()+"_NewAncePSMs.txt");
             System.out.println(combined.size()+" spectra combined for group " + group);
 
             if (params.isIncludeMaxQuant()) {
@@ -268,26 +267,16 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
 
         ConcurrentHashMap<String, List<PeptideMatchData>> combined = new ConcurrentHashMap<>();
 
-        CometMaxQuantPsmCombiner combiner = new CometMaxQuantPsmCombiner(maxQuantPsms,combined);
+        CometMaxQuantPsmMerger combiner = new CometMaxQuantPsmMerger(maxQuantPsms,combined);
         cometPsms.forEach(combiner);
 
         return combined;
     }
 
-    protected void writeToCombTabFile(ConcurrentHashMap<String, List<PeptideMatchData>>  psms, String filename)  {
+    protected void writeToCombTabFile(ConcurrentHashMap<String, List<PeptideMatchData>>  psms, GroupedFDRCalculator groupedFDRCalculator,
+                                      String filename)  {
 
-        final Psm2StringFunction stringFunction = new Psm2StringFunction("tab");
-
-        StringFileWriter writer = new StringFileWriter(params.getOutputDir() + File.separator +filename, stringFunction);
-
-        psms.forEach(10000, stringFunction, writer);
-
-        writer.close();
-    }
-
-    protected void writeToCometTabFile(ConcurrentHashMap<String, List<PeptideMatchData>>  psms, String filename) throws IOException {
-
-        final Psm2StringFunction stringFunction = new Psm2StringFunction("tab", Psm2StringFunction.TabStringMode.COMET);
+        final Psm2StringFunction stringFunction = new Psm2StringFunction(Psm2StringFunction.TabStringMode.COMBINED, groupedFDRCalculator);
 
         StringFileWriter writer = new StringFileWriter(params.getOutputDir() + File.separator +filename, stringFunction);
 
@@ -296,40 +285,6 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
         writer.close();
     }
 
-    protected void writeToMaxQuantTabFile(ConcurrentHashMap<String, List<PeptideMatchData>>  psms, String filename) throws IOException {
-
-        final Psm2StringFunction stringFunction = new Psm2StringFunction("tab", Psm2StringFunction.TabStringMode.MAXQUANT);
-
-        StringFileWriter writer = new StringFileWriter(params.getOutputDir() + File.separator +filename, stringFunction);
-
-        psms.forEach(10000, stringFunction, writer);
-
-        writer.close();
-    }
-
-
-    protected void writeToFastaFile(ConcurrentHashMap<String, List<PeptideMatchData>>  psms, String filename) throws IOException {
-
-        final Psm2StringFunction stringFunction = new Psm2StringFunction("fasta");
-
-        StringFileWriter writer = new StringFileWriter(params.getOutputDir() + File.separator +filename, stringFunction, true);
-
-        psms.forEach(10000, stringFunction, writer);
-
-        writer.close();
-    }
-
-
-    protected void writeToTextFile(ConcurrentHashMap<String, List<PeptideMatchData>>  psms, String filename) throws IOException {
-
-        final Psm2StringFunction stringFunction = new Psm2StringFunction("txt");
-
-        StringFileWriter writer = new StringFileWriter(params.getOutputDir() + File.separator +filename, stringFunction, true);
-
-        psms.forEach(10000, stringFunction, writer);
-
-        writer.close();
-    }
 
     protected void writePeptideProteinGroupReport(UniProtDB uniProtDB) {
 
@@ -338,7 +293,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
         if (params.getSearchFastaFile() !=null) uniProtDB.addFastaFile(params.getSearchFastaFile());
         OccamRazorSpectrumCounter spectrumCounter = new OccamRazorSpectrumCounter(spectrumAccumulator, uniProtDB);
 
-        String reportFileName = params.getOutputDir() + File.separator+params.getOutputPrefix()+"PeptideProteinGroupingReport.txt";
+        String reportFileName = params.getOutputDir() + File.separator + params.getOutputPrefix()+"_PeptideProteinGroupingReport.txt";
         try {
             spectrumCounter.write(new File(reportFileName));
         } catch (IOException e) {
@@ -357,6 +312,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("coFDR").required().hasArg().longOpt("cometFDR").desc("FDR for filtering Comet PSMs before combination (required)").build());
         cmdLineOpts.addOption(Option.builder("outD").required().hasArg().longOpt("outputDir").desc("Output directory for results (required)").build());
         cmdLineOpts.addOption(Option.builder("repH").required(false).hasArg(false).longOpt("reportHistogram").desc("Report histograms to text files").build());
+        cmdLineOpts.addOption(Option.builder("readH").required(false).hasArg(true).longOpt("readHistograms").desc("Read histograms from text files").build());
         cmdLineOpts.addOption(Option.builder("protG").required(false).hasArg().longOpt("proteinGroup").desc("Name of group with protein coding or canonical sequences").build());
         cmdLineOpts.addOption(Option.builder("noncG").required(false).hasArg().longOpt("noncanonicalGroup").desc("Name of group with non-canonical or cryptic sequences").build());
         cmdLineOpts.addOption(Option.builder("protRE").required(false).hasArg().longOpt("protRegExp").desc("Regular expression to match fasta name of coding proteins (e.g. sp\\||tr\\| ").build());
@@ -407,6 +363,7 @@ public class CometMaxQuantScoreCombiner extends ExecutableOptions {
         params.add("maxquantPsmDir", mqDir);
 
         params.add("reportHistos", getOptionString(line,"repH"));
+        params.add("readHistos", getOptionString(line,"readH"));
         params.add("outputDir", getOptionString(line,"outD"));
         params.add("searchFastaFile", getOptionString(line,"seFa"));
         params.add("uniprotFastaFile", getOptionString(line,"upFa"));

@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Markus Müller
  */
 
-public class CometMaxQuantPsmCombinerTest {
+public class CometMaxQuantPsmMergerTest {
 
     @Test
     public void test_merge() {
@@ -53,7 +53,7 @@ public class CometMaxQuantPsmCombinerTest {
         ConcurrentHashMap<String, List<PeptideMatchData>> mqPsms = getMQPsms();
         ConcurrentHashMap<String, List<PeptideMatchData>> combined = new ConcurrentHashMap<>();
 
-        CometMaxQuantPsmCombiner combiner = new CometMaxQuantPsmCombiner(mqPsms,combined);
+        CometMaxQuantPsmMerger combiner = new CometMaxQuantPsmMerger(mqPsms,combined);
         cometPsms.forEach(combiner);
 
         Assert.assertTrue(combined.size()==1);

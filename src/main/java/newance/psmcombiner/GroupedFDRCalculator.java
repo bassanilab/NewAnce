@@ -66,6 +66,7 @@ public class GroupedFDRCalculator {
         buildTree();
     }
 
+
     private void buildTree() {
 
         Set<String> groups = psmGrouper.getGroups();
@@ -73,8 +74,8 @@ public class GroupedFDRCalculator {
 
         for (int Z=NewAnceParams.getInstance().getMinCharge();Z<=NewAnceParams.getInstance().getMaxCharge();Z++) {
             cometScoreHistogram = new CometScoreHistogram(nrBins);
-            HistogramTree node = histogramTreeRoot.addHistogram(cometScoreHistogram,"Z"+String.valueOf(Z),"");
             String label = "Z"+String.valueOf(Z);
+            HistogramTree node = histogramTreeRoot.addHistogram(cometScoreHistogram,label,"");
             this.histogramMap.put(label,node);
 
             for (String group : groups) {
@@ -86,6 +87,24 @@ public class GroupedFDRCalculator {
         }
     }
 
+
+    public void readPriorHistograms(String outputDir, String fileprefix) {
+
+        for (int Z=NewAnceParams.getInstance().getMinCharge();Z<=NewAnceParams.getInstance().getMaxCharge();Z++) {
+            String label = "Z"+String.valueOf(Z);
+
+            HistogramTree node = histogramMap.get(label);
+
+            if (!node.getScoreHistogram().canCalculateFDR()) {
+
+                String filename = outputDir+File.separatorChar+fileprefix+"_"+label+".txt";
+                node.setScoreHistogram(CometScoreHistogram.read(new File(filename)));
+
+            }
+        }
+    }
+
+
     public void addAll(ConcurrentHashMap<String,List<PeptideMatchData>> psms) {
 
         for (String specID : psms.keySet()) {
@@ -94,6 +113,7 @@ public class GroupedFDRCalculator {
             }
         }
     }
+
 
     public void add(PeptideMatchData peptideMatchData) {
         String id = getNodeID(peptideMatchData);
@@ -106,15 +126,18 @@ public class GroupedFDRCalculator {
         }
     }
 
+
     public String getNodeID(PeptideMatchData peptideMatchData) {
 
         return "Z"+peptideMatchData.getCharge()+"_"+psmGrouper.apply("",peptideMatchData);
     }
 
+
     public String printTree(float lFDRThreshold) {
 
         return histogramTreeRoot.print(lFDRThreshold);
     }
+
 
     public String printTree(Map<String, Float> grpThresholdMap) {
 
@@ -137,6 +160,7 @@ public class GroupedFDRCalculator {
 
         histogramTreeRoot.writeHistogram(outputDir, filePrefix);
     }
+
 
     public void setCanCalculateFDR(int minNrPsms) {
 
@@ -167,6 +191,7 @@ public class GroupedFDRCalculator {
     public void calcClassProbs() {
         histogramTreeRoot.calcClassProbs();
     }
+
 
     public float[] getTargetDecoyCounts(float lFDR) {
 

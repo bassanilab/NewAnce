@@ -68,7 +68,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>newance.psmcombiner.CometMaxQuantScoreCombiner</mainClass>
+                                    <mainClass>newance.psmcombiner.CometMaxQuantCombiner</mainClass>
                                 </transformer>
                             </transformers>
                             <filters>

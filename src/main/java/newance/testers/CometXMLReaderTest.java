@@ -58,7 +58,7 @@ public class CometXMLReaderTest extends ExecutableOptions {
 
     public CometXMLReaderTest() {
 
-        stringFunction = new Psm2StringFunction("tab", Psm2StringFunction.TabStringMode.COMET);
+        stringFunction = new Psm2StringFunction(Psm2StringFunction.TabStringMode.COMET);
         createOptions();
     }
 

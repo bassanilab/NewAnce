@@ -27,7 +27,7 @@
               <minimizeJar>false</minimizeJar>
               <transformers>
                 <transformer>
-                  <mainClass>newance.psmcombiner.CometMaxQuantScoreCombiner</mainClass>
+                  <mainClass>newance.psmcombiner.CometMaxQuantCombiner</mainClass>
                 </transformer>
               </transformers>
               <filters>

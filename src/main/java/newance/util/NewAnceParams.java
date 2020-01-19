@@ -109,6 +109,7 @@ public class NewAnceParams implements Serializable {
     private boolean includeMaxQuant = true;
     private String outputDir = "";
     private boolean reportHistos = false;
+    private String readHistos = "";
     private String searchFastaFile = "";
     private String uniprotFastaFile= "";
     private boolean doPeptideProteinGrouping = false;
@@ -175,6 +176,7 @@ public class NewAnceParams implements Serializable {
         res +=  "includeMaxQuant="+includeMaxQuant+"\n";
         res +=  "outputDir="+outputDir+"\n";
         res +=  "reportHistos="+reportHistos+"\n";
+        res +=  "readHistos="+readHistos+"\n";
         res +=  "searchFastaFile="+searchFastaFile+"\n";
         res +=  "uniprotFastaFile="+uniprotFastaFile+"\n";
         res +=  "doPeptideProteinGrouping="+doPeptideProteinGrouping+"\n";
@@ -349,13 +351,13 @@ public class NewAnceParams implements Serializable {
         if (variableValueMap.containsKey("cometPsmDir")) {
             cometPsmDir = getDirectoryValue("cometPsmDir",variableValueMap.get("cometPsmDir"));
         } else {
-            throw new RuntimeException("No value for Comet directory provided. Abort");
+            throw new RuntimeException("No valid value for Comet directory provided. Abort");
         }
 
         if (variableValueMap.containsKey("cometPsmRegExp")) {
             cometPsmRegExp = getPatternValue("cometPsmRegExp",variableValueMap.get("cometPsmRegExp"));
         } else {
-            throw new RuntimeException("No value for Comet pep.xml file regexp provided. Abort");
+            throw new RuntimeException("No valid value for Comet pep.xml file regexp provided. Abort");
         }
 
         if (variableValueMap.containsKey("includeMaxQuant")) {
@@ -367,7 +369,7 @@ public class NewAnceParams implements Serializable {
             if (variableValueMap.containsKey("maxquantPsmDir")) {
                 maxquantPsmDir = getDirectoryValue("maxquantPsmDir", variableValueMap.get("maxquantPsmDir"));
             } else {
-                throw new RuntimeException("No value for MaxQuant directory provided. Abort");
+                throw new RuntimeException("No valid value for MaxQuant directory provided. Abort");
             }
 
             if (variableValueMap.containsKey("maxquantPsmRegExp")) {
@@ -378,11 +380,15 @@ public class NewAnceParams implements Serializable {
         if (variableValueMap.containsKey("outputDir")) {
             outputDir = getNewDirectoryValue("outputDir",variableValueMap.get("outputDir"));
         } else {
-            throw new RuntimeException("No value for output directory provided. Abort");
+            throw new RuntimeException("No valid value for output directory provided. Abort");
         }
 
         if (variableValueMap.containsKey("reportHistos")) {
             reportHistos = getBooleanValue("reportHistos",variableValueMap.get("reportHistos"));
+        }
+
+        if (variableValueMap.containsKey("readHistos")) {
+            readHistos = getDirectoryValue("readHistos",variableValueMap.get("readHistos"));
         }
 
         if (variableValueMap.containsKey("searchFastaFile")) {
@@ -392,7 +398,7 @@ public class NewAnceParams implements Serializable {
         if (variableValueMap.containsKey("uniprotFastaFile")) {
             uniprotFastaFile = getFileValue("uniprotFastaFile",variableValueMap.get("uniprotFastaFile"));
         } else {
-            throw new RuntimeException("No value for Uniprot fasta file provided. Abort");
+            throw new RuntimeException("No valid value for Uniprot fasta file provided. Abort");
         }
 
         if (variableValueMap.containsKey("doPeptideProteinGrouping")) {

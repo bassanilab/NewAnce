@@ -63,7 +63,7 @@ public class MaxQuantPsmReaderTest extends ExecutableOptions {
 
     public MaxQuantPsmReaderTest() {
 
-        stringFunction = new Psm2StringFunction("tab", Psm2StringFunction.TabStringMode.MAXQUANT);
+        stringFunction = new Psm2StringFunction(Psm2StringFunction.TabStringMode.MAXQUANT);
         createOptions();
     }
 

@@ -31,10 +31,8 @@ package newance.psmcombiner;
 
 import newance.psmconverter.PeptideMatchData;
 import newance.util.NewAnceParams;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.*;
 
 /**
@@ -86,6 +84,36 @@ public class CometScoreHistogram extends SmoothedScoreHistogram {
         this.smoothedHistogram = null;
     }
 
+    public CometScoreHistogram(int[] nrBins, double minXCorr, double maxXCorr, int nrXCorrBins,
+                               double minDeltaCn, double maxDeltaCn, int nrDeltaCnBins,
+                               double minSpScore, double maxSpScore, int nrSpScoreBins) {
+
+        super(nrBins);
+
+        this.minXCorr = minXCorr;
+        this.maxXCorr = maxXCorr;
+        this.nrXCorrBins = nrXCorrBins;
+        this.minDeltaCn = minDeltaCn;
+        this.maxDeltaCn = maxDeltaCn;
+        this.nrDeltaCnBins = nrDeltaCnBins;
+        this.minSpScore = minSpScore;
+        this.maxSpScore = maxSpScore;
+        this.nrSpScoreBins = nrSpScoreBins;
+
+        this.xCorrBinWidth = (maxXCorr-minXCorr)/nrXCorrBins;
+        this.deltaCnBinWidth = (maxDeltaCn-minDeltaCn)/nrDeltaCnBins;
+        this.spScoreBinWidth = (maxSpScore-minSpScore)/nrSpScoreBins;
+
+        this.xCorrMids = calcMids(calcBreaks((float)minXCorr,(float)maxXCorr,nrXCorrBins));
+        this.deltaCnMids = calcMids(calcBreaks((float)minDeltaCn,(float)maxDeltaCn,nrDeltaCnBins));
+        this.spScoreMids = calcMids(calcBreaks((float)minSpScore,(float)maxSpScore,nrSpScoreBins));
+
+        if (nnIndexMap==null) nnIndexMap = initNNIndexMap();
+        this.smoothedHistogram = null;
+    }
+
+
+
     public CometScoreHistogram(ScoreHistogram cometScoreHistogram) {
 
         super(cometScoreHistogram);
@@ -122,6 +150,40 @@ public class CometScoreHistogram extends SmoothedScoreHistogram {
         int index = nrXCorrBins*(nrDeltaCnBins*spscoreIdx + deltacnIdx) + xcorrIdx;
 
         return index;
+    }
+
+    protected int index(double xCorr, double deltaCn, double spScore) {
+
+        int xcorrIdx = get1DIndex(xCorr, minXCorr, xCorrBinWidth, nrXCorrBins-1);
+        int deltacnIdx = get1DIndex(deltaCn, minDeltaCn, deltaCnBinWidth, nrDeltaCnBins-1);
+        int spscoreIdx = get1DIndex(spScore, minSpScore, spScoreBinWidth, nrSpScoreBins-1);
+
+        int index = nrXCorrBins*(nrDeltaCnBins*spscoreIdx + deltacnIdx) + xcorrIdx;
+
+        return index;
+    }
+
+    public void add(double xCorr, double deltaCn, double spScore, float value, boolean isDecoy) {
+
+        int bin = index(xCorr,deltaCn,spScore);
+
+        int idx = indexMap.get(bin);
+        if (idx<0) {
+            indexMap.set(bin,currIndex);
+            psmBins.add(bin);
+            currIndex++;
+        }
+
+        if (idx < 0) { // new bin
+            if (!isDecoy) targetCnts.add(value);
+            else decoyCnts.add(value);
+        } else { // already recorded bin
+            if (!isDecoy) targetCnts.set(idx,targetCnts.get(idx)+value);
+            else decoyCnts.set(idx,decoyCnts.get(idx)+value);
+        }
+
+        if (isDecoy) totTargetCnt += value;
+        else totDecoyCnt += value;
     }
 
     @Override
@@ -171,6 +233,8 @@ public class CometScoreHistogram extends SmoothedScoreHistogram {
 
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+            writer.write("#"+String.format("%.3f\t%.3f\t%d\t%.3f\t%.3f\t%d\t%.3f\t%.3f\t%d\n",
+                    minXCorr,maxXCorr,nrXCorrBins,minDeltaCn,maxDeltaCn,nrDeltaCnBins,minSpScore,maxSpScore,nrSpScoreBins));
             writer.write("XCorr\tDeltaCn\tSpScore\tValue\tType\n");
 
             for (int i=0;i<indexMap.size();i++) {
@@ -197,6 +261,64 @@ public class CometScoreHistogram extends SmoothedScoreHistogram {
         } catch (IOException e) {
 
         }
+    }
+
+
+    public static CometScoreHistogram read(File inputFile) {
+
+        CometScoreHistogram cometScoreHistogram = null;
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+
+            String line = reader.readLine();
+
+            if (!line.startsWith("#")) {
+                System.out.println("Ivalid histogram input file "+inputFile+". First line must start with #.");
+                return null;
+            }
+
+            line = line.substring(1);
+            String[] fields = line.split("\t");
+            double minXCorr = Double.parseDouble(fields[0]);
+            double maxXCorr = Double.parseDouble(fields[1]);
+            int nrXCorrBins = Integer.parseInt(fields[2]);
+            double minDeltaCn = Double.parseDouble(fields[3]);
+            double maxDeltaCn = Double.parseDouble(fields[4]);
+            int nrDeltaCnBins = Integer.parseInt(fields[5]);
+            double minSpScore = Double.parseDouble(fields[6]);
+            double maxSpScore = Double.parseDouble(fields[7]);
+            int nrSpScoreBins = Integer.parseInt(fields[8]);
+
+            int[] nrBins = new int[3];
+            nrBins[0] = nrXCorrBins;
+            nrBins[1] = nrDeltaCnBins;
+            nrBins[2] = nrSpScoreBins;
+
+            cometScoreHistogram = new CometScoreHistogram(nrBins, minXCorr, maxXCorr, nrXCorrBins,
+                    minDeltaCn, maxDeltaCn, nrDeltaCnBins, minSpScore, maxSpScore, nrSpScoreBins);
+
+            while ((line = reader.readLine()) != null) {
+
+                if (line.trim().isEmpty()) continue;
+
+                fields = line.split("\t");
+
+                double xCorr = Double.parseDouble(fields[0]);
+                double deltaCn = Double.parseDouble(fields[1]);
+                double spScore = Double.parseDouble(fields[2]);
+                float value = Float.parseFloat(fields[3]);
+                boolean isDecoy = fields[4].equals("decoy");
+
+                cometScoreHistogram.add(xCorr, deltaCn, spScore, value, isDecoy);
+            }
+
+
+            reader.close();
+        } catch (IOException e) {
+
+        }
+
+        return cometScoreHistogram;
     }
 
     protected List<Float> getMids(int bin) {

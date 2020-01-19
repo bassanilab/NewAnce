@@ -201,7 +201,7 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         System.out.println("Comet "+group+" psms: ");
         System.out.println("==============================");
         System.out.println("");
-        Psm2StringFunction psm2StringFunction = new Psm2StringFunction("tab", Psm2StringFunction.TabStringMode.COMET);
+        Psm2StringFunction psm2StringFunction = new Psm2StringFunction(Psm2StringFunction.TabStringMode.COMET);
         System.out.println("Group\t"+psm2StringFunction.getHeader()+"\t"+"lFDR");
         List<PeptideMatchData> tmp = new ArrayList<>();
         for (String specID : psms.keySet()) {
@@ -225,7 +225,7 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         System.out.println("MaxQuant "+group+" psms: ");
         System.out.println("==============================");
         System.out.println("");
-        Psm2StringFunction psm2StringFunction = new Psm2StringFunction("tab", Psm2StringFunction.TabStringMode.MAXQUANT);
+        Psm2StringFunction psm2StringFunction = new Psm2StringFunction(Psm2StringFunction.TabStringMode.MAXQUANT);
         System.out.println("Group\t"+psm2StringFunction.getHeader());
         List<PeptideMatchData> tmp = new ArrayList<>();
         for (String specID : psms.keySet()) {
@@ -246,7 +246,7 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         System.out.println("Combined "+group+" psms: ");
         System.out.println("==============================");
         System.out.println("");
-        Psm2StringFunction psm2StringFunction = new Psm2StringFunction("tab", Psm2StringFunction.TabStringMode.COMBINED);
+        Psm2StringFunction psm2StringFunction = new Psm2StringFunction(Psm2StringFunction.TabStringMode.COMBINED);
         System.out.println("Group\t"+psm2StringFunction.getHeader()+"\t"+"Comet.lFDR");
         List<PeptideMatchData> tmp = new ArrayList<>();
         for (String specID : psms.keySet()) {
@@ -267,7 +267,7 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
 
         ConcurrentHashMap<String, List<PeptideMatchData>> combined = new ConcurrentHashMap<>();
 
-        CometMaxQuantPsmCombiner combiner = new CometMaxQuantPsmCombiner(maxQuantPsms,combined);
+        CometMaxQuantPsmMerger combiner = new CometMaxQuantPsmMerger(maxQuantPsms,combined);
         cometPsms.forEach(combiner);
 
         return combined;

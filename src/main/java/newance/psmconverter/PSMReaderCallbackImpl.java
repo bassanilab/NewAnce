@@ -101,6 +101,14 @@ public class PSMReaderCallbackImpl implements PSMReaderCallback {
             searchResult.addScore("rt",identifier.getRetentionTimes().getFirst().getTime());
         }
 
+        if (!identifier.getScanNumbers().isEmpty()) {
+            searchResult.addScore("sn",identifier.getScanNumbers().getFirst().getValue());
+        }
+
+        if (identifier.getPrecursorNeutralMass().isPresent()) {
+            searchResult.addScore("mass",identifier.getPrecursorNeutralMass().get());
+        }
+
         boolean isDecoy = false;
         if (decoyProtPattern != null) isDecoy = searchResult.containsOnlyProteinMatch(decoyProtPattern);
 

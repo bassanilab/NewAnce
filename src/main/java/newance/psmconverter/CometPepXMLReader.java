@@ -110,7 +110,13 @@ public class CometPepXMLReader extends PepXmlReader {
             }
         }
 
-        addRetentionTime(peptideMatch,identifier);
+        if (!searchHit.getMassdiff().isEmpty()) {
+            peptideMatch.addScore("mass_diff",Double.valueOf(searchHit.getMassdiff()));
+        }
+
+        peptideMatch.addScore("tot_num_ions", searchHit.getTotNumIons().doubleValue());
+        peptideMatch.addScore("matched_num_ions", searchHit.getNumMatchedIons().doubleValue());
+
         readAnalysisResult(searchHit, peptideMatch);
         callback.resultRead(identifier, peptideMatch);
     }
@@ -144,16 +150,6 @@ public class CometPepXMLReader extends PepXmlReader {
         }
 
         return false;
-    }
-
-    protected void addRetentionTime(PeptideMatch peptideMatch, SpectrumIdentifier identifier) {
-
-        List<RetentionTime> rts = identifier.getRetentionTimes();
-        if (rts.isEmpty())
-            peptideMatch.addScore("rt", -1.0);
-        else
-            peptideMatch.addScore("rt", identifier.getRetentionTimes().getFirst().getTime());
-
     }
 
 }
