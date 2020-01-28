@@ -91,7 +91,9 @@ public class ProcessPsmUtils {
         final Psm2PeptideStringFunction stringFunction = new Psm2PeptideStringFunction(Psm2PeptideStringFunction.StringMode.SEQUENCE);
         final Set<String> peptides = new HashSet<>();
 
-        psms.forEach(10000,stringFunction, s -> peptides.addAll(s));
+        for (String specID : psms.keySet()) {
+            peptides.addAll(stringFunction.apply(specID,psms.get(specID)));
+        }
 
         return peptides.size();
     }

@@ -37,9 +37,11 @@ import newance.proteinmatch.UniProtDB;
 import newance.psmconverter.MaxQuantMultipleMSMSFileConverter;
 import newance.psmconverter.CometMultiplePepXMLFileConverter;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -100,6 +102,7 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
             System.out.println("MaxQuant DB matching ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
         }
 
+        start = System.currentTimeMillis();
         GroupedFDRCalculator groupedFDRCalculator = buildGroupedFDRCalculator(cometMultiplePepXMLConverter.getPsms());
 
         if (params.getFdrControlMethod().equals("global")) {
@@ -107,8 +110,11 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         } else {
             controlFDRGroupwise(groupedFDRCalculator, cometMultiplePepXMLConverter, maxQuantMultipleMSMSConverter);
         }
+        System.out.println("Grouped FDR calculation ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
 
+        start = System.currentTimeMillis();
         writePeptideProteinGroupReport(uniProtDB);
+        System.out.println("Protein grouping ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
 
         System.out.println("RunTime after Psm parsing: " + RunTime2String.getRuntimeString(Runtime.getRuntime()));
 
