@@ -29,64 +29,46 @@
 
 package newance.psmconverter;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.regex.Pattern;
+import newance.proteinmatch.UniProtDB;
 
-import static com.google.common.base.Preconditions.checkState;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 /**
  * @author Markus Müller
  */
 
-public class MaxQuantPsmConverter extends PsmConverter {
+public abstract class MultiplePsmFileConverter {
+
+    protected final String psmRootDirName;
+    protected final Pattern regex;
+    protected final ConcurrentHashMap<String,List<PeptideSpectrumMatch>> psms;
+
+    public MultiplePsmFileConverter(String psmRootDirName, Pattern regex) {
+
+        this.psmRootDirName = psmRootDirName;
+        this.regex = regex;
+        this.psms = new ConcurrentHashMap<>();
+    }
 
 
-    public MaxQuantPsmConverter(String psmRootDirName, Pattern regex) {
+    public abstract void run() throws IOException;
 
-        super(psmRootDirName, regex);    }
+    public void addDBProteins(UniProtDB uniProtDB) {
 
+        if (uniProtDB==null) return;
 
-    public void run() throws IOException{
+        psms.forEach(100000,new AddUniProtIds2Psm(uniProtDB));
+    }
 
-        long start = System.currentTimeMillis();
+    public void reportDBProteins() {
 
-        System.out.println("MaxQuant psm input path " + psmRootDirName);
+        psms.forEach((id,psm) -> System.out.println(id+", "+psm.get(0).getPeptide().toString()+", "+psm.get(0).getProteinAcc().toString()));
+    }
 
-        final List<File> psmFileList = new ArrayList<>();
-        Files.walk(Paths.get(psmRootDirName))
-                .filter(Files::isRegularFile)
-                .forEach((f)->{
-                    if( f.toString().endsWith("msms.txt")) psmFileList.add(f.toFile());
-                });
-
-        checkState(!psmFileList.isEmpty());
-
-        int nrTasks = psmFileList.size();
-        ExecutorService exe = Executors.newFixedThreadPool(nrTasks);
-
-        CountDownLatch latch = new CountDownLatch(nrTasks);
-        for (int i = 0; i < nrTasks; i++) {
-            exe.submit(new MaxQuantMSMSEntryConverter(psmFileList.get(i), psms, latch));
-        }
-
-        try {
-            latch.await();
-
-            System.out.println("Number of MaxQuant spectra converted: "+psms.size());
-            System.out.println("MaxQuant msms.txt conversion ran in " + (System.currentTimeMillis() - start) / 1000d + "s");
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        exe.shutdown();
+    public ConcurrentHashMap<String, List<PeptideSpectrumMatch>> getPsms() {
+        return psms;
     }
 }

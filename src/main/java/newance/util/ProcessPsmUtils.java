@@ -30,7 +30,7 @@
 package newance.util;
 
 import newance.psmcombiner.Psm2PeptideStringFunction;
-import newance.psmconverter.PeptideMatchData;
+import newance.psmconverter.PeptideSpectrumMatch;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,13 +41,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ProcessPsmUtils {
 
-    public static ConcurrentHashMap<String, List<PeptideMatchData>>  removeDecoys(ConcurrentHashMap<String, List<PeptideMatchData>>  psms) {
+    public static ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  removeDecoys(ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  psms) {
 
-        ConcurrentHashMap<String, List<PeptideMatchData>> noDecoyPsms = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, List<PeptideSpectrumMatch>> noDecoyPsms = new ConcurrentHashMap<>();
 
         for (String specID : psms.keySet()) {
-            List<PeptideMatchData> noDecoy = new ArrayList<>();
-            for (PeptideMatchData psm : psms.get(specID)) {
+            List<PeptideSpectrumMatch> noDecoy = new ArrayList<>();
+            for (PeptideSpectrumMatch psm : psms.get(specID)) {
                 if (!psm.isDecoy()) noDecoy.add(psm);
             }
 
@@ -58,14 +58,14 @@ public class ProcessPsmUtils {
     }
 
 
-    public static ConcurrentHashMap<String, List<PeptideMatchData>>  extractGroupPsms(
-            PsmGrouper psmGrouper, ConcurrentHashMap<String, List<PeptideMatchData>>  psms, String group) {
+    public static ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  extractGroupPsms(
+            PsmGrouper psmGrouper, ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  psms, String group) {
 
-        ConcurrentHashMap<String, List<PeptideMatchData>> filteredPsms = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, List<PeptideSpectrumMatch>> filteredPsms = new ConcurrentHashMap<>();
 
         for (String specID : psms.keySet()) {
-            List<PeptideMatchData> groupPsm = new ArrayList<>();
-            for (PeptideMatchData psm : psms.get(specID)) {
+            List<PeptideSpectrumMatch> groupPsm = new ArrayList<>();
+            for (PeptideSpectrumMatch psm : psms.get(specID)) {
                 if (psmGrouper.apply(specID,psm).equals(group)) groupPsm.add(psm);
             }
 
@@ -75,7 +75,7 @@ public class ProcessPsmUtils {
         return filteredPsms;
     }
 
-    public static int countPsms(ConcurrentHashMap<String, List<PeptideMatchData>>  psms) {
+    public static int countPsms(ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  psms) {
 
         int cnt = 0;
 
@@ -86,7 +86,7 @@ public class ProcessPsmUtils {
         return cnt;
     }
 
-    public static int countUniquePeptides(ConcurrentHashMap<String, List<PeptideMatchData>>  psms) {
+    public static int countUniquePeptides(ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  psms) {
 
         final Psm2PeptideStringFunction stringFunction = new Psm2PeptideStringFunction(Psm2PeptideStringFunction.StringMode.SEQUENCE);
         final Set<String> peptides = new HashSet<>();

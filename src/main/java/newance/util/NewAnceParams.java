@@ -64,7 +64,7 @@ public class NewAnceParams implements Serializable {
     // Remove excluded proteins from list of psm proteins for every PSM. remove PSM if there are only excluded proteins.
     private Pattern excludedProtPattern = null;
 
-    // Predicate to filter PeptideMatchData objects before writing them to hadoop file
+    // Predicate to filter PeptideSpectrumMatch objects before writing them to hadoop file
     private int minCharge = 1;
     private int maxCharge = 5;
     private int minPeptideLength = 8;
@@ -115,6 +115,11 @@ public class NewAnceParams implements Serializable {
     private boolean doPeptideProteinGrouping = false;
     private String writeParamsFile = "";
     private String readParamsFile = "";
+
+    private String maxQuantMainScore = "Score";
+    private String cometMainScore = "xcorr";
+    private double maxQuantMainScoreMinValue = 10f;
+    private double cometMainScoreMinValue = 1f;
 
     private final Map<String,String> variableValueMap;
 
@@ -411,6 +416,22 @@ public class NewAnceParams implements Serializable {
 
         if (variableValueMap.containsKey("readParamsFile")) {
             readParamsFile = getNewFileValue("readParamsFile",variableValueMap.get("readParamsFile"));
+        }
+
+        if (variableValueMap.containsKey("maxQuantMainScoreMinValue")) {
+            maxSpScore = getDoubleValue("maxQuantMainScoreMinValue",variableValueMap.get("maxQuantMainScoreMinValue"));
+        }
+
+        if (variableValueMap.containsKey("cometMainScoreMinValue")) {
+            maxSpScore = getDoubleValue("cometMainScoreMinValue",variableValueMap.get("cometMainScoreMinValue"));
+        }
+
+        if (variableValueMap.containsKey("maxQuantMainScore")) {
+            outputPrefix = variableValueMap.get("maxQuantMainScore");
+        }
+
+        if (variableValueMap.containsKey("cometMainScore")) {
+            outputPrefix = variableValueMap.get("cometMainScore");
         }
 
         checkVariableValues();
@@ -773,5 +794,25 @@ public class NewAnceParams implements Serializable {
 
     public int getSmoothDegree() {
         return smoothDegree;
+    }
+
+    public String getReadHistos() {
+        return readHistos;
+    }
+
+    public String getMaxQuantMainScore() {
+        return maxQuantMainScore;
+    }
+
+    public String getCometMainScore() {
+        return cometMainScore;
+    }
+
+    public double getMaxQuantMainScoreMinValue() {
+        return maxQuantMainScoreMinValue;
+    }
+
+    public double getCometMainScoreMinValue() {
+        return cometMainScoreMinValue;
     }
 }

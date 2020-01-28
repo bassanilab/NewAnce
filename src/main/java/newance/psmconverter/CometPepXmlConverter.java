@@ -30,74 +30,44 @@ package newance.psmconverter;
 
 import newance.util.PsmPredicate;
 import org.expasy.mzjava.core.ms.AbsoluteTolerance;
-import org.expasy.mzjava.proteomics.io.ms.ident.PepXmlReader;
 import org.expasy.mzjava.proteomics.mol.modification.Modification;
 import org.expasy.mzjava.proteomics.ms.ident.ModListModMatchResolver;
-import newance.util.NewAnceParams;
 
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * @author Markus Müller
  */
 
-public class CometPepXmlEntryConverter implements Runnable {
+public class CometPepXmlConverter extends SinglePsmFileConverter {
 
-    private static final Logger LOGGER = Logger.getLogger(CometPepXmlEntryConverter.class.getName());
+    public CometPepXmlConverter(File msmsFile, Map<String,List<PeptideSpectrumMatch>> psms, CountDownLatch latch) {
 
-    protected final File pepXmlFile;
-    protected final NewAnceParams params;
-    protected final Map<String,List<PeptideMatchData>> psms;
-    protected final CountDownLatch latch;
-
-    public CometPepXmlEntryConverter(File pepXmlFile, Map<String,List<PeptideMatchData>> psms, CountDownLatch latch) {
-
-        this.params = NewAnceParams.getInstance();
-        this.pepXmlFile = pepXmlFile;
-        this.psms = psms;
-        this.latch = latch;
+        super(msmsFile, psms, latch);
     }
-
     @Override
     public void run() {
 
-        System.out.println("Reading " + pepXmlFile);
+        System.out.println("Reading " + psmFile);
 
-        final Map<String, List<PeptideMatchData>> psmMap = new HashMap<>();
+        final Map<String, List<PeptideSpectrumMatch>> psmMap = new HashMap<>();
 
         PsmPredicate psmPredicate = new PsmPredicate(params.getMinCharge(), params.getMaxCharge(), params.getMinPeptideLength(), params.getMaxPeptideLength(), params.getMaxRank(),
-                "xcorr", 1.0f, PsmPredicate.ScoreOrder.LARGER);
+                params.getCometMainScore(), params.getCometMainScoreMinValue(), PsmPredicate.ScoreOrder.LARGER);
 
-        PSMReaderCallbackImpl callback = new PSMReaderCallbackImpl(new SpectrumKeyFunctionImpl(), psmPredicate, psmMap);
+        PeptideSpectrumMatchList peptideSpectrumMatchList = new PeptideSpectrumMatchList(new SpectrumKeyFunctionImpl(), psmPredicate, psmMap);
 
         Collection<Modification> modifications = params.getModifications();
         ModListModMatchResolver modMatchResolver = new ModListModMatchResolver(new AbsoluteTolerance(params.getModifMatchMassTol()), modifications);
 
-        CometPepXMLReader psmReader = new CometPepXMLReader(PepXmlReader.ModMassStorage.AA_MASS_PLUS_MOD_MASS, true, modMatchResolver);
-        psmReader.parse(pepXmlFile, callback);
+        CometPEFFPepXmlReader psmReader = new CometPEFFPepXmlReader( true, modMatchResolver);
+        psmReader.parse(psmFile, peptideSpectrumMatchList);
 
         addPsms(psmMap);
 
         if (latch!=null) latch.countDown();
-        System.out.println("Finished reading " + pepXmlFile+". Latch count: "+((latch!=null)?latch.getCount():-1));
+        System.out.println("Finished reading " + psmFile+". Latch count: "+((latch!=null)?latch.getCount():-1));
     }
-
-    protected void addPsms(Map<String, List<PeptideMatchData>> psmMap) {
-
-        for (String spectrumID : psmMap.keySet()) {
-
-            List<PeptideMatchData> matches = psmMap.get(spectrumID);
-
-            if (psms.containsKey(spectrumID)) {
-                psms.get(spectrumID).addAll(matches);
-            } else {
-                psms.put(spectrumID,Collections.synchronizedList(matches));
-            }
-        }
-    }
-
 }

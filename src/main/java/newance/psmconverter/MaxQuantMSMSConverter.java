@@ -26,49 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
 package newance.psmconverter;
 
-import newance.proteinmatch.UniProtDB;
+import newance.util.PsmPredicate;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
+import java.io.File;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author Markus Müller
  */
 
-public abstract class PsmConverter {
+public class MaxQuantMSMSConverter extends SinglePsmFileConverter {
 
-    protected final String psmRootDirName;
-    protected final Pattern regex;
-    protected final ConcurrentHashMap<String,List<PeptideMatchData>> psms;
+    public MaxQuantMSMSConverter(File msmsFile, Map<String,List<PeptideSpectrumMatch>> psms, CountDownLatch latch) {
 
-    public PsmConverter(String psmRootDirName, Pattern regex) {
-
-        this.psmRootDirName = psmRootDirName;
-        this.regex = regex;
-        this.psms = new ConcurrentHashMap<>();
+        super(msmsFile, psms, latch);
     }
 
+    public void run() {
 
-    public abstract void run() throws IOException;
+        System.out.println("Reading " + psmFile);
 
-    public void addDBProteins(UniProtDB uniProtDB) {
+        final Map<String, List<PeptideSpectrumMatch>> psmMap = new HashMap<>();
 
-        if (uniProtDB==null) return;
+        PsmPredicate psmPredicate = new PsmPredicate(params.getMinCharge(), params.getMaxCharge(), params.getMinPeptideLength(), params.getMaxPeptideLength(), params.getMaxRank(),
+                params.getMaxQuantMainScore(), params.getMaxQuantMainScoreMinValue(), PsmPredicate.ScoreOrder.LARGER);
 
-        psms.forEach(100000,new AddUniProtIds(uniProtDB));
-    }
+        PeptideSpectrumMatchList peptideSpectrumMatchList = new PeptideSpectrumMatchList(new SpectrumKeyFunctionImpl(), psmPredicate, psmMap);
 
-    public void reportDBProteins() {
+        MaxQuantPsmReader2 psmReader = new MaxQuantPsmReader2();
+        psmReader.parse(psmFile, peptideSpectrumMatchList);
 
-        psms.forEach((id,psm) -> System.out.println(id+", "+psm.get(0).getPeptide().toString()+", "+psm.get(0).getProteinAcc().toString()));
-    }
+        addPsms(psmMap);
 
-    public ConcurrentHashMap<String, List<PeptideMatchData>> getPsms() {
-        return psms;
+        latch.countDown();
+        System.out.println("Finished reading " + psmFile+". Latch count: "+latch.getCount());
     }
 }

@@ -29,7 +29,7 @@
 
 package newance.util;
 
-import newance.psmconverter.PeptideMatchData;
+import newance.psmconverter.PeptideSpectrumMatch;
 
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -38,7 +38,7 @@ import java.util.function.BiFunction;
  * @author Markus Müller
  */
 
-public abstract class PsmGrouper implements BiFunction<String, PeptideMatchData, String> {
+public abstract class PsmGrouper implements BiFunction<String, PeptideSpectrumMatch, String> {
 
     public abstract String getMasterGroup();
     public abstract Set<String> getGroups();

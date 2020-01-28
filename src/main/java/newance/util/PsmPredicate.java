@@ -30,7 +30,7 @@
 package newance.util;
 
 import com.google.common.base.Preconditions;
-import org.expasy.mzjava.proteomics.ms.ident.PeptideMatch;
+import newance.psmconverter.PeptideMatchDataWrapper;
 
 import java.io.Serializable;
 
@@ -68,7 +68,7 @@ public class PsmPredicate implements Serializable {
         this.order = order;
     }
 
-    public boolean check(PeptideMatch psm, int charge) {
+    public boolean check(PeptideMatchDataWrapper psm, int charge) {
 
         if (!psm.getScoreMap().containsKey(this.scoreName)) return false;
 
@@ -78,9 +78,9 @@ public class PsmPredicate implements Serializable {
             if (psm.getScore(scoreName) > minPsmScore) return false;
         }
 
-        if (psm.getScore("rank") > this.maxRank) return false;
+        if (psm.getRank() > this.maxRank) return false;
 
-        String peptide = psm.toSymbolString();
+        String peptide = psm.getSequence();
         if (peptide.length() < this.minPeptideLength) {
             return false;
         } else if (peptide.length() > this.maxPeptideLength) {

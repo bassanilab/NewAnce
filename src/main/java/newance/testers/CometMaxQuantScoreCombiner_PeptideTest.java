@@ -32,9 +32,9 @@ package newance.testers;
 import newance.proteinmatch.OccamRazorSpectrumCounter;
 import newance.proteinmatch.UniProtDB;
 import newance.psmcombiner.*;
-import newance.psmconverter.CometPsmConverter;
-import newance.psmconverter.MaxQuantPsmConverter;
-import newance.psmconverter.PeptideMatchData;
+import newance.psmconverter.CometMultiplePepXMLFileConverter;
+import newance.psmconverter.MaxQuantMultipleMSMSFileConverter;
+import newance.psmconverter.PeptideSpectrumMatch;
 import newance.util.*;
 import org.apache.commons.cli.*;
 
@@ -77,14 +77,14 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
     public int run() throws IOException {
 
         System.out.println("Parsing Comet pep.xml files ...");
-        CometPsmConverter cometPsmConverter = new CometPsmConverter(params.getCometPsmDir(), params.getCometPsmRegExp());
-        cometPsmConverter.run();
+        CometMultiplePepXMLFileConverter cometMultiplePepXMLConverter = new CometMultiplePepXMLFileConverter(params.getCometPsmDir(), params.getCometPsmRegExp());
+        cometMultiplePepXMLConverter.run();
 
-        MaxQuantPsmConverter maxQuantPsmConverter = null;
+        MaxQuantMultipleMSMSFileConverter maxQuantMultipleMSMSConverter = null;
         if (params.isIncludeMaxQuant()) {
             System.out.println("Parsing MaxQuant msms.txt and peptides.txt files ...");
-            maxQuantPsmConverter = new MaxQuantPsmConverter(params.getMaxquantPsmDir(), params.getMaxquantPsmRegExp());
-            maxQuantPsmConverter.run();
+            maxQuantMultipleMSMSConverter = new MaxQuantMultipleMSMSFileConverter(params.getMaxquantPsmDir(), params.getMaxquantPsmRegExp());
+            maxQuantMultipleMSMSConverter.run();
         }
 
         System.out.println("Matching peptides to fasta file: "+params.getUniprotFastaFile()+" ...");
@@ -92,21 +92,21 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
 
         UniProtDB uniProtDB = new UniProtDB(params.getUniprotFastaFile());
         long start = System.currentTimeMillis();
-        cometPsmConverter.addDBProteins(uniProtDB);
+        cometMultiplePepXMLConverter.addDBProteins(uniProtDB);
         System.out.println("Comet DB matching ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
 
         if (params.isIncludeMaxQuant()) {
             start = System.currentTimeMillis();
-            maxQuantPsmConverter.addDBProteins(uniProtDB);
+            maxQuantMultipleMSMSConverter.addDBProteins(uniProtDB);
             System.out.println("MaxQuant DB matching ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
         }
 
-        GroupedFDRCalculator groupedFDRCalculator = buildGroupedFDRCalculator(cometPsmConverter.getPsms());
+        GroupedFDRCalculator groupedFDRCalculator = buildGroupedFDRCalculator(cometMultiplePepXMLConverter.getPsms());
 
         if (params.getFdrControlMethod().equals("global")) {
-            controlFDRGlobally(groupedFDRCalculator, cometPsmConverter, maxQuantPsmConverter);
+            controlFDRGlobally(groupedFDRCalculator, cometMultiplePepXMLConverter, maxQuantMultipleMSMSConverter);
         } else {
-            controlFDRGroupwise(groupedFDRCalculator, cometPsmConverter, maxQuantPsmConverter);
+            controlFDRGroupwise(groupedFDRCalculator, cometMultiplePepXMLConverter, maxQuantMultipleMSMSConverter);
         }
 
         writePeptideProteinGroupReport(uniProtDB);
@@ -117,7 +117,7 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         return 0;
     }
 
-    protected GroupedFDRCalculator buildGroupedFDRCalculator(ConcurrentHashMap<String, List<PeptideMatchData>> allPsms ) {
+    protected GroupedFDRCalculator buildGroupedFDRCalculator(ConcurrentHashMap<String, List<PeptideSpectrumMatch>> allPsms ) {
 
         if (params.getCodingProtRegExp()!=null) {
             if (params.getForcedNoncanonicalProts().isEmpty())
@@ -140,21 +140,21 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         return groupedFDRCalculator;
     }
 
-    protected void controlFDRGlobally(GroupedFDRCalculator groupedFDRCalculator, CometPsmConverter cometPsmConverter, MaxQuantPsmConverter maxQuantPsmConverter) {
+    protected void controlFDRGlobally(GroupedFDRCalculator groupedFDRCalculator, CometMultiplePepXMLFileConverter cometMultiplePepXMLConverter, MaxQuantMultipleMSMSFileConverter maxQuantMultipleMSMSConverter) {
 
         float lFDRThreshold = groupedFDRCalculator.calcLocalFDRThreshold((float)params.getFdrCometThreshold());
 
 
         for (String group : groupedFDRCalculator.getGroups()) {
 
-            ConcurrentHashMap<String, List<PeptideMatchData>> filteredCometPsms = groupedFDRCalculator.filterPsms(cometPsmConverter.getPsms(), 2f, group);
+            ConcurrentHashMap<String, List<PeptideSpectrumMatch>> filteredCometPsms = groupedFDRCalculator.filterPsms(cometMultiplePepXMLConverter.getPsms(), 2f, group);
 
             reportComet(filteredCometPsms,groupedFDRCalculator,lFDRThreshold,group);
 
-            ConcurrentHashMap<String, List<PeptideMatchData>> combined;
-            ConcurrentHashMap<String, List<PeptideMatchData>> maxQuantPsms = null;
+            ConcurrentHashMap<String, List<PeptideSpectrumMatch>> combined;
+            ConcurrentHashMap<String, List<PeptideSpectrumMatch>> maxQuantPsms = null;
             if (params.isIncludeMaxQuant()) {
-                maxQuantPsms = ProcessPsmUtils.extractGroupPsms(psmGrouper,maxQuantPsmConverter.getPsms(),group);
+                maxQuantPsms = ProcessPsmUtils.extractGroupPsms(psmGrouper, maxQuantMultipleMSMSConverter.getPsms(),group);
                 reportMaxQuant(maxQuantPsms,group);
 
                 combined = combine(filteredCometPsms,maxQuantPsms);
@@ -168,21 +168,21 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         }
     }
 
-    protected void controlFDRGroupwise(GroupedFDRCalculator groupedFDRCalculator, CometPsmConverter cometPsmConverter, MaxQuantPsmConverter maxQuantPsmConverter) {
+    protected void controlFDRGroupwise(GroupedFDRCalculator groupedFDRCalculator, CometMultiplePepXMLFileConverter cometMultiplePepXMLConverter, MaxQuantMultipleMSMSFileConverter maxQuantMultipleMSMSConverter) {
 
         Map<String, Float> grpThresholdMap = groupedFDRCalculator.calcGroupLocalFDRThreshold((float)params.getFdrCometThreshold());
 
         for (String group : groupedFDRCalculator.getGroups()) {
 
-            ConcurrentHashMap<String, List<PeptideMatchData>> filteredCometPsms = groupedFDRCalculator.filterPsms(cometPsmConverter.getPsms(), 2f, group);
+            ConcurrentHashMap<String, List<PeptideSpectrumMatch>> filteredCometPsms = groupedFDRCalculator.filterPsms(cometMultiplePepXMLConverter.getPsms(), 2f, group);
 
             reportComet(filteredCometPsms,groupedFDRCalculator,grpThresholdMap.get(group),group);
 
-            ConcurrentHashMap<String, List<PeptideMatchData>> combined;
-            ConcurrentHashMap<String, List<PeptideMatchData>> maxQuantPsms = null;
+            ConcurrentHashMap<String, List<PeptideSpectrumMatch>> combined;
+            ConcurrentHashMap<String, List<PeptideSpectrumMatch>> maxQuantPsms = null;
             if (params.isIncludeMaxQuant()) {
 
-                maxQuantPsms = ProcessPsmUtils.extractGroupPsms(psmGrouper,maxQuantPsmConverter.getPsms(),group);
+                maxQuantPsms = ProcessPsmUtils.extractGroupPsms(psmGrouper, maxQuantMultipleMSMSConverter.getPsms(),group);
                 reportMaxQuant(maxQuantPsms,group);
 
                 combined = combine(filteredCometPsms,maxQuantPsms);
@@ -195,7 +195,7 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
 
     }
 
-    protected void reportComet(ConcurrentHashMap<String, List<PeptideMatchData>>  psms, GroupedFDRCalculator groupedFDRCalculator, float lFDRThreshold, String group) {
+    protected void reportComet(ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  psms, GroupedFDRCalculator groupedFDRCalculator, float lFDRThreshold, String group) {
 
         System.out.println("==============================");
         System.out.println("Comet "+group+" psms: ");
@@ -203,9 +203,9 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         System.out.println("");
         Psm2StringFunction psm2StringFunction = new Psm2StringFunction(Psm2StringFunction.TabStringMode.COMET);
         System.out.println("Group\t"+psm2StringFunction.getHeader()+"\t"+"lFDR");
-        List<PeptideMatchData> tmp = new ArrayList<>();
+        List<PeptideSpectrumMatch> tmp = new ArrayList<>();
         for (String specID : psms.keySet()) {
-            for (PeptideMatchData psm : psms.get(specID)) {
+            for (PeptideSpectrumMatch psm : psms.get(specID)) {
                 if (peptides.contains(psm.getPeptide().toSymbolString())) {
                     tmp.clear();
                     tmp.add(psm);
@@ -219,7 +219,7 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
     }
 
 
-    protected void reportMaxQuant(ConcurrentHashMap<String, List<PeptideMatchData>>  psms, String group) {
+    protected void reportMaxQuant(ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  psms, String group) {
 
         System.out.println("==============================");
         System.out.println("MaxQuant "+group+" psms: ");
@@ -227,9 +227,9 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         System.out.println("");
         Psm2StringFunction psm2StringFunction = new Psm2StringFunction(Psm2StringFunction.TabStringMode.MAXQUANT);
         System.out.println("Group\t"+psm2StringFunction.getHeader());
-        List<PeptideMatchData> tmp = new ArrayList<>();
+        List<PeptideSpectrumMatch> tmp = new ArrayList<>();
         for (String specID : psms.keySet()) {
-            for (PeptideMatchData psm : psms.get(specID)) {
+            for (PeptideSpectrumMatch psm : psms.get(specID)) {
                 if (peptides.contains(psm.getPeptide().toSymbolString())) {
                     tmp.clear();
                     tmp.add(psm);
@@ -240,7 +240,7 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         System.out.println("");
     }
 
-    protected void reportCombined(ConcurrentHashMap<String, List<PeptideMatchData>>  psms, GroupedFDRCalculator groupedFDRCalculator, float lFDRThreshold, String group) {
+    protected void reportCombined(ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  psms, GroupedFDRCalculator groupedFDRCalculator, float lFDRThreshold, String group) {
 
         System.out.println("==============================");
         System.out.println("Combined "+group+" psms: ");
@@ -248,9 +248,9 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         System.out.println("");
         Psm2StringFunction psm2StringFunction = new Psm2StringFunction(Psm2StringFunction.TabStringMode.COMBINED);
         System.out.println("Group\t"+psm2StringFunction.getHeader()+"\t"+"Comet.lFDR");
-        List<PeptideMatchData> tmp = new ArrayList<>();
+        List<PeptideSpectrumMatch> tmp = new ArrayList<>();
         for (String specID : psms.keySet()) {
-            for (PeptideMatchData psm : psms.get(specID)) {
+            for (PeptideSpectrumMatch psm : psms.get(specID)) {
                 if (peptides.contains(psm.getPeptide().toSymbolString())) {
                     tmp.clear();
                     tmp.add(psm);
@@ -263,9 +263,9 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         System.out.println("");
     }
 
-    protected ConcurrentHashMap<String, List<PeptideMatchData>> combine(ConcurrentHashMap<String, List<PeptideMatchData>>  cometPsms, ConcurrentHashMap<String, List<PeptideMatchData>> maxQuantPsms) {
+    protected ConcurrentHashMap<String, List<PeptideSpectrumMatch>> combine(ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  cometPsms, ConcurrentHashMap<String, List<PeptideSpectrumMatch>> maxQuantPsms) {
 
-        ConcurrentHashMap<String, List<PeptideMatchData>> combined = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, List<PeptideSpectrumMatch>> combined = new ConcurrentHashMap<>();
 
         CometMaxQuantPsmMerger combiner = new CometMaxQuantPsmMerger(maxQuantPsms,combined);
         cometPsms.forEach(combiner);

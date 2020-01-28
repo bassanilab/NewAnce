@@ -33,8 +33,8 @@ import newance.proteinmatch.UniProtDB;
 import newance.psmcombiner.ModificationPSMGrouper;
 import newance.psmcombiner.Psm2StringFunction;
 import newance.psmcombiner.RegExpProteinGrouper;
-import newance.psmconverter.MaxQuantPsmConverter;
-import newance.psmconverter.PeptideMatchData;
+import newance.psmconverter.MaxQuantMultipleMSMSFileConverter;
+import newance.psmconverter.PeptideSpectrumMatch;
 import newance.util.ExecutableOptions;
 import newance.util.NewAnceParams;
 import newance.util.PsmGrouper;
@@ -91,15 +91,15 @@ public class MaxQuantPsmReaderTest extends ExecutableOptions {
     public int run() throws IOException {
 
         System.out.println("Parsing MaxQuant msms.txt and peptides.txt files ...");
-        MaxQuantPsmConverter maxQuantPsmConverter = new MaxQuantPsmConverter(maxquantPsmDir, maxquantPsmRegExp);
-        maxQuantPsmConverter.run();
+        MaxQuantMultipleMSMSFileConverter maxQuantMultipleMSMSConverter = new MaxQuantMultipleMSMSFileConverter(maxquantPsmDir, maxquantPsmRegExp);
+        maxQuantMultipleMSMSConverter.run();
 
         System.out.println("Matching peptides to fasta file: "+uniprotFastaFile+" ...");
         System.out.println("Loading protein data from fasta file: "+uniprotFastaFile+" ...");
 
         UniProtDB uniProtDB = new UniProtDB(uniprotFastaFile);
         long start = System.currentTimeMillis();
-        maxQuantPsmConverter.addDBProteins(uniProtDB);
+        maxQuantMultipleMSMSConverter.addDBProteins(uniProtDB);
         System.out.println("Comet DB matching ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
 
         System.out.println("RunTime after Psm parsing: " + RunTime2String.getRuntimeString(Runtime.getRuntime()));
@@ -113,7 +113,7 @@ public class MaxQuantPsmReaderTest extends ExecutableOptions {
             psmGrouper = new ModificationPSMGrouper();
         }
 
-        ConcurrentHashMap<String, List<PeptideMatchData>>  psms = maxQuantPsmConverter.getPsms();
+        ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  psms = maxQuantMultipleMSMSConverter.getPsms();
 
         int cnt = 0;
 
@@ -121,7 +121,7 @@ public class MaxQuantPsmReaderTest extends ExecutableOptions {
         for (String specID : psms.keySet()) {
             if(cnt>=maxNrDisplayedPSMs) break;
 
-            for (PeptideMatchData psm : psms.get(specID)) {
+            for (PeptideSpectrumMatch psm : psms.get(specID)) {
 
                 if(cnt>=maxNrDisplayedPSMs) break;
 

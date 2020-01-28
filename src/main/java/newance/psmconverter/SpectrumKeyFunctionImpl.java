@@ -43,9 +43,9 @@ public class SpectrumKeyFunctionImpl implements SpectrumKeyFunction<MsnSpectrum>
     private Pattern regEx = Pattern.compile("\\.[0]+");
 
     @Override
-    public String apply(SpectrumIdentifier identifier) {
+    public String apply(SpectrumInfo spectrumInfo) {
 
-        String comment = identifier.getSpectrum();
+        String comment = spectrumInfo.getSpectrum();
 
         int firstSpace = comment.indexOf(' ');
 

@@ -28,7 +28,7 @@
  */
 package newance.psmcombiner;
 
-import newance.psmconverter.PeptideMatchData;
+import newance.psmconverter.PeptideSpectrumMatch;
 
 import java.io.File;
 import java.io.Serializable;
@@ -108,16 +108,16 @@ public abstract class ScoreHistogram implements Serializable {
         pi_1 = scoreHistogram.pi_1;
     }
 
-    public void add(List<PeptideMatchData> peptideMatchDataList) {
+    public void add(List<PeptideSpectrumMatch> peptideSpectrumMatchList) {
 
-        for (PeptideMatchData peptideMatchData : peptideMatchDataList) {
-            add(peptideMatchData);
+        for (PeptideSpectrumMatch peptideSpectrumMatch : peptideSpectrumMatchList) {
+            add(peptideSpectrumMatch);
         }
     }
 
-    public void add(PeptideMatchData peptideMatchData) {
+    public void add(PeptideSpectrumMatch peptideSpectrumMatch) {
 
-        int bin = index(peptideMatchData);
+        int bin = index(peptideSpectrumMatch);
 
         int idx = indexMap.get(bin);
         if (idx<0) {
@@ -126,7 +126,7 @@ public abstract class ScoreHistogram implements Serializable {
             currIndex++;
         }
 
-        float isDecoy =  peptideMatchData.isDecoy()?1:0;
+        float isDecoy =  peptideSpectrumMatch.isDecoy()?1:0;
 
         if (idx < 0) { // new bin
             targetCnts.add(1-isDecoy);
@@ -225,7 +225,7 @@ public abstract class ScoreHistogram implements Serializable {
             return -1;
     }
 
-    public float getLocalFDR(PeptideMatchData psm) {
+    public float getLocalFDR(PeptideSpectrumMatch psm) {
 
         if (lFDR.isEmpty()) calcLocalFDR();
 
@@ -385,7 +385,7 @@ public abstract class ScoreHistogram implements Serializable {
         canCalculateFDR = (totTargetCnt+totDecoyCnt)>=minNrPsms;
     }
 
-    protected abstract int index(PeptideMatchData peptideMatchData);
+    protected abstract int index(PeptideSpectrumMatch peptideSpectrumMatch);
     protected abstract Set<Integer> getNeighbourIndex(int bin);
     public abstract void write(File outputFile);
     protected abstract List<Float> getMids(int bin);

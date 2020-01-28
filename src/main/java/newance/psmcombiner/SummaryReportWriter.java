@@ -29,7 +29,7 @@
 
 package newance.psmcombiner;
 
-import newance.psmconverter.PeptideMatchData;
+import newance.psmconverter.PeptideSpectrumMatch;
 import newance.util.NewAnceParams;
 import newance.util.ProcessPsmUtils;
 
@@ -69,15 +69,15 @@ public class SummaryReportWriter {
     }
 
     public void write(String group,
-                      ConcurrentHashMap<String, List<PeptideMatchData>> combinedPsms,
-                      ConcurrentHashMap<String, List<PeptideMatchData>>  cometPsms,
-                      ConcurrentHashMap<String, List<PeptideMatchData>>  maxQuantPsms) {
+                      ConcurrentHashMap<String, List<PeptideSpectrumMatch>> combinedPsms,
+                      ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  cometPsms,
+                      ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  maxQuantPsms) {
 
         if (reportWriter==null) return;
 
-        ConcurrentHashMap<String, List<PeptideMatchData>>  noDecoycombinedPsms = ProcessPsmUtils.removeDecoys(combinedPsms);
-        ConcurrentHashMap<String, List<PeptideMatchData>>  noDecoyCometPsms = ProcessPsmUtils.removeDecoys(cometPsms);
-        ConcurrentHashMap<String, List<PeptideMatchData>>  noDecoyMaxQuantPsms = ProcessPsmUtils.removeDecoys(maxQuantPsms);
+        ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  noDecoycombinedPsms = ProcessPsmUtils.removeDecoys(combinedPsms);
+        ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  noDecoyCometPsms = ProcessPsmUtils.removeDecoys(cometPsms);
+        ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  noDecoyMaxQuantPsms = ProcessPsmUtils.removeDecoys(maxQuantPsms);
 
         try {
             reportWriter.write(group+"\t"+ProcessPsmUtils.countPsms(noDecoyCometPsms)+"\t"+ ProcessPsmUtils.countPsms(noDecoyMaxQuantPsms)+"\t"+
@@ -89,11 +89,11 @@ public class SummaryReportWriter {
     }
 
 
-    public void write(String group, ConcurrentHashMap<String, List<PeptideMatchData>> cometPsms) {
+    public void write(String group, ConcurrentHashMap<String, List<PeptideSpectrumMatch>> cometPsms) {
 
         if (reportWriter==null) return;
 
-        ConcurrentHashMap<String, List<PeptideMatchData>>  noDecoyCometPsms = ProcessPsmUtils.removeDecoys(cometPsms);
+        ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  noDecoyCometPsms = ProcessPsmUtils.removeDecoys(cometPsms);
 
         try {
             reportWriter.write(group+"\t"+ProcessPsmUtils.countPsms(noDecoyCometPsms)+"\t"+ProcessPsmUtils.countUniquePeptides(noDecoyCometPsms)+"\n");

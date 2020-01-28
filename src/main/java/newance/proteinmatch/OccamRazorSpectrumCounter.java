@@ -31,7 +31,7 @@
 
 
 import newance.psmcombiner.SpectrumAccumulator;
-import newance.psmconverter.PeptideMatchData;
+import newance.psmconverter.PeptideSpectrumMatch;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -90,7 +90,7 @@ public class OccamRazorSpectrumCounter {
 
     protected final ConcurrentHashMap<String,Set<String>> proteinPeptideMap;
     protected final ConcurrentHashMap<String,Set<String>> peptideProteinMap;
-    protected final ConcurrentHashMap<String,List<PeptideMatchData>> peptidePSMMap;
+    protected final ConcurrentHashMap<String,List<PeptideSpectrumMatch>> peptidePSMMap;
     protected final Map<String,Set<String>> proteinPeptideMapAdj;
     protected final UniProtDB uniProtDB; // uniprot db is only required to get sequence length of protein and gene name
 

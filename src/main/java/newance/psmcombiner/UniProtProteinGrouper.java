@@ -30,7 +30,7 @@
 package newance.psmcombiner;
 
 import newance.proteinmatch.UniProtDB;
-import newance.psmconverter.PeptideMatchData;
+import newance.psmconverter.PeptideSpectrumMatch;
 import newance.util.PsmGrouper;
 
 import java.util.HashSet;
@@ -58,7 +58,7 @@ public class UniProtProteinGrouper extends PsmGrouper {
     }
 
     @Override
-    public String apply(String s, PeptideMatchData psm) {
+    public String apply(String s, PeptideSpectrumMatch psm) {
         String seq = psm.getPeptide().toSymbolString();
         if (psm.isDecoy()) seq = reverse(seq);
 

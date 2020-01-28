@@ -29,11 +29,12 @@
 
 package newance.psmconverter;
 
-import newance.util.RegExpFileFilter;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,38 +46,27 @@ import static com.google.common.base.Preconditions.checkState;
  * @author Markus Müller
  */
 
-public class CometPsmConverter extends PsmConverter {
+public class MaxQuantMultipleMSMSFileConverter extends MultiplePsmFileConverter {
 
-    public CometPsmConverter(String psmRootDirName, Pattern regex) {
 
-        super(psmRootDirName, regex);
-    }
+    public MaxQuantMultipleMSMSFileConverter(String psmRootDirName, Pattern regex) {
 
-    public void run2() throws IOException{
+        super(psmRootDirName, regex);    }
 
-        long start = System.currentTimeMillis();
 
-        System.out.println("Comet psm input path " + psmRootDirName);
-        List<File> psmFileList = Arrays.asList(new File(psmRootDirName).listFiles(new RegExpFileFilter(regex)));
-        checkState(!psmFileList.isEmpty());
-
-        int nrTasks = psmFileList.size();
-
-        for (int i = 0; i < nrTasks; i++) {
-//            new CometPepXmlEntryConverter(psmFileList.get(i), psms, latch));
-            (new CometPepXmlEntryConverter(psmFileList.get(i), psms, null)).run();
-        }
-
-        System.out.println("Number of Comet spectra converted: "+psms.size());
-        System.out.println("Comet PepXML conversion ran in " + (System.currentTimeMillis() - start) / 1000d + "s");
-
-    }
     public void run() throws IOException{
 
         long start = System.currentTimeMillis();
 
-        System.out.println("Comet psm input path " + psmRootDirName);
-        List<File> psmFileList = Arrays.asList(new File(psmRootDirName).listFiles(new RegExpFileFilter(regex)));
+        System.out.println("MaxQuant psm input path " + psmRootDirName);
+
+        final List<File> psmFileList = new ArrayList<>();
+        Files.walk(Paths.get(psmRootDirName))
+                .filter(Files::isRegularFile)
+                .forEach((f)->{
+                    if( f.toString().endsWith("msms.txt")) psmFileList.add(f.toFile());
+                });
+
         checkState(!psmFileList.isEmpty());
 
         int nrTasks = psmFileList.size();
@@ -84,20 +74,19 @@ public class CometPsmConverter extends PsmConverter {
 
         CountDownLatch latch = new CountDownLatch(nrTasks);
         for (int i = 0; i < nrTasks; i++) {
-            exe.submit(new CometPepXmlEntryConverter(psmFileList.get(i), psms, latch));
+            exe.submit(new MaxQuantMSMSConverter(psmFileList.get(i), psms, latch));
         }
 
         try {
             latch.await();
 
-            System.out.println("Number of Comet spectra converted: "+psms.size());
-            System.out.println("Comet PepXML conversion ran in " + (System.currentTimeMillis() - start) / 1000d + "s");
+            System.out.println("Number of MaxQuant spectra converted: "+psms.size());
+            System.out.println("MaxQuant msms.txt conversion ran in " + (System.currentTimeMillis() - start) / 1000d + "s");
 
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
         exe.shutdown();
-
     }
 }

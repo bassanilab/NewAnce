@@ -31,8 +31,8 @@ package newance.psmcombiner;
 
 import gnu.trove.map.TObjectDoubleMap;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
+import newance.psmconverter.PeptideSpectrumMatch;
 import org.expasy.mzjava.proteomics.mol.Peptide;
-import newance.psmconverter.PeptideMatchData;
 import newance.util.NewAnceParams;
 import org.junit.Assert;
 import org.junit.Test;
@@ -71,9 +71,10 @@ public class GroupedFDRCalculatorTest {
         prots.add("sp|protein1");
         prots.add("protein2");
 
-        PeptideMatchData peptideMatchData = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1);
+        PeptideSpectrumMatch peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, false, false, null, null);
 
-        groupedFDRCalculator.add(peptideMatchData);
+        groupedFDRCalculator.add(peptideSpectrumMatch);
 
         for (String label : groupedFDRCalculator.histogramMap.keySet()) {
             if (label.equals("Z1_canonical") || label.equals("Z1") || label.equals("root"))
@@ -334,7 +335,8 @@ public class GroupedFDRCalculatorTest {
                     n += (k<0)?-k:k;
 
                     n = freq*(3-n)*(3-n);
-                    for (int m=0; m<n; m++) groupedFDRCalculator.add(new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1, isDecoy));
+                    for (int m=0; m<n; m++) groupedFDRCalculator.add(new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                            100, 101, 1001.1, isDecoy, false, null, null));
                 }
             }
         }

@@ -29,7 +29,7 @@
 
 package newance.psmcombiner;
 
-import newance.psmconverter.PeptideMatchData;
+import newance.psmconverter.PeptideSpectrumMatch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ import java.util.function.BiFunction;
  * @author Markus Müller
  */
 
-public class Psm2PeptideStringFunction implements BiFunction<String, List<PeptideMatchData>, List<String>> {
+public class Psm2PeptideStringFunction implements BiFunction<String, List<PeptideSpectrumMatch>, List<String>> {
 
     public enum StringMode {SEQUENCE, MODIF};
 
@@ -50,10 +50,10 @@ public class Psm2PeptideStringFunction implements BiFunction<String, List<Peptid
     }
 
     @Override
-    public List<String> apply(String specID, List<PeptideMatchData> peptideMatchData) {
+    public List<String> apply(String specID, List<PeptideSpectrumMatch> peptideSpectrumMatchData) {
 
         List<String> peptides = new ArrayList<>();
-        for (PeptideMatchData psm : peptideMatchData) {
+        for (PeptideSpectrumMatch psm : peptideSpectrumMatchData) {
 
             String peptide = (mode==StringMode.SEQUENCE)?psm.getPeptide().toSymbolString():psm.getPeptide().toString();
 

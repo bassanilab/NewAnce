@@ -42,15 +42,15 @@ import java.util.function.BiConsumer;
  * @author Markus Müller
  */
 
-public class AddUniProtIds implements BiConsumer<String,List<PeptideMatchData>> {
+public class AddUniProtIds2Psm implements BiConsumer<String,List<PeptideSpectrumMatch>> {
 
     private final UniProtDB uniProtDB;
 
-    public AddUniProtIds(UniProtDB uniProtDB) {
+    public AddUniProtIds2Psm(UniProtDB uniProtDB) {
         this.uniProtDB = uniProtDB;
     }
 
-    public void add(PeptideMatchData psm) {
+    public void add(PeptideSpectrumMatch psm) {
 
         String peptideStr = psm.toSymbolString();
 
@@ -87,10 +87,10 @@ public class AddUniProtIds implements BiConsumer<String,List<PeptideMatchData>> 
     }
 
     @Override
-    public void accept(String s, List<PeptideMatchData> peptideMatchDataList) {
+    public void accept(String s, List<PeptideSpectrumMatch> peptideSpectrumMatchList) {
 
-        for (PeptideMatchData peptideMatchData : peptideMatchDataList) {
-            add(peptideMatchData);
+        for (PeptideSpectrumMatch peptideSpectrumMatch : peptideSpectrumMatchList) {
+            add(peptideSpectrumMatch);
         }
     }
 

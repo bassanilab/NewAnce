@@ -31,8 +31,8 @@ package newance.testers;
 
 import newance.proteinmatch.UniProtDB;
 import newance.psmcombiner.*;
-import newance.psmconverter.CometPsmConverter;
-import newance.psmconverter.PeptideMatchData;
+import newance.psmconverter.CometMultiplePepXMLFileConverter;
+import newance.psmconverter.PeptideSpectrumMatch;
 import newance.util.*;
 import org.apache.commons.cli.*;
 
@@ -86,15 +86,15 @@ public class CometXMLReaderTest extends ExecutableOptions {
     public int run() throws IOException {
 
         System.out.println("Parsing Comet pep.xml files ...");
-        CometPsmConverter cometPsmConverter = new CometPsmConverter(cometPsmDir, cometPsmRegExp);
-        cometPsmConverter.run();
+        CometMultiplePepXMLFileConverter cometMultiplePepXMLConverter = new CometMultiplePepXMLFileConverter(cometPsmDir, cometPsmRegExp);
+        cometMultiplePepXMLConverter.run();
 
         System.out.println("Matching peptides to fasta file: "+uniprotFastaFile+" ...");
         System.out.println("Loading protein data from fasta file: "+uniprotFastaFile+" ...");
 
         UniProtDB uniProtDB = new UniProtDB(uniprotFastaFile);
         long start = System.currentTimeMillis();
-        cometPsmConverter.addDBProteins(uniProtDB);
+        cometMultiplePepXMLConverter.addDBProteins(uniProtDB);
         System.out.println("Comet DB matching ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
 
         System.out.println("RunTime after Psm parsing: " + RunTime2String.getRuntimeString(Runtime.getRuntime()));
@@ -108,7 +108,7 @@ public class CometXMLReaderTest extends ExecutableOptions {
             psmGrouper = new ModificationPSMGrouper();
         }
 
-        ConcurrentHashMap<String, List<PeptideMatchData>>  psms = cometPsmConverter.getPsms();
+        ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  psms = cometMultiplePepXMLConverter.getPsms();
 
         int cnt = 0;
 
@@ -116,7 +116,7 @@ public class CometXMLReaderTest extends ExecutableOptions {
         for (String specID : psms.keySet()) {
             if(cnt>=maxNrDisplayedPSMs) break;
 
-            for (PeptideMatchData psm : psms.get(specID)) {
+            for (PeptideSpectrumMatch psm : psms.get(specID)) {
 
                 if(cnt>=maxNrDisplayedPSMs) break;
 

@@ -31,40 +31,49 @@ package newance.psmconverter;
 import gnu.trove.impl.unmodifiable.TUnmodifiableObjectDoubleMap;
 import gnu.trove.map.TObjectDoubleMap;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
+import org.expasy.mzjava.proteomics.mol.AminoAcid;
 import org.expasy.mzjava.proteomics.mol.Peptide;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
  * @author Markus Müller
  */
 
-public class PeptideMatchData {
+public class PeptideSpectrumMatch {
 
+    private final String spectrumFile;
     private final Peptide peptide;
     private final Set<String> proteinAcc;
     private final TObjectDoubleMap<String> scoreMap;
     private final int charge;
+    private final int rank;
     private final boolean isDecoy;
+    private final float retentionTime;
+    private final double neutralPrecMass;
+    private final int scanNr;
+    private final boolean isVariant;
+    private final List<Integer> variantPositions;
+    private final List<Character> variantWTAAs;
 
-    public PeptideMatchData(Peptide peptide, Set<String> proteinAccs, TObjectDoubleMap<String> scoreMap, int charge) {
+    public PeptideSpectrumMatch(String spectrumFile, Peptide peptide, Set<String> proteinAccs, TObjectDoubleMap<String> scoreMap, int charge, int rank, float retentionTime,
+                                int scanNr, double neutralPrecMass, boolean isDecoy, boolean isVariant, List<Integer> variantPositions, List<Character> variantWTAAs) {
 
+        this.spectrumFile = spectrumFile;
         this.peptide = peptide;
         this.proteinAcc = proteinAccs;
-        this.scoreMap = new TUnmodifiableObjectDoubleMap<>(new TObjectDoubleHashMap<>(scoreMap));
-        this.charge = charge;
-        this.isDecoy = false;
-    }
-
-    public PeptideMatchData(Peptide peptide, Set<String> proteinAccs,
-                            TObjectDoubleMap<String> scoreMap, int charge, boolean isDecoy) {
-
-        this.peptide = peptide;
-        this.proteinAcc = proteinAccs;
-        this.scoreMap = new TUnmodifiableObjectDoubleMap<>(new TObjectDoubleHashMap<>(scoreMap));
+        this.scoreMap = scoreMap;
         this.charge = charge;
         this.isDecoy = isDecoy;
+        this.rank = rank;
+        this.retentionTime = retentionTime;
+        this.scanNr = scanNr;
+        this.neutralPrecMass = neutralPrecMass;
+        this.isVariant = isVariant;
+        this.variantPositions = variantPositions;
+        this.variantWTAAs = variantWTAAs;
     }
 
     public Peptide getPeptide() {
@@ -105,4 +114,37 @@ public class PeptideMatchData {
     public void addProteinAcc(Set<String> newProteinAccs) {
         this.proteinAcc.addAll(newProteinAccs);
     }
+
+    public String getSpectrumFile() {
+        return spectrumFile;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public float getRetentionTime() {
+        return retentionTime;
+    }
+
+    public double getNeutralPrecMass() {
+        return neutralPrecMass;
+    }
+
+    public int getScanNr() {
+        return scanNr;
+    }
+
+    public boolean isVariant() {
+        return isVariant;
+    }
+
+    public List<Integer> getVariantPositions() {
+        return variantPositions;
+    }
+
+    public List<Character> getVariantWTAAs() {
+        return variantWTAAs;
+    }
+
 }

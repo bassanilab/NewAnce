@@ -17,6 +17,7 @@ public abstract class ExecutableOptions {
 
     protected Options cmdLineOpts;
     protected boolean optionsSet;
+    protected String version;
 
     abstract protected void createOptions();
 
@@ -55,9 +56,6 @@ public abstract class ExecutableOptions {
 
         return string;
     }
-
-
-
 
     protected void checkHelpOption(String[] args, String optionId) {
 
@@ -139,7 +137,7 @@ public abstract class ExecutableOptions {
         optionsSet = false;
         if (!checkReadParamsOption(args,"-rP")) {
             checkHelpOption(args, "-h");
-            checkVersionOption(args, NewAnceParams.getInstance().getVersion(), "-v");
+            checkVersionOption(args, version, "-v");
         } else {
             optionsSet = true;
         }

@@ -31,20 +31,12 @@ package newance.testers;
 
 import newance.proteinmatch.UniProtDB;
 import newance.proteinmatch.UniProtProtein;
-import newance.psmcombiner.ModificationPSMGrouper;
-import newance.psmcombiner.Psm2StringFunction;
-import newance.psmcombiner.RegExpProteinGrouper;
-import newance.psmconverter.CometPsmConverter;
-import newance.psmconverter.PeptideMatchData;
 import newance.util.ExecutableOptions;
 import newance.util.NewAnceParams;
-import newance.util.PsmGrouper;
 import newance.util.RunTime2String;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Markus Müller

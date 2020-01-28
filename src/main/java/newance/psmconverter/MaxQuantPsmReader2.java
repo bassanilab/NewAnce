@@ -32,21 +32,13 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import org.apache.commons.io.FilenameUtils;
-import org.expasy.mzjava.core.ms.spectrum.TimeUnit;
-import org.expasy.mzjava.proteomics.io.ms.ident.PSMReaderCallback;
-import org.expasy.mzjava.proteomics.io.ms.ident.PsmReader;
 import org.expasy.mzjava.proteomics.mol.AminoAcid;
 import org.expasy.mzjava.proteomics.mol.modification.ModAttachment;
 import org.expasy.mzjava.proteomics.mol.modification.Modification;
 import org.expasy.mzjava.proteomics.mol.modification.ModificationResolver;
 import org.expasy.mzjava.proteomics.mol.modification.unimod.UnimodModificationResolver;
-import org.expasy.mzjava.proteomics.ms.ident.PeptideMatch;
-import org.expasy.mzjava.proteomics.ms.ident.PeptideProteinMatch;
-import org.expasy.mzjava.proteomics.ms.ident.SpectrumIdentifier;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.sql.*;
@@ -58,7 +50,7 @@ import java.util.regex.Pattern;
  * @author Markus Müller
  */
 
-public class MaxQuantPsmReader2 implements PsmReader {
+public class MaxQuantPsmReader2 {
 
     private final ModificationResolver modResolver;
     private final Map<String,String> peptidesProteinMap; // for decoys
@@ -130,8 +122,7 @@ public class MaxQuantPsmReader2 implements PsmReader {
         }
     }
 
-    @Override
-    public void parse(File file, PSMReaderCallback callback) {
+    public void parse(File file, PeptideSpectrumMatchList callback) {
 
         if (peptidesProteinMap.isEmpty()) {
 
@@ -147,19 +138,7 @@ public class MaxQuantPsmReader2 implements PsmReader {
         parse(file, "\t", callback);
     }
 
-    @Override
-    public void parse(InputStream inputStream, PSMReaderCallback callback) {
-
-        throw new UnsupportedOperationException("Can only parse csv from files");
-    }
-
-    @Override
-    public void parse(Reader reader, PSMReaderCallback callback) {
-
-        throw new UnsupportedOperationException("Can only parse csv from files");
-    }
-
-    public void parse(File file, String delimiter, PSMReaderCallback callback) {
+    public void parse(File file, String delimiter, PeptideSpectrumMatchList peptideSpectrumMatchList) {
 
         try {
             // load the driver into memory
@@ -179,12 +158,13 @@ public class MaxQuantPsmReader2 implements PsmReader {
 
             while (results.next()) {
 
-                List<PeptideMatch> psms = makePeptideMatches(results);
-                SpectrumIdentifier identifier = getSpectrumId(results);
+                SpectrumInfo spectrumInfo = getSpectrumInfo(results);
+                if (!peptideSpectrumMatchList.isValidSpectrum(spectrumInfo)) continue;
 
-                for (PeptideMatch psm : psms) {
-                    psm.addScore("rt", identifier.getRetentionTimes().getFirst().getTime());
-                    callback.resultRead(identifier, psm);
+                List<PeptideMatchDataWrapper> psms = makePeptideMatches(results);
+                for (PeptideMatchDataWrapper psm : psms) {
+
+                    if (peptideSpectrumMatchList.isValidProtein(psm.getProteins())) peptideSpectrumMatchList.resultRead(spectrumInfo, psm);
                 }
             }
 
@@ -197,7 +177,7 @@ public class MaxQuantPsmReader2 implements PsmReader {
         }
     }
 
-    public PeptideMatch makeModifiedPeptideMatch(String modifiedSequence) throws SQLException {
+    public PeptideMatchDataWrapper makeModifiedPeptideMatch(String modifiedSequence) throws SQLException {
 
         Matcher matcher = aaPattern.matcher(modifiedSequence);
 
@@ -234,7 +214,7 @@ public class MaxQuantPsmReader2 implements PsmReader {
             }
         }
 
-        PeptideMatch peptideMatch = new PeptideMatch(sequence);
+        PeptideMatchDataWrapper peptideMatch = new PeptideMatchDataWrapper(sequence);
         for (Object key : modMatchMap.keySet()) {
 
             for (Modification mod : modMatchMap.get(key)) {
@@ -254,51 +234,54 @@ public class MaxQuantPsmReader2 implements PsmReader {
         return peptideMatch;
     }
 
-    public PeptideMatch makeFirstModifiedPeptideMatch(ResultSet results) throws SQLException {
+    public PeptideMatchDataWrapper makeFirstModifiedPeptideMatch(ResultSet results) throws SQLException {
 
         String peptide = results.getString("Modified sequence");
-        PeptideMatch psm = makeModifiedPeptideMatch(peptide);
-        String peptideSeq = psm.toSymbolString();
-        boolean isDecoy = false;
+        PeptideMatchDataWrapper psm = makeModifiedPeptideMatch(peptide);
+        String peptideSeq = results.getString("Sequence");
+        boolean isDecoy = true;
         boolean isVariant = peptidesMutationMap.containsKey(peptideSeq);
 
+        Set<String> proteins = new HashSet<>();
         for (String ac : getAccessionCode(results)) {
 
-            isDecoy =  ac.equals("DECOY");
+            boolean decoy =  ac.equals("DECOY");
 
             // other protein ids than uniprot
-            if (isDecoy) {
+            if (decoy) {
                 if (peptidesProteinMap.containsKey(peptideSeq))
-                    psm.addProteinMatch(new PeptideProteinMatch(peptidesProteinMap.get(peptideSeq),
-                            Optional.<String>absent(), Optional.<String>absent(),
-                            Optional.<String>absent(), PeptideProteinMatch.HitType.UNKNOWN));
+                    proteins.add(peptidesProteinMap.get(peptideSeq));
                 else
                     System.out.println("WARNING: peptide seq "+peptideSeq+" not found in peptides.txt.");
             } else {
+                isDecoy = false;
                 if (isVariant)
-                    psm.addProteinMatch(new PeptideProteinMatch("variant__"+ac, Optional.of(peptidesMutationMap.get(peptideSeq)), Optional.<String>absent(),
-                            Optional.<String>absent(), PeptideProteinMatch.HitType.UNKNOWN));
+                    proteins.add(ac+" "+peptidesMutationMap.get(peptideSeq));
                 else
-                    psm.addProteinMatch(new PeptideProteinMatch(ac, Optional.<String>absent(), Optional.<String>absent(),
-                            Optional.<String>absent(), PeptideProteinMatch.HitType.UNKNOWN));
+                    proteins.add(ac);
             }
         }
+
+        psm.setProteins(proteins);
+        psm.setDecoy(isDecoy);
+        psm.setVariant(isVariant);
 
         setValuesFirst(psm, results);
 
         return psm;
     }
 
-   public PeptideMatch makeSecondModifiedPeptideMatch(ResultSet results) throws SQLException {
+   public PeptideMatchDataWrapper makeSecondModifiedPeptideMatch(ResultSet results) throws SQLException {
 
         String[] allSequences = results.getString("All modified sequences").split(";");
 
         if (allSequences.length<=1) return null;
 
         String peptide = allSequences[1];
-        PeptideMatch psm = makeModifiedPeptideMatch(peptide);
+        PeptideMatchDataWrapper psm = makeModifiedPeptideMatch(peptide);
 
-        psm.addProteinMatch(new PeptideProteinMatch("unknown second hit", Optional.<String>absent(), Optional.<String>absent(), Optional.<String>absent(), PeptideProteinMatch.HitType.UNKNOWN));
+        Set<String> proteins = new HashSet<>();
+        proteins.add("unknown second hit");
 
         setValuesSecond(psm, results);
 
@@ -306,31 +289,31 @@ public class MaxQuantPsmReader2 implements PsmReader {
     }
 
 
-    public List<PeptideMatch> makePeptideMatches(ResultSet results) throws SQLException {
+    public List<PeptideMatchDataWrapper> makePeptideMatches(ResultSet results) throws SQLException {
 
-        List<PeptideMatch> psms = new ArrayList<>();
+        List<PeptideMatchDataWrapper> psms = new ArrayList<>();
         psms.add(makeFirstModifiedPeptideMatch(results));
-        PeptideMatch psm = makeSecondModifiedPeptideMatch(results);
-        if (psm!=null) psms.add(psm);
+//        PeptideMatchDataWrapper psm = makeSecondModifiedPeptideMatch(results);
+//        if (psm!=null) psms.add(psm);
 
         return psms;
     }
 
-    protected SpectrumIdentifier getSpectrumId(ResultSet results) throws SQLException {
+    protected SpectrumInfo getSpectrumInfo(ResultSet results) throws SQLException {
 
         int charge = results.getInt("Charge");
         int scanNumber = results.getInt("Scan number");
         int scanIndex = results.getInt("Scan index");
         String rawFile = results.getString("Raw file");
 
-        SpectrumIdentifier identifier = new SpectrumIdentifier(rawFile + "." + scanNumber + "." + scanNumber + "." + charge);
-        identifier.setAssumedCharge(charge);
-        identifier.setIndex(results.getInt("Scan index"));
-        identifier.addScanNumber(scanNumber);
-        identifier.setPrecursorNeutralMass(results.getDouble("Mass"));
-        identifier.addRetentionTime(results.getDouble("Retention time"), TimeUnit.MINUTE);
+        SpectrumInfo spectrumInfo = new SpectrumInfo(rawFile + "." + scanNumber + "." + scanNumber + "." + charge);
+        spectrumInfo.setCharge(charge);
+        spectrumInfo.setIndex(scanIndex);
+        spectrumInfo.setScanNumber(scanNumber);
+        spectrumInfo.setPrecursorNeutralMass(results.getDouble("Mass"));
+        spectrumInfo.setRetentionTime(results.getDouble("Retention time"));
 
-        return identifier;
+        return spectrumInfo;
     }
 
     protected Collection<String> getAccessionCode(ResultSet results) throws SQLException {
@@ -351,20 +334,19 @@ public class MaxQuantPsmReader2 implements PsmReader {
         }
     }
 
-    protected void setValuesFirst(PeptideMatch peptideMatch, ResultSet results) throws SQLException {
+    protected void setValuesFirst(PeptideMatchDataWrapper peptideMatch, ResultSet results) throws SQLException {
 
-        peptideMatch.setMassDiff(Optional.fromNullable(results.getDouble("Mass Error [ppm]")));
-        peptideMatch.setNumMissedCleavages(Optional.fromNullable(results.getInt("Missed cleavages")));
-        peptideMatch.setNumMatchedIons(Optional.fromNullable(results.getInt("Number of Matches")));
-        peptideMatch.addScore("score", results.getDouble("Score"));
-        peptideMatch.addScore("delta-score", results.getDouble("Delta score"));
-        peptideMatch.addScore("mass-error-ppm", results.getDouble("Mass Error [ppm]"));
-        peptideMatch.addScore("int-coverage", results.getDouble("Intensity coverage"));
-        peptideMatch.addScore("mod-pos-prob", results.getDouble("Localization prob"));
-        peptideMatch.setRank(Optional.of(1));
+        peptideMatch.setNumMissedCleavages(results.getInt("Missed cleavages"));
+        peptideMatch.addScore("Number of Matches", results.getDouble("Number of Matches"));
+        peptideMatch.addScore("Score", results.getDouble("Score"));
+        peptideMatch.addScore("Delta score", results.getDouble("Delta score"));
+        peptideMatch.addScore("Mass Error [ppm]", results.getDouble("Mass Error [ppm]"));
+        peptideMatch.addScore("Intensity coverage", results.getDouble("Intensity coverage"));
+        peptideMatch.addScore("Localization prob", results.getDouble("Localization prob"));
+        peptideMatch.setRank(1);
     }
 
-    protected void setValuesSecond(PeptideMatch peptideMatch, ResultSet results) throws SQLException {
+    protected void setValuesSecond(PeptideMatchDataWrapper peptideMatch, ResultSet results) throws SQLException {
 
         String[] allScores = results.getString("All scores").split(";");
 
@@ -374,8 +356,8 @@ public class MaxQuantPsmReader2 implements PsmReader {
         if (allScores.length==3)
             deltaScore = score - Double.parseDouble(allScores[2]);
 
-        peptideMatch.addScore("score", score);
-        peptideMatch.addScore("delta-score", deltaScore);
-        peptideMatch.setRank(Optional.of(2));
+        peptideMatch.addScore("Score", score);
+        peptideMatch.addScore("Delta score", deltaScore);
+        peptideMatch.setRank(2);
     }
 }

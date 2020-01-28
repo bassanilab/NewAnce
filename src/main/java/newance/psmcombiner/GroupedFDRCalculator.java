@@ -29,7 +29,7 @@
 
 package newance.psmcombiner;
 
-import newance.psmconverter.PeptideMatchData;
+import newance.psmconverter.PeptideSpectrumMatch;
 import newance.util.NewAnceParams;
 import newance.util.PsmGrouper;
 
@@ -105,31 +105,31 @@ public class GroupedFDRCalculator {
     }
 
 
-    public void addAll(ConcurrentHashMap<String,List<PeptideMatchData>> psms) {
+    public void addAll(ConcurrentHashMap<String,List<PeptideSpectrumMatch>> psms) {
 
         for (String specID : psms.keySet()) {
-            for (PeptideMatchData psm : psms.get(specID)) {
+            for (PeptideSpectrumMatch psm : psms.get(specID)) {
                 add(psm);
             }
         }
     }
 
 
-    public void add(PeptideMatchData peptideMatchData) {
-        String id = getNodeID(peptideMatchData);
+    public void add(PeptideSpectrumMatch peptideSpectrumMatch) {
+        String id = getNodeID(peptideSpectrumMatch);
 
         HistogramTree histogramTree = histogramMap.get(id);
 
         while (histogramTree != null) {
-            histogramTree.add(peptideMatchData);
+            histogramTree.add(peptideSpectrumMatch);
             histogramTree = histogramTree.getParent();
         }
     }
 
 
-    public String getNodeID(PeptideMatchData peptideMatchData) {
+    public String getNodeID(PeptideSpectrumMatch peptideSpectrumMatch) {
 
-        return "Z"+peptideMatchData.getCharge()+"_"+psmGrouper.apply("",peptideMatchData);
+        return "Z"+ peptideSpectrumMatch.getCharge()+"_"+psmGrouper.apply("", peptideSpectrumMatch);
     }
 
 
@@ -179,12 +179,12 @@ public class GroupedFDRCalculator {
         }
     }
 
-    public float getLocalFDR(PeptideMatchData peptideMatchData) {
-        String id = getNodeID(peptideMatchData);
+    public float getLocalFDR(PeptideSpectrumMatch peptideSpectrumMatch) {
+        String id = getNodeID(peptideSpectrumMatch);
 
         HistogramTree histogramTree = histogramMap.get(id);
 
-        return histogramTree.getScoreHistogram().getLocalFDR(peptideMatchData);
+        return histogramTree.getScoreHistogram().getLocalFDR(peptideSpectrumMatch);
     }
 
 
@@ -288,13 +288,13 @@ public class GroupedFDRCalculator {
         return lfdrN;
     }
 
-    public ConcurrentHashMap<String, List<PeptideMatchData>> filterPsms(ConcurrentHashMap<String, List<PeptideMatchData>>  psms, float lFDRThreshold, String group) {
+    public ConcurrentHashMap<String, List<PeptideSpectrumMatch>> filterPsms(ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  psms, float lFDRThreshold, String group) {
 
-        ConcurrentHashMap<String, List<PeptideMatchData>> filteredPsms = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, List<PeptideSpectrumMatch>> filteredPsms = new ConcurrentHashMap<>();
 
         // do parallel later
         for (String specID : psms.keySet()) {
-            for (PeptideMatchData psm : psms.get(specID)) {
+            for (PeptideSpectrumMatch psm : psms.get(specID)) {
 
                 String grp = psmGrouper.apply(specID,psm);
 
@@ -315,13 +315,13 @@ public class GroupedFDRCalculator {
     }
 
 
-    public ConcurrentHashMap<String, List<PeptideMatchData>> filterPsms(ConcurrentHashMap<String, List<PeptideMatchData>>  psms, float lFDRThreshold) {
+    public ConcurrentHashMap<String, List<PeptideSpectrumMatch>> filterPsms(ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  psms, float lFDRThreshold) {
 
-        ConcurrentHashMap<String, List<PeptideMatchData>> filteredPsms = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, List<PeptideSpectrumMatch>> filteredPsms = new ConcurrentHashMap<>();
 
         // do parallel later
         for (String specID : psms.keySet()) {
-            for (PeptideMatchData psm : psms.get(specID)) {
+            for (PeptideSpectrumMatch psm : psms.get(specID)) {
 
                 String label = getNodeID(psm);
                 HistogramTree node = histogramMap.get(label);

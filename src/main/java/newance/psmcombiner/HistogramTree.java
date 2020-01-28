@@ -29,7 +29,7 @@
 
 package newance.psmcombiner;
 
-import newance.psmconverter.PeptideMatchData;
+import newance.psmconverter.PeptideSpectrumMatch;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -74,9 +74,9 @@ public class HistogramTree {
         return histogramTree;
     }
 
-    public void add(PeptideMatchData peptideMatchData) {
+    public void add(PeptideSpectrumMatch peptideSpectrumMatch) {
 
-        scoreHistogram.add(peptideMatchData);
+        scoreHistogram.add(peptideSpectrumMatch);
     }
 
     public ScoreHistogram getScoreHistogram() {

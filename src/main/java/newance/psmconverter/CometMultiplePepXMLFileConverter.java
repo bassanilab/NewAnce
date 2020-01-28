@@ -27,19 +27,58 @@
  *
  */
 
-package newance.util;
+package newance.psmconverter;
 
-import newance.psmconverter.SpectrumInfo;
-import org.expasy.mzjava.core.ms.spectrum.MsnSpectrum;
-import org.expasy.mzjava.proteomics.ms.ident.SpectrumIdentifier;
+import newance.util.RegExpFileFilter;
 
-import java.io.Serializable;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.checkState;
 
 /**
- * @author: Markus Müller, SIB
+ * @author Markus Müller
  */
 
-public interface SpectrumKeyFunction <S extends MsnSpectrum> extends Serializable {
+public class CometMultiplePepXMLFileConverter extends MultiplePsmFileConverter {
 
-    public String apply(SpectrumInfo spectrumInfo);
+    public CometMultiplePepXMLFileConverter(String psmRootDirName, Pattern regex) {
+
+        super(psmRootDirName, regex);
+    }
+
+    public void run() throws IOException{
+
+        long start = System.currentTimeMillis();
+
+        System.out.println("Comet psm input path " + psmRootDirName);
+        List<File> psmFileList = Arrays.asList(new File(psmRootDirName).listFiles(new RegExpFileFilter(regex)));
+        checkState(!psmFileList.isEmpty());
+
+        int nrTasks = psmFileList.size();
+        ExecutorService exe = Executors.newFixedThreadPool(nrTasks);
+
+        CountDownLatch latch = new CountDownLatch(nrTasks);
+        for (int i = 0; i < nrTasks; i++) {
+            exe.submit(new CometPepXmlConverter(psmFileList.get(i), psms, latch));
+        }
+
+        try {
+            latch.await();
+
+            System.out.println("Number of Comet spectra converted: "+psms.size());
+            System.out.println("Comet PepXML conversion ran in " + (System.currentTimeMillis() - start) / 1000d + "s");
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        exe.shutdown();
+
+    }
 }

@@ -31,8 +31,8 @@ package newance.psmcombiner;
 
 import gnu.trove.map.TObjectDoubleMap;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
+import newance.psmconverter.PeptideSpectrumMatch;
 import org.expasy.mzjava.proteomics.mol.Peptide;
-import newance.psmconverter.PeptideMatchData;
 import newance.util.NewAnceParams;
 import org.junit.Assert;
 import org.junit.Test;
@@ -62,18 +62,20 @@ public class CometScoreHistogramTest {
         prots.add("protein1");
         prots.add("protein2");
 
-        PeptideMatchData peptideMatchData = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1);
+        PeptideSpectrumMatch peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, false, false, null, null);
 
-        Assert.assertEquals(0, cometScoreHistogram.index(peptideMatchData));
+        Assert.assertEquals(0, cometScoreHistogram.index(peptideSpectrumMatch));
 
         scoreMap = new TObjectDoubleHashMap<>();
         scoreMap.put("xcorr",NewAnceParams.getInstance().getMinXCorr()-1.0);
         scoreMap.put("deltacn",NewAnceParams.getInstance().getMinDeltaCn()-1.0);
         scoreMap.put("spscore",NewAnceParams.getInstance().getMinSpScore()-1.0);
 
-        peptideMatchData = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1);
+        peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, false, false, null, null);
 
-        Assert.assertEquals(0, cometScoreHistogram.index(peptideMatchData));
+        Assert.assertEquals(0, cometScoreHistogram.index(peptideSpectrumMatch));
 
         scoreMap = new TObjectDoubleHashMap<>();
         scoreMap.put("xcorr",NewAnceParams.getInstance().getMaxXCorr()+10.0);
@@ -81,19 +83,21 @@ public class CometScoreHistogramTest {
         scoreMap.put("spscore",NewAnceParams.getInstance().getMaxSpScore()+10.0);
         scoreMap.put("neg_log10_p",100);
 
-        PeptideMatchData peptideMatchData1 = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1);
+        PeptideSpectrumMatch peptideSpectrumMatch1 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, false, false, null, null);
 
         scoreMap = new TObjectDoubleHashMap<>();
         scoreMap.put("xcorr",NewAnceParams.getInstance().getMaxXCorr()+20.0);
         scoreMap.put("deltacn",NewAnceParams.getInstance().getMaxDeltaCn()+20.0);
         scoreMap.put("spscore",NewAnceParams.getInstance().getMaxSpScore()+40.0);
         scoreMap.put("neg_log10_p",50);
-        PeptideMatchData peptideMatchData2 = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1);
+        PeptideSpectrumMatch peptideSpectrumMatch2 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, false, false, null, null);
 
         int maxIdx = NewAnceParams.getInstance().getNrXCorrBins()*NewAnceParams.getInstance().getNrDeltaCnBins()*
                 NewAnceParams.getInstance().getNrSpScoreBins()-1;
-        Assert.assertEquals(cometScoreHistogram.index(peptideMatchData1), cometScoreHistogram.index(peptideMatchData2));
-        Assert.assertEquals(maxIdx, cometScoreHistogram.index(peptideMatchData1));
+        Assert.assertEquals(cometScoreHistogram.index(peptideSpectrumMatch1), cometScoreHistogram.index(peptideSpectrumMatch2));
+        Assert.assertEquals(maxIdx, cometScoreHistogram.index(peptideSpectrumMatch1));
 
 
         double dXCorr = (NewAnceParams.getInstance().getMaxXCorr()-NewAnceParams.getInstance().getMinXCorr())/NewAnceParams.getInstance().getNrXCorrBins();
@@ -103,16 +107,18 @@ public class CometScoreHistogramTest {
         scoreMap.put("deltacn",NewAnceParams.getInstance().getMinDeltaCn());
         scoreMap.put("spscore",NewAnceParams.getInstance().getMinSpScore());
 
-        peptideMatchData1 = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1);
-        Assert.assertEquals(1, cometScoreHistogram.index(peptideMatchData1));
+        peptideSpectrumMatch1 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, false, false, null, null);
+        Assert.assertEquals(1, cometScoreHistogram.index(peptideSpectrumMatch1));
 
         scoreMap = new TObjectDoubleHashMap<>();
         scoreMap.put("xcorr",NewAnceParams.getInstance().getMinXCorr()+5.1*dXCorr);
         scoreMap.put("deltacn",NewAnceParams.getInstance().getMinDeltaCn());
         scoreMap.put("spscore",NewAnceParams.getInstance().getMinSpScore());
-        peptideMatchData2 = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1);
+        peptideSpectrumMatch2 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, false, false, null, null);
 
-        Assert.assertEquals(5, cometScoreHistogram.index(peptideMatchData2));
+        Assert.assertEquals(5, cometScoreHistogram.index(peptideSpectrumMatch2));
 
         double dDeltaCn = (NewAnceParams.getInstance().getMaxDeltaCn()-NewAnceParams.getInstance().getMinDeltaCn())/NewAnceParams.getInstance().getNrDeltaCnBins();
 
@@ -121,24 +127,27 @@ public class CometScoreHistogramTest {
         scoreMap.put("deltacn",NewAnceParams.getInstance().getMinDeltaCn()+1.4*dDeltaCn);
         scoreMap.put("spscore",NewAnceParams.getInstance().getMinSpScore());
 
-        peptideMatchData1 = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1);
-        Assert.assertEquals(NewAnceParams.getInstance().getNrXCorrBins(), cometScoreHistogram.index(peptideMatchData1));
+        peptideSpectrumMatch1 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, false, false, null, null);
+        Assert.assertEquals(NewAnceParams.getInstance().getNrXCorrBins(), cometScoreHistogram.index(peptideSpectrumMatch1));
 
         scoreMap = new TObjectDoubleHashMap<>();
         scoreMap.put("xcorr",NewAnceParams.getInstance().getMinXCorr());
         scoreMap.put("deltacn",NewAnceParams.getInstance().getMinDeltaCn()+5.5*dDeltaCn);
         scoreMap.put("spscore",NewAnceParams.getInstance().getMinSpScore());
-        peptideMatchData2 = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1);
+        peptideSpectrumMatch2 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, false, false, null, null);
 
-        Assert.assertEquals(NewAnceParams.getInstance().getNrXCorrBins()*5, cometScoreHistogram.index(peptideMatchData2));
+        Assert.assertEquals(NewAnceParams.getInstance().getNrXCorrBins()*5, cometScoreHistogram.index(peptideSpectrumMatch2));
 
         scoreMap = new TObjectDoubleHashMap<>();
         scoreMap.put("xcorr",NewAnceParams.getInstance().getMinXCorr()+27.5*dXCorr);
         scoreMap.put("deltacn",NewAnceParams.getInstance().getMinDeltaCn()+5.5*dDeltaCn);
         scoreMap.put("spscore",NewAnceParams.getInstance().getMinSpScore());
-        peptideMatchData2 = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1);
+        peptideSpectrumMatch2 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, false, false, null, null);
 
-        Assert.assertEquals(NewAnceParams.getInstance().getNrXCorrBins()*5+27, cometScoreHistogram.index(peptideMatchData2));
+        Assert.assertEquals(NewAnceParams.getInstance().getNrXCorrBins()*5+27, cometScoreHistogram.index(peptideSpectrumMatch2));
 
 
         double dSpScore = (NewAnceParams.getInstance().getMaxSpScore()-NewAnceParams.getInstance().getMinSpScore())/NewAnceParams.getInstance().getNrSpScoreBins();
@@ -147,9 +156,10 @@ public class CometScoreHistogramTest {
         scoreMap.put("xcorr",NewAnceParams.getInstance().getMinXCorr());
         scoreMap.put("deltacn",NewAnceParams.getInstance().getMinDeltaCn());
         scoreMap.put("spscore",NewAnceParams.getInstance().getMinSpScore()+3.5*dSpScore);
-        peptideMatchData2 = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1);
+        peptideSpectrumMatch2 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, false, false, null, null);
 
-        Assert.assertEquals(NewAnceParams.getInstance().getNrXCorrBins()*NewAnceParams.getInstance().getNrDeltaCnBins()*3, cometScoreHistogram.index(peptideMatchData2));
+        Assert.assertEquals(NewAnceParams.getInstance().getNrXCorrBins()*NewAnceParams.getInstance().getNrDeltaCnBins()*3, cometScoreHistogram.index(peptideSpectrumMatch2));
     }
 
     @Test
@@ -166,9 +176,10 @@ public class CometScoreHistogramTest {
         prots.add("protein1");
         prots.add("protein2");
 
-        PeptideMatchData peptideMatchData = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1);
+        PeptideSpectrumMatch peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, false, false, null, null);
 
-        Set<Integer> nn = cometScoreHistogram.getNeighbourIndex(cometScoreHistogram.index(peptideMatchData));
+        Set<Integer> nn = cometScoreHistogram.getNeighbourIndex(cometScoreHistogram.index(peptideSpectrumMatch));
         Assert.assertEquals(3, nn.size());
         Assert.assertTrue(nn.contains(1));
         Assert.assertTrue(nn.contains(40));
@@ -238,9 +249,10 @@ public class CometScoreHistogramTest {
                     scoreMap.put("deltacn",deltacnMids.get(j));
                     scoreMap.put("spscore",spscoreMids.get(k));
 
-                    PeptideMatchData peptideMatchData = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1, isDecoy);
+                    PeptideSpectrumMatch peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                            100, 101, 1001.1, isDecoy, false, null, null);
 
-                    int idx = cometScoreHistogram.index(peptideMatchData);
+                    int idx = cometScoreHistogram.index(peptideSpectrumMatch);
 
                     List<Float> mids = cometScoreHistogram.getMids(idx);
 
@@ -276,9 +288,10 @@ public class CometScoreHistogramTest {
         scoreMap.put("deltacn",deltacn);
         scoreMap.put("spscore",spscore);
 
-        PeptideMatchData peptideMatchData1 = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1);
+        PeptideSpectrumMatch peptideSpectrumMatch1 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, false, false, null, null);
 
-        cometScoreHistogram.add(peptideMatchData1);
+        cometScoreHistogram.add(peptideSpectrumMatch1);
         cometScoreHistogram.calcClassProb();
 
         Assert.assertFalse(cometScoreHistogram.isEmpty());
@@ -287,9 +300,10 @@ public class CometScoreHistogramTest {
         Assert.assertEquals(0f,cometScoreHistogram.getTotDecoyCnt(),0.0001);
         Assert.assertEquals(1f,cometScoreHistogram.getTotTargetCnt(),0.0001);
 
-        PeptideMatchData peptideMatchData2 = new PeptideMatchData(Peptide.parse("PEPTIDE"), decoys, scoreMap, 1, true);
+        PeptideSpectrumMatch peptideSpectrumMatch2 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, true, false, null, null);
 
-        cometScoreHistogram.add(peptideMatchData2);
+        cometScoreHistogram.add(peptideSpectrumMatch2);
         cometScoreHistogram.calcClassProb();
 
         Assert.assertFalse(cometScoreHistogram.isEmpty());
@@ -298,7 +312,7 @@ public class CometScoreHistogramTest {
         Assert.assertEquals(1f,cometScoreHistogram.getTotDecoyCnt(),0.0001);
         Assert.assertEquals(1f,cometScoreHistogram.getTotTargetCnt(),0.0001);
 
-        for (int i=0;i<8;i++) cometScoreHistogram.add(peptideMatchData1);
+        for (int i=0;i<8;i++) cometScoreHistogram.add(peptideSpectrumMatch1);
         cometScoreHistogram.calcClassProb();
 
         Assert.assertEquals(0.5,cometScoreHistogram.getPi_0(),0.00001);
@@ -494,10 +508,11 @@ public class CometScoreHistogramTest {
         scoreMap.put("deltacn",deltacnMids.get(deltacnIdx));
         scoreMap.put("spscore",spscoreMids.get(spscoreIdx));
 
-        PeptideMatchData peptideMatchData = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1);
+        PeptideSpectrumMatch peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, false, false, null, null);
 
-        for (int i=0;i<8;i++) cometScoreHistogram.add(peptideMatchData);
-        int idx1 = cometScoreHistogram.index(peptideMatchData);
+        for (int i=0;i<8;i++) cometScoreHistogram.add(peptideSpectrumMatch);
+        int idx1 = cometScoreHistogram.index(peptideSpectrumMatch);
 
         Assert.assertEquals(8f,cometScoreHistogram.targetCnts.get(cometScoreHistogram.indexMap.get(idx1)),0.0001);
         Assert.assertTrue(cometScoreHistogram.getTotTargetCnt()==8);
@@ -569,16 +584,18 @@ public class CometScoreHistogramTest {
         scoreMap.put("deltacn",deltacnMids.get(deltacnIdx));
         scoreMap.put("spscore",spscoreMids.get(spscoreIdx));
 
-        PeptideMatchData peptideMatchData = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1, isDecoy);
-        int idx8 = cometScoreHistogram.index(peptideMatchData);
+        PeptideSpectrumMatch peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, isDecoy, false, null, null);
+        int idx8 = cometScoreHistogram.index(peptideSpectrumMatch);
 
         scoreMap = new TObjectDoubleHashMap<>();
         scoreMap.put("xcorr",xcorrMids.get(xcorrIdx));
         scoreMap.put("deltacn",deltacnMids.get(deltacnIdx-2));
         scoreMap.put("spscore",spscoreMids.get(spscoreIdx));
 
-        peptideMatchData = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1, isDecoy);
-        int idx9 = cometScoreHistogram.index(peptideMatchData);
+        peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, isDecoy, false, null, null);
+        int idx9 = cometScoreHistogram.index(peptideSpectrumMatch);
 
         Assert.assertTrue(smoothed.indexMap.get(idx8)>0);
         Assert.assertTrue(smoothed.indexMap.get(idx9)>0);
@@ -635,7 +652,7 @@ public class CometScoreHistogramTest {
         int deltacnIdx = deltacnMids.size()/2;
         int spscoreIdx = spscoreMids.size()/2;
 
-        List<PeptideMatchData> psms = new ArrayList<>();
+        List<PeptideSpectrumMatch> psms = new ArrayList<>();
 
         addPsms2(xcorrIdx, deltacnIdx, spscoreIdx, cometScoreHistogram, prots, psms,  10, false, 2);
         addPsms2(xcorrIdx, deltacnIdx, spscoreIdx, cometScoreHistogram, prots, psms,  1, true,3);
@@ -645,7 +662,7 @@ public class CometScoreHistogramTest {
 
         int tCnt = 0;
         int dCnt = 0;
-        for (PeptideMatchData psm : psms) {
+        for (PeptideSpectrumMatch psm : psms) {
 
             if (cometScoreHistogram.getLocalFDR(psm) > 0.2) continue;
 
@@ -754,10 +771,11 @@ public class CometScoreHistogramTest {
         scoreMap.put("deltacn",deltacnMids.get(deltacnIdx));
         scoreMap.put("spscore",spscoreMids.get(spscoreIdx));
 
-        PeptideMatchData peptideMatchData = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1, isDecoy);
+        PeptideSpectrumMatch peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                100, 101, 1001.1, isDecoy, false, null, null);
 
-        for (int i=0;i<8;i++) cometScoreHistogram.add(peptideMatchData);
-        int idx1 = cometScoreHistogram.index(peptideMatchData);
+        for (int i=0;i<8;i++) cometScoreHistogram.add(peptideSpectrumMatch);
+        int idx1 = cometScoreHistogram.index(peptideSpectrumMatch);
         indexes.add(idx1);
 
         if (xcorrIdx+1<xcorrMids.size()) {
@@ -766,9 +784,10 @@ public class CometScoreHistogramTest {
             scoreMap.put("deltacn", deltacnMids.get(deltacnIdx));
             scoreMap.put("spscore", spscoreMids.get(spscoreIdx));
 
-            peptideMatchData = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1, isDecoy);
-            cometScoreHistogram.add(peptideMatchData);
-            int idx2 = cometScoreHistogram.index(peptideMatchData);
+            peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                    100, 101, 1001.1, isDecoy, false, null, null);
+            cometScoreHistogram.add(peptideSpectrumMatch);
+            int idx2 = cometScoreHistogram.index(peptideSpectrumMatch);
             indexes.add(idx2);
         }
 
@@ -778,9 +797,10 @@ public class CometScoreHistogramTest {
             scoreMap.put("deltacn", deltacnMids.get(deltacnIdx));
             scoreMap.put("spscore", spscoreMids.get(spscoreIdx));
 
-            peptideMatchData = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1, isDecoy);
-            cometScoreHistogram.add(peptideMatchData);
-            int idx3 = cometScoreHistogram.index(peptideMatchData);
+            peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                    100, 101, 1001.1, isDecoy, false, null, null);
+            cometScoreHistogram.add(peptideSpectrumMatch);
+            int idx3 = cometScoreHistogram.index(peptideSpectrumMatch);
             indexes.add(idx3);
         }
 
@@ -790,9 +810,10 @@ public class CometScoreHistogramTest {
             scoreMap.put("deltacn",deltacnMids.get(deltacnIdx+1));
             scoreMap.put("spscore",spscoreMids.get(spscoreIdx));
 
-            peptideMatchData = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1, isDecoy);
-            cometScoreHistogram.add(peptideMatchData);
-            int idx4 = cometScoreHistogram.index(peptideMatchData);
+            peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                    100, 101, 1001.1, isDecoy, false, null, null);
+            cometScoreHistogram.add(peptideSpectrumMatch);
+            int idx4 = cometScoreHistogram.index(peptideSpectrumMatch);
             indexes.add(idx4);
         }
 
@@ -802,9 +823,10 @@ public class CometScoreHistogramTest {
             scoreMap.put("deltacn", deltacnMids.get(deltacnIdx - 1));
             scoreMap.put("spscore", spscoreMids.get(spscoreIdx));
 
-            peptideMatchData = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1, isDecoy);
-            cometScoreHistogram.add(peptideMatchData);
-            int idx5 = cometScoreHistogram.index(peptideMatchData);
+            peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                    100, 101, 1001.1, isDecoy, false, null, null);
+            cometScoreHistogram.add(peptideSpectrumMatch);
+            int idx5 = cometScoreHistogram.index(peptideSpectrumMatch);
             indexes.add(idx5);
         }
 
@@ -814,9 +836,10 @@ public class CometScoreHistogramTest {
             scoreMap.put("deltacn", deltacnMids.get(deltacnIdx));
             scoreMap.put("spscore", spscoreMids.get(spscoreIdx + 1));
 
-            peptideMatchData = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1, isDecoy);
-            cometScoreHistogram.add(peptideMatchData);
-            int idx6 = cometScoreHistogram.index(peptideMatchData);
+            peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                    100, 101, 1001.1, isDecoy, false, null, null);
+            cometScoreHistogram.add(peptideSpectrumMatch);
+            int idx6 = cometScoreHistogram.index(peptideSpectrumMatch);
             indexes.add(idx6);
         }
 
@@ -826,9 +849,10 @@ public class CometScoreHistogramTest {
             scoreMap.put("deltacn", deltacnMids.get(deltacnIdx));
             scoreMap.put("spscore", spscoreMids.get(spscoreIdx - 1));
 
-            peptideMatchData = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1, isDecoy);
-            cometScoreHistogram.add(peptideMatchData);
-            int idx7 = cometScoreHistogram.index(peptideMatchData);
+            peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                    100, 101, 1001.1, isDecoy, false, null, null);
+            cometScoreHistogram.add(peptideSpectrumMatch);
+            int idx7 = cometScoreHistogram.index(peptideSpectrumMatch);
             indexes.add(idx7);
         }
 
@@ -839,7 +863,7 @@ public class CometScoreHistogramTest {
 
     public static void addPsms2(int xcorrIdx, int deltacnIdx, int spscoreIdx,
                                 CometScoreHistogram cometScoreHistogram, Set<String> prots,
-                                List<PeptideMatchData> psmList,
+                                List<PeptideSpectrumMatch> psmList,
                                 int freq, boolean isDecoy, int degree)
     {
         NewAnceParams params = NewAnceParams.getInstance();
@@ -875,7 +899,8 @@ public class CometScoreHistogramTest {
                     for (int r=0;r<degree;r++) m *= (3-n);
                     m *= freq;
                     for (int r=0; r<m; r++) {
-                        PeptideMatchData psm = new PeptideMatchData(Peptide.parse("PEPTIDE"), prots, scoreMap, 1, isDecoy);
+                        PeptideSpectrumMatch psm = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+                                100, 101, 1001.1, isDecoy, false, null, null);
                         cometScoreHistogram.add(psm);
                         psmList.add(psm);
                     }

@@ -29,7 +29,7 @@
 
 package newance.psmcombiner;
 
-import newance.psmconverter.PeptideMatchData;
+import newance.psmconverter.PeptideSpectrumMatch;
 import newance.util.NewAnceParams;
 
 import java.io.*;
@@ -141,11 +141,11 @@ public class CometScoreHistogram extends SmoothedScoreHistogram {
     }
 
     @Override
-    protected int index(PeptideMatchData peptideMatchData) {
+    protected int index(PeptideSpectrumMatch peptideSpectrumMatch) {
 
-        int xcorrIdx = get1DIndex(peptideMatchData.getScore("xcorr"), minXCorr, xCorrBinWidth, nrXCorrBins-1);
-        int deltacnIdx = get1DIndex(peptideMatchData.getScore("deltacn"), minDeltaCn, deltaCnBinWidth, nrDeltaCnBins-1);
-        int spscoreIdx = get1DIndex(peptideMatchData.getScore("spscore"), minSpScore, spScoreBinWidth, nrSpScoreBins-1);
+        int xcorrIdx = get1DIndex(peptideSpectrumMatch.getScore("xcorr"), minXCorr, xCorrBinWidth, nrXCorrBins-1);
+        int deltacnIdx = get1DIndex(peptideSpectrumMatch.getScore("deltacn"), minDeltaCn, deltaCnBinWidth, nrDeltaCnBins-1);
+        int spscoreIdx = get1DIndex(peptideSpectrumMatch.getScore("spscore"), minSpScore, spScoreBinWidth, nrSpScoreBins-1);
 
         int index = nrXCorrBins*(nrDeltaCnBins*spscoreIdx + deltacnIdx) + xcorrIdx;
 

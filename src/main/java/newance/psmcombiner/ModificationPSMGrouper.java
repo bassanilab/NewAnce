@@ -33,7 +33,7 @@ import newance.util.PsmGrouper;
 import org.expasy.mzjava.proteomics.mol.modification.ModAttachment;
 import org.expasy.mzjava.proteomics.mol.modification.Modification;
 import org.expasy.mzjava.proteomics.mol.modification.ModificationList;
-import newance.psmconverter.PeptideMatchData;
+import newance.psmconverter.PeptideSpectrumMatch;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -48,7 +48,7 @@ public class ModificationPSMGrouper extends PsmGrouper {
     }
 
     @Override
-    public String apply(String s, PeptideMatchData psm) {
+    public String apply(String s, PeptideSpectrumMatch psm) {
 
         ModificationList mods = psm.getPeptide().getModifications(ModAttachment.sideChainSet);
 

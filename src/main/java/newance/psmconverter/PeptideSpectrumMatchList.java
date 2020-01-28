@@ -31,10 +31,7 @@ package newance.psmconverter;
 
 import newance.util.PsmPredicate;
 import org.expasy.mzjava.core.ms.spectrum.MsnSpectrum;
-import org.expasy.mzjava.proteomics.io.ms.ident.PSMReaderCallback;
 import org.expasy.mzjava.proteomics.mol.Peptide;
-import org.expasy.mzjava.proteomics.ms.ident.PeptideProteinMatch;
-import org.expasy.mzjava.proteomics.ms.ident.SpectrumIdentifier;
 import newance.util.SpectrumFilter;
 import newance.util.NewAnceParams;
 import newance.util.SpectrumKeyFunction;
@@ -48,11 +45,11 @@ import java.util.regex.Pattern;
  * @author Markus Müller
  */
 
-public class PSMReaderCallbackImpl implements PSMReaderCallback {
+public class PeptideSpectrumMatchList {
 
-    private static final Logger LOGGER = Logger.getLogger(PSMReaderCallbackImpl.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(PeptideSpectrumMatchList.class.getName());
 
-    protected final Map<String, List<PeptideMatchData>> psmMap;
+    protected final Map<String, List<PeptideSpectrumMatch>> psmMap;
     protected final NewAnceParams params;
     protected final Pattern decoyProtPattern;
     protected final Pattern excludedProtPattern;
@@ -61,9 +58,9 @@ public class PSMReaderCallbackImpl implements PSMReaderCallback {
     protected final PsmPredicate psmPredicate;
 
 
-    public PSMReaderCallbackImpl(SpectrumKeyFunction<MsnSpectrum> spectrumKeyFunction,
-                                 PsmPredicate psmPredicate,
-                                 Map<String, List<PeptideMatchData>> psmMap) {
+    public PeptideSpectrumMatchList(SpectrumKeyFunction<MsnSpectrum> spectrumKeyFunction,
+                                    PsmPredicate psmPredicate,
+                                    Map<String, List<PeptideSpectrumMatch>> psmMap) {
 
         this.psmMap = psmMap;
         this.params = NewAnceParams.getInstance();
@@ -84,39 +81,14 @@ public class PSMReaderCallbackImpl implements PSMReaderCallback {
 
     }
 
-    @Override
-    public void resultRead(SpectrumIdentifier identifier, org.expasy.mzjava.proteomics.ms.ident.PeptideMatch searchResult)  {
+    public void resultRead(SpectrumInfo spectrumInfo, PeptideMatchDataWrapper searchResult)  {
 
-        if (excludedProtPattern!=null && searchResult.containsOnlyProteinMatch(excludedProtPattern))
-            return;
-
-        String key = spectrumKeyFunction.apply(identifier);
+        String key = spectrumKeyFunction.apply(spectrumInfo);
         if (spectrumFilter != null && !spectrumFilter.apply(key)) return;
 
-        if (searchResult.getRank().isPresent()) {
-            searchResult.addScore("rank", searchResult.getRank().get());
-        }
+        boolean isDecoy = searchResult.isDecoy();
 
-        if (!identifier.getRetentionTimes().isEmpty()) {
-            searchResult.addScore("rt",identifier.getRetentionTimes().getFirst().getTime());
-        }
-
-        if (!identifier.getScanNumbers().isEmpty()) {
-            searchResult.addScore("sn",identifier.getScanNumbers().getFirst().getValue());
-        }
-
-        if (identifier.getPrecursorNeutralMass().isPresent()) {
-            searchResult.addScore("mass",identifier.getPrecursorNeutralMass().get());
-        }
-
-        boolean isDecoy = false;
-        if (decoyProtPattern != null) isDecoy = searchResult.containsOnlyProteinMatch(decoyProtPattern);
-
-        List<PeptideProteinMatch> ppms = searchResult.getProteinMatches();
-        Set<String> protACs = new HashSet<>(ppms.size());
-        for (PeptideProteinMatch ppm : ppms) {
-            protACs.add(ppm.getAccession());
-        }
+        Set<String> protACs = searchResult.getProteins();
 
         if (!isDecoy) {
             if (decoyProtPattern != null) protACs =  removeProt(protACs,decoyProtPattern);
@@ -125,20 +97,51 @@ public class PSMReaderCallbackImpl implements PSMReaderCallback {
 
         if (protACs.isEmpty()) return;
 
+        if (!psmPredicate.check(searchResult, spectrumInfo.getCharge())) return;
 
-        if (!psmPredicate.check(searchResult, identifier.getAssumedCharge().get())) return;
+        String spectrumFile = spectrumInfo.getSpectrumFile();
+        float rt = (float) spectrumInfo.getRetentionTime();
+        int scanNr = spectrumInfo.getScanNumber();
+        double precMass = spectrumInfo.getPrecursorNeutralMass();
+        int rank = searchResult.getRank();
+        boolean isVariant = searchResult.isVariant();
+        List<Integer> variantPositions = searchResult.getVariantPositions();
+        List<Character> variantWTAAs = searchResult.getVariantWTAAs();
 
         Peptide peptide = searchResult.toPeptide();
-        PeptideMatchData psm = new PeptideMatchData(peptide, protACs,
-                searchResult.getScoreMap(),identifier.getAssumedCharge().get(),isDecoy);
+
+        PeptideSpectrumMatch psm = new PeptideSpectrumMatch(spectrumFile, peptide, protACs,
+                searchResult.getScoreMap(),spectrumInfo.getCharge(),rank, rt,
+                scanNr, precMass, isDecoy, isVariant, variantPositions, variantWTAAs);
 
 
         psmMap.putIfAbsent(key,new ArrayList<>());
 
         psmMap.get(key).add(psm);
-
-//        System.out.println(key+"\t"+psm.getPeptide().toString());
     }
+
+    public boolean isValidProtein(Set<String> proteins) {
+
+        if (proteins==null || proteins.isEmpty()) return false;
+        if (excludedProtPattern==null) return true;
+
+        for (String protein : proteins) {
+            Matcher matcher = excludedProtPattern.matcher(protein);
+            if (!matcher.find()) {
+               return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isValidSpectrum(SpectrumInfo spectrumInfo) {
+
+        String key = spectrumKeyFunction.apply(spectrumInfo);
+        if (spectrumFilter != null && !spectrumFilter.apply(key)) return false;
+
+        return true;
+    }
+
 
     private Set<String> removeProt(Set<String> acs, Pattern proteinPattern) {
 

@@ -29,9 +29,8 @@
 
 package newance.psmcombiner;
 
-import newance.psmconverter.PeptideMatchData;
+import newance.psmconverter.PeptideSpectrumMatch;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -76,7 +75,7 @@ public abstract class SmoothedScoreHistogram extends ScoreHistogram {
     }
 
 
-    public float getLocalFDR(PeptideMatchData psm) {
+    public float getLocalFDR(PeptideSpectrumMatch psm) {
 
         int bin = index(psm);
 

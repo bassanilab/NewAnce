@@ -29,7 +29,7 @@
 
 package newance.psmcombiner;
 
-import newance.psmconverter.PeptideMatchData;
+import newance.psmconverter.PeptideSpectrumMatch;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,11 +39,11 @@ import java.util.function.BiConsumer;
  * @author Markus Müller
  */
 
-public class SpectrumAccumulator implements BiConsumer<String, List<PeptideMatchData>> {
+public class SpectrumAccumulator implements BiConsumer<String, List<PeptideSpectrumMatch>> {
 
     protected final ConcurrentHashMap<String,Set<String>> proteinPeptideMap;
     protected final ConcurrentHashMap<String,Set<String>> peptideProteinMap;
-    protected final ConcurrentHashMap<String,List<PeptideMatchData>> peptidePSMMap;
+    protected final ConcurrentHashMap<String,List<PeptideSpectrumMatch>> peptidePSMMap;
 
     protected int totSpectrumCount;
 
@@ -56,11 +56,11 @@ public class SpectrumAccumulator implements BiConsumer<String, List<PeptideMatch
     }
 
     @Override
-    public void accept(String s, List<PeptideMatchData> peptideMatchData) {
+    public void accept(String s, List<PeptideSpectrumMatch> peptideSpectrumMatchData) {
 
-        if (peptideMatchData.isEmpty()) return;
+        if (peptideSpectrumMatchData.isEmpty()) return;
 
-        for (PeptideMatchData psm : peptideMatchData) {
+        for (PeptideSpectrumMatch psm : peptideSpectrumMatchData) {
             String peptideSeq = psm.getPeptide().toSymbolString();
 
             peptideProteinMap.putIfAbsent(peptideSeq,Collections.synchronizedSet(new HashSet<>()));
@@ -87,7 +87,7 @@ public class SpectrumAccumulator implements BiConsumer<String, List<PeptideMatch
         return peptideProteinMap;
     }
 
-    public ConcurrentHashMap<String, List<PeptideMatchData>> getPeptidePSMMap() {
+    public ConcurrentHashMap<String, List<PeptideSpectrumMatch>> getPeptidePSMMap() {
         return peptidePSMMap;
     }
 

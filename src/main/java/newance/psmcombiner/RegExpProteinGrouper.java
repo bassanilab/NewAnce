@@ -29,7 +29,7 @@
 
 package newance.psmcombiner;
 
-import newance.psmconverter.PeptideMatchData;
+import newance.psmconverter.PeptideSpectrumMatch;
 import newance.util.PsmGrouper;
 
 import java.util.HashSet;
@@ -62,7 +62,7 @@ public class RegExpProteinGrouper extends PsmGrouper {
     }
 
     @Override
-    public String apply(String specID, PeptideMatchData psm) {
+    public String apply(String specID, PeptideSpectrumMatch psm) {
 
         Set<String> proteins = psm.getProteinAcc();
 
