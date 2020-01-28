@@ -100,7 +100,7 @@ public class NewAnceParams implements Serializable {
 
     private String fdrControlMethod = "global";
 
-    private String version = "version 1.3.0";
+    private String version = "version 1.4.0";
 
     private String cometPsmDir = "";
     private String maxquantPsmDir = "";
