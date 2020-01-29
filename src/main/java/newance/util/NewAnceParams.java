@@ -75,15 +75,15 @@ public class NewAnceParams implements Serializable {
 
     private double fdrCometThreshold = 0.03;
 
-    private String protCodingGroup = "";
-    private String noncanonicalGroup = "";
+    private String protCodingGroup = "prot";
+    private String noncanonicalGroup = "nonc";
     private Pattern spectrumRegExp = null;
     private Pattern codingProtRegExp = null;
     private Set<String> forcedNoncanonicalProts = new HashSet<>();
 
     private int minNrPsmsPerHisto = 100000;
 
-    private String outputPrefix = "";
+    private String outputTag = "";
 
     private int nrBins3D = 40;
     private double minXCorr = 0.0;
@@ -162,7 +162,7 @@ public class NewAnceParams implements Serializable {
         res +=  "codingProtRegExp="+ codingProtRegExp +"\n";
         res +=  "forcedNoncanonicalProts="+ forcedNoncanonicalProts +"\n";
         res +=  "minNrPsmsPerHisto="+minNrPsmsPerHisto+"\n";
-        res +=  "outputPrefix="+outputPrefix+"\n";
+        res +=  "outputTag="+ outputTag +"\n";
         res +=  "minXCorr="+minXCorr+"\n";
         res +=  "maxXCorr="+maxXCorr+"\n";
         res +=  "nrXCorrBins="+nrXCorrBins+"\n";
@@ -308,8 +308,8 @@ public class NewAnceParams implements Serializable {
             minNrPsmsPerHisto = getIntegerValue("minNrPsmsPerHisto",variableValueMap.get("minNrPsmsPerHisto"));
         }
 
-        if (variableValueMap.containsKey("outputPrefix")) {
-            outputPrefix = variableValueMap.get("outputPrefix"); // can be empty
+        if (variableValueMap.containsKey("outputTag")) {
+            outputTag = variableValueMap.get("outputTag"); // can be empty
         }
 
         if (variableValueMap.containsKey("minXCorr")) {
@@ -427,11 +427,11 @@ public class NewAnceParams implements Serializable {
         }
 
         if (variableValueMap.containsKey("maxQuantMainScore")) {
-            outputPrefix = variableValueMap.get("maxQuantMainScore");
+            outputTag = variableValueMap.get("maxQuantMainScore");
         }
 
         if (variableValueMap.containsKey("cometMainScore")) {
-            outputPrefix = variableValueMap.get("cometMainScore");
+            outputTag = variableValueMap.get("cometMainScore");
         }
 
         checkVariableValues();
@@ -692,8 +692,8 @@ public class NewAnceParams implements Serializable {
         return minNrPsmsPerHisto;
     }
 
-    public String getOutputPrefix() {
-        return outputPrefix;
+    public String getOutputTag() {
+        return outputTag;
     }
 
     public int getNrBins3D() {

@@ -63,14 +63,16 @@ public abstract class ExecutableOptions {
             if (arg.equalsIgnoreCase(optionId) || arg.equalsIgnoreCase(cmdLineOpts.getOption(optionId).getLongOpt())) {
 
                 HelpFormatter formatter = new HelpFormatter();
+                formatter.setWidth(150);
 
                 for (Option option : cmdLineOpts.getOptions()) {
                     option.setRequired(false);
                 }
 
-                System.out.println("*******************************");
-                System.out.println("** NewAnce command line help **");
-                System.out.println("*******************************");
+                System.out.println("");
+                System.out.println("*************************************************************************************************************************");
+                System.out.println("**                                            NewAnce command line help                                                **");
+                System.out.println("*************************************************************************************************************************");
                 System.out.println("");
                 System.out.println("");
                 formatter.printHelp( this.getClass().getName(), cmdLineOpts );

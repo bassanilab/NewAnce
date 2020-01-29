@@ -132,10 +132,10 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         groupedFDRCalculator.addAll(allPsms);
         groupedFDRCalculator.setCanCalculateFDR(params.getMinNrPsmsPerHisto());
         groupedFDRCalculator.calcClassProbs();
-        if (params.isReportHistos()) groupedFDRCalculator.writeHistograms(params.getOutputDir()+File.separator+"histos", params.getOutputPrefix());
+        if (params.isReportHistos()) groupedFDRCalculator.writeHistograms(params.getOutputDir()+File.separator+"histos", params.getOutputTag());
         groupedFDRCalculator.smoothHistogram(params.getSmoothDegree());
         groupedFDRCalculator.calcLocalFDR();
-        if (params.isReportHistos()) groupedFDRCalculator.writeHistograms(params.getOutputDir()+File.separator+"histos", params.getOutputPrefix()+"_smoothed");
+        if (params.isReportHistos()) groupedFDRCalculator.writeHistograms(params.getOutputDir()+File.separator+"histos", params.getOutputTag()+"_smoothed");
 
         return groupedFDRCalculator;
     }
@@ -281,7 +281,7 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         if (params.getSearchFastaFile() !=null) uniProtDB.addFastaFile(params.getSearchFastaFile());
         OccamRazorSpectrumCounter spectrumCounter = new OccamRazorSpectrumCounter(spectrumAccumulator, uniProtDB);
 
-        String reportFileName = params.getOutputDir() + File.separator+params.getOutputPrefix()+"PeptideProteinGroupingReport.txt";
+        String reportFileName = params.getOutputDir() + File.separator+params.getOutputTag()+"PeptideProteinGroupingReport.txt";
         try {
             spectrumCounter.write(new File(reportFileName));
         } catch (IOException e) {

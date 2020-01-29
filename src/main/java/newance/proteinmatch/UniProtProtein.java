@@ -80,6 +80,9 @@ public class UniProtProtein implements Serializable{
     }
 
     public String getFastaUniProtName() {
-        return dbFlag+"|"+uniProtAC+"|"+uniProtName;
+        if (dbFlag.equals("sp") || dbFlag.equals("tr"))
+            return dbFlag+"|"+uniProtAC+"|"+uniProtName;
+        else
+            return uniProtAC;
     }
 }
