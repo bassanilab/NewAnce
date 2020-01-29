@@ -71,7 +71,9 @@ Directory where Comet pep.xml files are placed.
 ```
 -coFDR,--cometFDR <arg>            FDR for filtering Comet PSMs before combination (required) (default value 0.03)
 
-FDR for Comet search. If -fdrM is equal to "global", the FDR is calculated for all PSM's that pass the local lFDR threshold. If -fdrM is equal to "groupwise", the FDR is calculated seperately for the protein coding and non-canonical group. The former method is the one discussed in the paper.
+FDR for Comet search. If -fdrM is equal to "global", the FDR is calculated for all PSM's that pass the local lFDR threshold.
+If -fdrM is equal to "groupwise", the FDR is calculated seperately for the protein coding and non-canonical group. The former
+method is the one discussed in the paper.
 ```
 
 ```
@@ -83,5 +85,8 @@ Regular expression that defines the Comet pep.cxml files used in the analysis.
 ```
 -exclP,--excludeProts <arg>        Regular expression of proteins excluded from analysis. If not set no proteins are excluded.
 
-This option serves to exclude proteins (e.g. contaminant proteins) from the analysis. A UniProt protein is defined by a string like sp|Q15800|MSMO1_HUMAN] or tr|G3V568|G3V568_HUMAN. A non-UniProt protein is defined by a string like ENSP00000452373.1 (string in fasta header up to the first space or end of line). If the regular expression matches a protein string, the protein is excluded.
+This option serves to exclude proteins (e.g. contaminant proteins) from the analysis. A UniProt protein is defined by a string
+like sp|Q15800|MSMO1_HUMAN] or tr|G3V568|G3V568_HUMAN. A non-UniProt protein is defined by a string like ENSP00000452373.1 
+(string in fasta header up to the first space or end of line). If the regular expression matches a protein string, the protein 
+is excluded.
 ```
