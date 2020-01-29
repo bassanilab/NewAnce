@@ -79,14 +79,14 @@ protein coding and non-canonical group. The former method, which is the one disc
 ```
 -coRE,--cometPsmRegex <arg>        Regular expression of Comet psm files (e.g. \.xml$) (required)
 
-Regular expression that defines the Comet pep.cxml files used in the analysis.
+Regular expression that defines the Comet pep.xml files used in the analysis.
  ```
 
 ```
 -exclP,--excludeProts <arg>        Regular expression of proteins excluded from analysis. If not set no proteins are excluded.
 
-This option serves to exclude proteins (e.g. contaminant proteins) from the analysis. A UniProt protein is defined by a string
-like sp|Q15800|MSMO1_HUMAN] or tr|G3V568|G3V568_HUMAN. A non-UniProt protein is defined by a string like ENSP00000452373.1 
-(string in fasta header up to the first space or end of line). If the regular expression matches a protein string, the protein 
-is excluded.
+This option can be used to exclude proteins (e.g. contaminant proteins) from the analysis. A UniProt protein is defined by a
+string like sp|Q15800|MSMO1_HUMAN] or tr|G3V568|G3V568_HUMAN. A non-UniProt protein is defined by a string like 
+ENSP00000452373.1 (string in fasta header up to the first space or end of line). If the regular expression matches a protein 
+string, the protein is excluded.
 ```
