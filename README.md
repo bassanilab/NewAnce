@@ -71,9 +71,9 @@ Directory where Comet pep.xml files are placed.
 ```
 -coFDR,--cometFDR <arg>            FDR for filtering Comet PSMs before combination (required) (default value 0.03)
 
-FDR for Comet search. If -fdrM is equal to "global", the FDR is calculated for all PSM's that pass the local lFDR threshold.
-If -fdrM is equal to "groupwise", the FDR is calculated seperately for the protein coding and non-canonical group. The former
-method is the one discussed in the paper.
+FDR for Comet search. If -fdrM is equal to "global", the FDR is calculated for all PSM's of all groups and charge states that
+pass the local lFDR threshold. If -fdrM is equal to "groupwise", the FDR is calculated seperately for all charge states of the
+protein coding and non-canonical group. The former method, which is the one discussed in the paper, is usually less conservative than the groupwise method.
 ```
 
 ```
