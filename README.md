@@ -1,9 +1,9 @@
 ## NewAnce 
 
-NewAnce (https://www.biorxiv.org/content/10.1101/758680v1) is a java software for proteogenomics. First it preformes 
-stratified FDR calculation for Comet and then combines the two MS/MS Comet and MaxQuant PSMs by taking their intersection.
-This allows to obtain more accurate PSMs even in the case of large proteogenomics databases. Source code and an executable 
-.jar file are provided. 
+NewAnce (https://www.biorxiv.org/content/10.1101/758680v1) is a java software for proteogenomics. Itt performes 
+stratified FDR calculation for Comet and then combines the two MS/MS search engines Comet and MaxQuant PSMs by 
+taking their intersection. This allows to obtain more accurate PSMs even in the case of large proteogenomics 
+databases. Source code and an executable .jar file are provided. 
 
 The NewAnce command line options can be obtained by typing
 
