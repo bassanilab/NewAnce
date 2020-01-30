@@ -94,7 +94,9 @@ string, the protein is excluded.
 ```
 -fdrM,--fdrControlMethod <arg>     Method to control pFDR: global or groupwise (default global).
 
-The FDR can be controlled in two ways: global and groupwise. In both cases, the local lFDR is calculated in the same way. The lFDR threshold is then adjusted to yield the target FDR, which is estimated for both groups together (combined) or for each group seperately (separate). Estimating the FDR seperately for each group usually yields less PSMs.
+The FDR can be controlled in two ways: global and groupwise. In both cases, the local lFDR is calculated in the same way. The 
+lFDR threshold is then adjusted to yield the target FDR, which is estimated for both groups together (combined) or for each 
+group seperately (separate). Estimating the FDR seperately for each group usually yields less PSMs.
 ```
 
 ```
@@ -150,7 +152,9 @@ Minimal length for peptides considered by NewAnce.
 ```
 -minPH,--minPsm4Histo <arg>        Minimal number of psms to calculate local FDR in histogram (default value: 100000).
 
-Minimal number of psms to calculate local lFDR in a histogram. If less data points are available, the lFDR estimate is considered unreliable and a precalculated default histogram is used instead. The user can also import his/her own default histograms (see -readH option).
+Minimal number of psms to calculate local lFDR in a histogram. If less data points are available, the lFDR estimate is 
+considered unreliable and a precalculated default histogram is used instead. The user can also import his/her own default 
+histograms (see -readH option).
 ```
 
 ```
