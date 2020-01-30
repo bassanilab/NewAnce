@@ -20,7 +20,7 @@ usage: newance.psmcombiner.CometMaxQuantCombiner
  -coFDR,--cometFDR <arg>            FDR for filtering Comet PSMs before combination (required)
  -coRE,--cometPsmRegex <arg>        Regular expression of Comet psm files (e.g. \.xml$) (required)
  -exclP,--excludeProts <arg>        Regular expression of proteins excluded from analysis. If not set no proteins are excluded.
- -fdrM,--fdrControlMethod <arg>     Method to control pFDR: global or groupwise (default global).
+ -fdrM,--fdrControlMethod <arg>     Method to control pFDR: combined or seperate (default combined).
  -h,--help                          Help option for command line help
  -maxDC,--maxDeltaCn <arg>          Maximal Comet DeltaCn in histogram (default value 2500)
  -maxL,--maxLength <arg>            Maximal length of peptide (default value: 25)
@@ -90,3 +90,85 @@ string like sp|Q15800|MSMO1_HUMAN] or tr|G3V568|G3V568_HUMAN. A non-UniProt prot
 ENSP00000452373.1 (string in fasta header up to the first space or end of line). If the regular expression matches a protein 
 string, the protein is excluded.
 ```
+
+```
+-fdrM,--fdrControlMethod <arg>     Method to control pFDR: global or groupwise (default global).
+
+The FDR can be controlled in two ways: global and groupwise. In both cases, the local lFDR is calculated in the same way. The lFDR threshold is then adjusted to yield the target FDR, which is estimated for both groups together (combined) or for each group seperately (separate). Estimating the FDR seperately for each group usually yields less PSMs.
+```
+
+```
+-h,--help                          Help option for command line help
+```
+
+```
+-maxDC,--maxDeltaCn <arg>          Maximal Comet DeltaCn in histogram (default value 2500)
+
+Maximal value of Comet deltaCn score in histogram.
+```
+
+```
+-maxL,--maxLength <arg>            Maximal length of peptide (default value: 25)
+
+Maximal length for peptides considered by NewAnce.
+```
+
+```
+-maxR,--maxRank <arg>              Maximal rank of peptide in list of spectrum matches (rank 1 = best) (default value: 1)
+
+Maximal rank for PSMs considered in NewAnce.
+```
+
+```
+-maxSP,--maxSpScore <arg>          Maximal Comet SpScore in histogram (default value 1)
+
+Maximal value for Comet SPScore in histogram.
+```
+
+```
+-maxXC,--maxXCorr <arg>            Maximal Comet XCorr in histogram (default value 5)
+
+Maximal value for Comet XCorr in histogram.
+```
+
+```
+-maxZ,--maxCharge <arg>            Maximal charge of PSM (default value: 5)
+
+Maximal charge for PSMs considered by NewAnce.
+```
+
+```
+-minDC,--minDeltaCn <arg>          Minimal Comet DeltaCn in histogram (default value 0)
+```
+
+```
+-minL,--minLength <arg>            Minimal length of peptide (default value: 8)
+
+Minimal length for peptides considered by NewAnce.
+```
+
+```
+-minPH,--minPsm4Histo <arg>        Minimal number of psms to calculate local FDR in histogram (default value: 100000).
+
+Minimal number of psms to calculate local lFDR in a histogram. If less data points are available, the lFDR estimate is considered unreliable and a precalculated default histogram is used instead. The user can also import his/her own default histograms (see -readH option).
+```
+
+```
+-minSP,--minSpScore <arg>          Minimal Comet SpScore in histogram (default value 0)
+
+Minimal value for Comet SpScore in histogram.
+```
+
+```
+-minXC,--minXCorr <arg>            Minimal Comet XCorr in histogram (default value 0)
+
+Minimal value for Comet XCorr in histogram.
+```
+
+```
+-minZ,--minCharge <arg>            Minimal charge of PSM (default value: 1)```
+
+Minimal charge for PSMs considered by NewAnce.
+```
+
+ 
