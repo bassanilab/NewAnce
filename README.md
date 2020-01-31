@@ -196,10 +196,12 @@ have to be placed in the same directory as the corresponding msms.txt file.
 -noncG,--noncanonicalGroup <arg>   Name of group with non-canonical or cryptic sequences (default "nonc"). Will be used as 
 prefix for con-canonical PSM output files.
 
+Name of group with non-canonical or cryptic sequences (default "nonc"). Will be used as prefix for con-canonical PSM output 
+files.
 ```
 
 ```
- -noncP,--noncanonicalProts <arg>   Comma separated list of protein names to be included in noncanonical group even if they are in UniProt (e.g.
+-noncP,--noncanonicalProts <arg>   Comma separated list of protein names to be included in noncanonical group even if they are in UniProt (e.g.
                                     PGBD5_HUMAN,POGZ_HUMAN,PGBD1_HUMAN)
 
 Some of the proteins in the -upFa fasta file may have to be moved to the noncanonical group. The user can define a list of 
@@ -207,14 +209,14 @@ these proteins here.
 ```
 
 ```
- -nrDCB,--nrDeltaCnBins <arg>       Number of Comet DeltaCn bins in histogram (default value 40)
+-nrDCB,--nrDeltaCnBins <arg>       Number of Comet DeltaCn bins in histogram (default value 40)
  
 Number of Comet DeltaCn bins in histogram. The higher this number, the finer the grid cells for FDR calculation and the more 
 data is needed. 
 ```
 
 ```
- -nrSPB,--nrSpScoreBins <arg>       Number of Comet SpScore bins in histogram (default value 40)
+-nrSPB,--nrSpScoreBins <arg>       Number of Comet SpScore bins in histogram (default value 40)
  
 Number of Comet SpScore bins in histogram. The higher this number, the finer the grid cells for FDR calculation and the more 
 data is needed. 
