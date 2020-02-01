@@ -65,8 +65,8 @@ The comand line options in more detail:
 ```
 -coD,--cometPsmDir <arg>           Comet psm root directory (required)
 
-Directory where Comet pep.xml files are placed. All pep.xml files under this directory and matching the -coRE regular 
-expression are considered for the analysis.
+Directory where Comet pep.xml files are placed. All pep.xml files under this directory including sub-directories 
+and matching the -coRE regular expression are considered for the analysis.
 ```
 
 ```
