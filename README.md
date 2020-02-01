@@ -65,7 +65,8 @@ The comand line options in more detail:
 ```
 -coD,--cometPsmDir <arg>           Comet psm root directory (required)
 
-Directory where Comet pep.xml files are placed. All pep.xml files under this directory and matching the -coRE regular expression are considered for the analysis.
+Directory where Comet pep.xml files are placed. All pep.xml files under this directory and matching the -coRE regular 
+expression are considered for the analysis.
 ```
 
 ```
@@ -73,7 +74,8 @@ Directory where Comet pep.xml files are placed. All pep.xml files under this dir
 
 FDR for Comet search. If -fdrM is equal to "global", the FDR is calculated for all PSM's of all groups and charge states that
 pass the local lFDR threshold. If -fdrM is equal to "groupwise", the FDR is calculated seperately for all charge states of the
-protein coding and non-canonical group. The former method, which is the one discussed in the paper, is usually less conservative than the groupwise method.
+protein coding and non-canonical group. The former method, which is the one discussed in the paper, is usually less 
+conservative than the groupwise method.
 ```
 
 ```
@@ -271,13 +273,15 @@ Regular expression (e.g. "sp\||tr\|" or ".*_HUMAN") defining the protein coding 
 ```
 -readH,--readHistograms <arg>      Directory where histograms files are placed.
 
-Instead of being calculated with the available Comet PSMs, score histograms are imported. This is useful in case there is not enough data to build them.
+Instead of being calculated with the available Comet PSMs, score histograms are imported. This is useful in case there is not 
+enough data to build them.
 ```
 
 ```
 -repH,--reportHistogram            Report histograms to text files
 
-Comet score histograms are written to text files. These histograms can be imported with the -readH option and used as score histograms in case there is not enough data to build them.
+Comet score histograms are written to text files. These histograms can be imported with the -readH option and used as score 
+histograms in case there is not enough data to build them.
 ```
 
 ```
@@ -303,13 +307,15 @@ is replaced by the average psm counts of the cell and its 6 nearest neighbours).
 ```
 -spRE,--spectrumFilter <arg>       If this option is set, only spectrum ids that match this regexp are used.  If not set no filtering is performed.
 
-In case NewAnce should be limited to certain spectra, these spectra can be defined with this regular expression. The spectrum format used in NewAnce is: spectrum_raw_file_name.scan_number.scan_number.charge 
+In case NewAnce should be limited to certain spectra, these spectra can be defined with this regular expression. The spectrum 
+format used in NewAnce is: spectrum_raw_file_name.scan_number.scan_number.charge 
 ```
 
 ```
 -upFa,--uniProtFastaFile <arg>     Fasta file with coding or canonical proteins (e.g. UniProt fasta file)
 
-All peptides matching to a protein sequence in this file are considered as peptides of protein coding genes. Exceptions can be defined with the -noncP option.
+All peptides matching to a protein sequence in this file are considered as peptides of protein coding genes. Exceptions can be 
+defined with the -noncP option.
 ```
 
 ```
