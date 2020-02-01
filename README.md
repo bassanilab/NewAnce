@@ -60,7 +60,7 @@ usage: newance.psmcombiner.CometMaxQuantCombiner
  -wP,--write2ParamFile <arg>        Filename where parameters should to written.
 ```
 
-These comand line optione are now discussed in more detail:
+The comand line options in more detail:
 
 ```
 -coD,--cometPsmDir <arg>           Comet psm root directory (required)
