@@ -274,7 +274,8 @@ Regular expression (e.g. "sp\||tr\|" or ".*_HUMAN") defining the protein coding 
 -readH,--readHistograms <arg>      Directory where histograms files are placed.
 
 Instead of being calculated with the available Comet PSMs, score histograms are imported. This is useful in case there is not 
-enough data to build them.
+enough data to build them. NewAnce provides default histograms for high resolution OrbiTrap immunopeptidomics data. Otherwise 
+a user can create histograms by analysing a larger datasets 20+ runs and exporing the histograms with the -repH option. When imporing histograms the histogram settings are changed.
 ```
 
 ```
