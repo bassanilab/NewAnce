@@ -10,7 +10,7 @@ NewAnce (https://www.biorxiv.org/content/10.1101/758680v1) is a java software to
 4. Tests
 5. PVD export
 
-####1. Command line options 
+#### 1. Command line options 
 
 The NewAnce command line options can be obtained by typing
 
@@ -342,12 +342,12 @@ Write NewAnce parameters to specified parameter file.
 ```
 
 
-####2. Running NewAnce
+#### 2. Running NewAnce
 
-####3. Output format
+#### 3. Output format
 
-####4. Tests
+#### 4. Tests
 
-####5. PVD export
+#### 5. PVD export
 
  
