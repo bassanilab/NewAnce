@@ -344,6 +344,18 @@ Write NewAnce parameters to specified parameter file.
 
 #### 2. Running NewAnce
 
+The NewAnce command line options can be obtained by typing
+
+```
+java -jar NewAnce-1.4.0-SNAPSHOT.jar -h
+```
+
+The NewAnce version can be obtained by typing
+
+```
+java -jar NewAnce-1.4.0-SNAPSHOT.jar -v
+```
+
 #### 3. Output format
 
 #### 4. Tests
