@@ -2,6 +2,16 @@
 
 NewAnce (https://www.biorxiv.org/content/10.1101/758680v1) is a java software tool for proteogenomics. It performs stratified FDR calculation and combines the two MS/MS search engines Comet and MaxQuant. This allows to obtain accurate PSMs even in the case of large proteogenomics databases. Source code and an executable .jar file are provided. 
 
+### TOC
+
+1. Command line options 
+2. Running NewAnce
+3. Output format
+4. Tests
+5. PVD export
+
+####1. Command line options 
+
 The NewAnce command line options can be obtained by typing
 
 ```
@@ -275,7 +285,7 @@ Regular expression (e.g. "sp\||tr\|" or ".*_HUMAN") defining the protein coding 
 
 Instead of being calculated with the available Comet PSMs, score histograms are imported. This is useful in case there is not 
 enough data to build them. NewAnce provides default histograms for high resolution OrbiTrap immunopeptidomics data. Otherwise 
-a user can create histograms by analysing a larger datasets 20+ runs and exporing the histograms with the -repH option. When imporing histograms the histogram settings are changed.
+a user can create histograms by analysing a larger datasets 20+ runs and exporing the histograms with the -repH option. When imporing histograms the histogram settings -maxDC,-maxSP,-maxXC,-maxZ,-minDC,-minSP,-minXC,-minZ,-nrDCB,-nrSPB,-nrXCB are overwritten.
 ```
 
 ```
@@ -330,5 +340,14 @@ Show NewAnce version.
 
 Write NewAnce parameters to specified parameter file.
 ```
+
+
+####2. Running NewAnce
+
+####3. Output format
+
+####4. Tests
+
+####5. PVD export
 
  
