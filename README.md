@@ -359,9 +359,7 @@ java -jar NewAnce-1.4.0-SNAPSHOT.jar -v
 Running NewAnce with 12GB memory
 
 ```
-java -Xmx12G -jar NewAnce-1.4.0-SNAPSHOT.jar -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -mqD 0D5P/lncRNA/MaxQuant -coFDR 0.03 
--outD 0D5P/lncRNA/NewAnce -outT 0D5P -protRE sp\||tr\| -protG prot -noncG lncRNA -upFa SeqDBs/human_proteome.fasta
--maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15
+java -Xmx12G -jar NewAnce-1.4.0-SNAPSHOT.jar newance.psmcombiner.CometMaxQuantCombiner -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -mqD 0D5P/lncRNA/MaxQuant -coFDR 0.03 -outD 0D5P/lncRNA/NewAnce -outT 0D5P -protRE sp\||tr\| -protG prot -noncG lncRNA -upFa SeqDBs/human_proteome.fasta -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15
 ```
 
 
