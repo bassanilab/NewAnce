@@ -75,13 +75,13 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
 
         if (tabStringMode == TabStringMode.COMET)
             return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
-                    "IsVariant\tVariantPosition\tWTAA\tIsDecoy\tRank\tXCorr\tDeltaCn\tSpScore\tNegLogPv\tmassdiff\ttot_num_ions\tnum_matched_ions\tlFDR";
+                    "IsVariant\tVariantPosition\tWTAA\tIsDecoy\tRank\tXCorr\tDeltaCn\tSpScore\tExpect\tmassdiff\ttot_num_ions\tnum_matched_ions\tlFDR";
         if (tabStringMode == TabStringMode.MAXQUANT)
             return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
                     "IsVariant\tIsDecoy\tRank\tMass.Error[ppm]\tScore\tDelta.score\tLocalization.prob";
         else
             return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
-                    "IsVariant\tVariantPosition\tWTAA\tIsDecoy\tComet.Rank\tComet.XCorr\tComet.DeltaCn\tComet.SpScore\tComet.NegLogPv\tComet.massdiff\tComet.tot_num_ions\t" +
+                    "IsVariant\tVariantPosition\tWTAA\tIsDecoy\tComet.Rank\tComet.XCorr\tComet.DeltaCn\tComet.SpScore\tComet.Expect\tComet.massdiff\tComet.tot_num_ions\t" +
                     "Comet.num_matched_ions\tComet.lFDR\tMaxQuant.Mass.Error[ppm]\tMaxQuant.Score\tMaxQuant.Delta.score\tMaxQuant.Localization.prob";
 
     }
@@ -108,7 +108,7 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
         String protACs = psm.getProteinAcc().toString();
         int rank = (int) psm.getScore("rank");
         String lfdrStr = (groupedFDRCalculator==null)?"NaN":String.format("%.5f",groupedFDRCalculator.getLocalFDR(psm));
-        String expectStr = String.format("%.5f",psm.getScore("neg_log10_p"));
+        String expectStr = String.format("%.5f",psm.getScore("expect"));
         Peptide peptide = psm.getPeptide();
         String pepMass = String.format("%.5f",peptide.getMolecularMass());
         String modifString = getModifString(peptide);
@@ -131,7 +131,7 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
         String protACs = psm.getProteinAcc().toString();
         int rank = (int) psm.getScore("rank");
         String lfdrStr = (groupedFDRCalculator==null)?"NaN":String.format("%.5f",groupedFDRCalculator.getLocalFDR(psm));
-        String expectStr = String.format("%.5f",psm.getScore("neg_log10_p"));
+        String expectStr = String.format("%.5f",psm.getScore("expect"));
         Peptide peptide = psm.getPeptide();
         String pepMass = String.format("%.5f",peptide.getMolecularMass());
         String modifString = getModifString(peptide);

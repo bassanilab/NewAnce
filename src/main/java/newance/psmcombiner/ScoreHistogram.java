@@ -158,7 +158,9 @@ public abstract class ScoreHistogram implements Serializable {
         }
 
         pi_1 = 1.05f*i/n;
-        if (pi_1>1.0) pi_1 = 1.0;
+        if (pi_1>=1.0) {
+            pi_1 = totTargetCnt/(totTargetCnt+totDecoyCnt);
+        }
 
 //        if (totTargetCnt>0) {
 //            pi_0 = (2.0 * totDecoyCnt) / (totTargetCnt+totDecoyCnt);

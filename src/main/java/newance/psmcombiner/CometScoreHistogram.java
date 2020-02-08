@@ -165,6 +165,8 @@ public class CometScoreHistogram extends SmoothedScoreHistogram {
 
     public void add(double xCorr, double deltaCn, double spScore, float value, boolean isDecoy) {
 
+        if (value<=0) return;
+
         int bin = index(xCorr,deltaCn,spScore);
 
         int idx = indexMap.get(bin);
@@ -175,8 +177,13 @@ public class CometScoreHistogram extends SmoothedScoreHistogram {
         }
 
         if (idx < 0) { // new bin
-            if (!isDecoy) targetCnts.add(value);
-            else decoyCnts.add(value);
+            if (!isDecoy) {
+                targetCnts.add(value);
+                decoyCnts.add(0f);
+            } else {
+                targetCnts.add(0f);
+                decoyCnts.add(value);
+            }
         } else { // already recorded bin
             if (!isDecoy) targetCnts.set(idx,targetCnts.get(idx)+value);
             else decoyCnts.set(idx,decoyCnts.get(idx)+value);
@@ -300,6 +307,7 @@ public class CometScoreHistogram extends SmoothedScoreHistogram {
             while ((line = reader.readLine()) != null) {
 
                 if (line.trim().isEmpty()) continue;
+                if (line.startsWith("XCorr")) continue;
 
                 fields = line.split("\t");
 

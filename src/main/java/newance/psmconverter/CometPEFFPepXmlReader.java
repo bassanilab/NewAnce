@@ -139,16 +139,6 @@ public class CometPEFFPepXmlReader {
             final String name = searchScore.getName();
             final double score = parseDouble(searchScore.getValueAttribute());
             peptideMatch.addScore(name, score);
-
-            if (name.equals("expect")) {
-                double negLogP;
-                if (score>10e-50)
-                    negLogP = -Math.log10(score);
-                else
-                    negLogP =  -Math.log10(10e-50);
-
-                peptideMatch.addScore("neg_log10_p",negLogP);
-            }
         }
 
         peptideMatch.addScore("mass_diff",searchHit.getMassdiff().doubleValue());

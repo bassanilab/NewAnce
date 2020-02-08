@@ -98,7 +98,7 @@ public class NewAnceParams implements Serializable {
 
     private int smoothDegree = 1;
 
-    private String fdrControlMethod = "global";
+    private String fdrControlMethod = "combined";
 
     private String version = "version 1.4.0";
 
@@ -221,6 +221,7 @@ public class NewAnceParams implements Serializable {
 
         if (variableValueMap.containsKey("modifications")) {
             String buf = "";
+            modifications.clear();
             try {
                 for (String modif : getSetValue("modifications", variableValueMap.get("modifications"))) {
                     buf = modif;
@@ -350,7 +351,7 @@ public class NewAnceParams implements Serializable {
 
         if (variableValueMap.containsKey("fdrControlMethod")) {
             fdrControlMethod = getStringValue("fdrControlMethod",variableValueMap.get("fdrControlMethod").trim().toLowerCase(),
-            new HashSet<>(Arrays.asList(new String[]{"global","groupwise"})));
+            new HashSet<>(Arrays.asList(new String[]{"combined","seperate"})));
         }
 
         if (variableValueMap.containsKey("cometPsmDir")) {

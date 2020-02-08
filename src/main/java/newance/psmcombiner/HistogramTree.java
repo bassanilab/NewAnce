@@ -30,6 +30,7 @@
 package newance.psmcombiner;
 
 import newance.psmconverter.PeptideSpectrumMatch;
+import newance.util.NewAnceParams;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -200,6 +201,38 @@ public class HistogramTree {
         }
     }
 
+    public void importPriorHisto() {
+
+        if (!NewAnceParams.getInstance().getReadHistos().isEmpty()) {
+            File histoFile = new File(NewAnceParams.getInstance().getReadHistos() + File.separatorChar + "prior_histo_" + id + ".txt");
+
+            if (!histoFile.exists()) {
+                System.out.println("ERROR: histogram file "+histoFile.getAbsolutePath()+" for charge "+id+" does not exist. Please check your -minZ, -maxZ options. Abort.");
+                System.exit(1);
+            }
+            CometScoreHistogram scoreHistogram = CometScoreHistogram.read(histoFile);
+            setScoreHistogram(scoreHistogram);
+            scoreHistogram.setCanCalculateFDR(NewAnceParams.getInstance().getMinNrPsmsPerHisto());
+        } else if (!scoreHistogram.canCalculateFDR() && !isLeaf()) {
+
+            System.out.println("Setting histogram " +id+" to prior values since there are not enough PSMs to estimate the distribution.");
+            File histoFile = new File(getClass().getResource("prior_histo_" + id + ".txt").getFile());
+
+            if (!histoFile.exists()) {
+                System.out.println("ERROR: histogram file "+histoFile.getAbsolutePath()+" for charge "+id+" does not exist. Please check your -minZ, -maxZ options. Abort.");
+                System.exit(1);
+            }
+
+            CometScoreHistogram scoreHistogram = CometScoreHistogram.read(histoFile);
+            setScoreHistogram(scoreHistogram);
+            scoreHistogram.setCanCalculateFDR(0);
+        }
+
+        for (HistogramTree node : children) {
+            node.importPriorHisto();
+        }
+    }
+
 
     public void calcClassProbs() {
 
@@ -233,8 +266,9 @@ public class HistogramTree {
 
             HistogramTree validParent = getNextValidParent();
 
-            if (pi0>0 && validParent!=null) {
-                scoreHistogram.calcLocalFDR(pi1/pi0, parent.getScoreHistogram());
+            if (validParent!=null) {
+                float ratio = (pi0==0)?10000:pi1/pi0;
+                scoreHistogram.calcLocalFDR(ratio, parent.getScoreHistogram());
             } else {
                 System.out.println("Cannot calculate local FDR of group: "+id);
             }

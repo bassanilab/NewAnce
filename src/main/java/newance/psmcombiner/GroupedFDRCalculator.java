@@ -112,6 +112,7 @@ public class GroupedFDRCalculator {
                 add(psm);
             }
         }
+
     }
 
 
@@ -165,6 +166,11 @@ public class GroupedFDRCalculator {
     public void setCanCalculateFDR(int minNrPsms) {
 
         histogramTreeRoot.setCanCalculateFDR(minNrPsms);
+    }
+
+    public void importPriorHistos() {
+
+        histogramTreeRoot.importPriorHisto();
     }
 
 

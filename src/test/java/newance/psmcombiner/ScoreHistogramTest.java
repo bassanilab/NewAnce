@@ -29,9 +29,11 @@
 
 package newance.psmcombiner;
 
+import org.expasy.mzjava.stats.Histogram;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -60,6 +62,12 @@ public class ScoreHistogramTest {
         for (int i=1;i<100;i++) {
             Assert.assertTrue(array.get(sorted.get(i))-array.get(sorted.get(i-1))>0.0);
         }
+    }
+
+    @Test
+    public void readPriorHistoTest() {
+        String filename = getClass().getResource("prior_histo_Z2.txt").getFile();
+        CometScoreHistogram histogram = CometScoreHistogram.read(new File(filename));
     }
 
 }

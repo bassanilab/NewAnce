@@ -29,10 +29,10 @@
 
 package newance.psmconverter;
 
-import newance.util.RegExpFileFilter;
-
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -57,7 +57,11 @@ public class CometMultiplePepXMLFileConverter extends MultiplePsmFileConverter {
         long start = System.currentTimeMillis();
 
         System.out.println("Comet psm input path " + psmRootDirName);
-        List<File> psmFileList = Arrays.asList(new File(psmRootDirName).listFiles(new RegExpFileFilter(regex)));
+
+        final List<File> psmFileList = new ArrayList<>();
+        Files.walk(Paths.get(psmRootDirName))
+                .filter(f -> regex.matcher(f.getFileName().toString()).find())
+                .forEach(f -> psmFileList.add(f.toFile()));
         checkState(!psmFileList.isEmpty());
 
         int nrTasks = psmFileList.size();
