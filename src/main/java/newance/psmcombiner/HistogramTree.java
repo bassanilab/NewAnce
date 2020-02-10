@@ -33,6 +33,7 @@ import newance.psmconverter.PeptideSpectrumMatch;
 import newance.util.NewAnceParams;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -216,11 +217,20 @@ public class HistogramTree {
         } else if (!scoreHistogram.canCalculateFDR() && !isLeaf()) {
 
             System.out.println("Setting histogram " +id+" to prior values since there are not enough PSMs to estimate the distribution.");
-            File histoFile = new File(getClass().getResource("prior_histo_" + id + ".txt").getFile());
+            URL histoURL = getClass().getResource("prior_histo_" + id + ".txt");
 
-            if (!histoFile.exists()) {
-                System.out.println("ERROR: histogram file "+histoFile.getAbsolutePath()+" for charge "+id+" does not exist. Please check your -minZ, -maxZ options. Abort.");
-                System.exit(1);
+            File histoFile = null;
+            if (histoURL!=null) {
+                histoFile = new File(histoURL.getFile());
+            } else { // charge state higher than available in prior histograms (Z=3)
+                if (id.startsWith("Z")) {
+                   histoFile = new File(getClass().getResource("prior_histo_Z3.txt").getFile());
+                   System.out.println("WARNING: histogram file "+histoFile.getAbsolutePath()+" for charge "+id+" does not exist. Taking prior_histo_Z3.txt instead.");
+                } else {
+
+                    System.out.println("ERROR: histogram file "+histoFile.getAbsolutePath()+" for charge "+id+" does not exist. Please set -minZ=1, -maxZ=3 options. Abort.");
+                    System.exit(1);
+                }
             }
 
             CometScoreHistogram scoreHistogram = CometScoreHistogram.read(histoFile);
