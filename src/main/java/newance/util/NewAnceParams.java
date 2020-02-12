@@ -351,7 +351,7 @@ public class NewAnceParams implements Serializable {
 
         if (variableValueMap.containsKey("fdrControlMethod")) {
             fdrControlMethod = getStringValue("fdrControlMethod",variableValueMap.get("fdrControlMethod").trim().toLowerCase(),
-            new HashSet<>(Arrays.asList(new String[]{"combined","seperate"})));
+            new HashSet<>(Arrays.asList(new String[]{"combined","separate"})));
         }
 
         if (variableValueMap.containsKey("cometPsmDir")) {

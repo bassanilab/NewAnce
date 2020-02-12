@@ -104,9 +104,9 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         GroupedFDRCalculator groupedFDRCalculator = buildGroupedFDRCalculator(cometMultiplePepXMLConverter.getPsms());
 
         if (params.getFdrControlMethod().equals("combined")) {
-            controlFDRGlobally(groupedFDRCalculator, cometMultiplePepXMLConverter, maxQuantMultipleMSMSConverter);
+            controlFDRCombined(groupedFDRCalculator, cometMultiplePepXMLConverter, maxQuantMultipleMSMSConverter);
         } else {
-            controlFDRGroupwise(groupedFDRCalculator, cometMultiplePepXMLConverter, maxQuantMultipleMSMSConverter);
+            controlFDRSeparate(groupedFDRCalculator, cometMultiplePepXMLConverter, maxQuantMultipleMSMSConverter);
         }
 
         writePeptideProteinGroupReport(uniProtDB);
@@ -140,7 +140,7 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         return groupedFDRCalculator;
     }
 
-    protected void controlFDRGlobally(GroupedFDRCalculator groupedFDRCalculator, CometMultiplePepXMLFileConverter cometMultiplePepXMLConverter, MaxQuantMultipleMSMSFileConverter maxQuantMultipleMSMSConverter) {
+    protected void controlFDRCombined(GroupedFDRCalculator groupedFDRCalculator, CometMultiplePepXMLFileConverter cometMultiplePepXMLConverter, MaxQuantMultipleMSMSFileConverter maxQuantMultipleMSMSConverter) {
 
         float lFDRThreshold = groupedFDRCalculator.calcLocalFDRThreshold((float)params.getFdrCometThreshold());
 
@@ -161,14 +161,11 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
 
                 reportCombined(combined, groupedFDRCalculator, lFDRThreshold, group);
 
-            } else {
-                combined = filteredCometPsms;
             }
-
         }
     }
 
-    protected void controlFDRGroupwise(GroupedFDRCalculator groupedFDRCalculator, CometMultiplePepXMLFileConverter cometMultiplePepXMLConverter, MaxQuantMultipleMSMSFileConverter maxQuantMultipleMSMSConverter) {
+    protected void controlFDRSeparate(GroupedFDRCalculator groupedFDRCalculator, CometMultiplePepXMLFileConverter cometMultiplePepXMLConverter, MaxQuantMultipleMSMSFileConverter maxQuantMultipleMSMSConverter) {
 
         Map<String, Float> grpThresholdMap = groupedFDRCalculator.calcGroupLocalFDRThreshold((float)params.getFdrCometThreshold());
 
@@ -188,8 +185,6 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
                 combined = combine(filteredCometPsms,maxQuantPsms);
                 reportCombined(combined, groupedFDRCalculator, grpThresholdMap.get(group), group);
 
-            } else {
-                combined = filteredCometPsms;
             }
         }
 
@@ -201,8 +196,8 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         System.out.println("Comet "+group+" psms: ");
         System.out.println("==============================");
         System.out.println("");
-        Psm2StringFunction psm2StringFunction = new Psm2StringFunction(Psm2StringFunction.TabStringMode.COMET);
-        System.out.println("Group\t"+psm2StringFunction.getHeader()+"\t"+"lFDR");
+        Psm2StringFunction psm2StringFunction = new Psm2StringFunction(Psm2StringFunction.TabStringMode.COMET, groupedFDRCalculator);
+        System.out.println("Group\t"+psm2StringFunction.getHeader()+"\t"+"lFDR.Threshold");
         List<PeptideSpectrumMatch> tmp = new ArrayList<>();
         for (String specID : psms.keySet()) {
             for (PeptideSpectrumMatch psm : psms.get(specID)) {
@@ -210,8 +205,7 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
                     tmp.clear();
                     tmp.add(psm);
                     System.out.print(group+"\t"+psm2StringFunction.apply(specID,tmp));
-                    float lFDR = groupedFDRCalculator.getLocalFDR(psm);
-                    System.out.println("\t"+String.format("%.4f (%.4f)",lFDR,lFDRThreshold));
+                    System.out.println("\t"+String.format("%.4f ",lFDRThreshold));
                 }
             }
         }
@@ -246,8 +240,8 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         System.out.println("Combined "+group+" psms: ");
         System.out.println("==============================");
         System.out.println("");
-        Psm2StringFunction psm2StringFunction = new Psm2StringFunction(Psm2StringFunction.TabStringMode.COMBINED);
-        System.out.println("Group\t"+psm2StringFunction.getHeader()+"\t"+"Comet.lFDR");
+        Psm2StringFunction psm2StringFunction = new Psm2StringFunction(Psm2StringFunction.TabStringMode.COMBINED, groupedFDRCalculator);
+        System.out.println("Group\t"+psm2StringFunction.getHeader()+"\t"+"Comet.lFDR.Threshold");
         List<PeptideSpectrumMatch> tmp = new ArrayList<>();
         for (String specID : psms.keySet()) {
             for (PeptideSpectrumMatch psm : psms.get(specID)) {
@@ -255,8 +249,7 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
                     tmp.clear();
                     tmp.add(psm);
                     System.out.print(group+"\t"+psm2StringFunction.apply(specID,tmp));
-                    float lFDR = groupedFDRCalculator.getLocalFDR(psm);
-                    System.out.println("\t"+String.format("%.4f (%.4f)",lFDR,lFDRThreshold));
+                    System.out.println("\t"+String.format("%.4f ",lFDRThreshold));
                 }
             }
         }
@@ -319,7 +312,7 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("smD").required(false).hasArg().longOpt("smoothDegree").desc("Number of threads used by NewAnce (default value: nr of available processors - 2)").build());
         cmdLineOpts.addOption(Option.builder("outP").required(false).hasArg().longOpt("outputPrefix").desc("Number of smoothing steps. Higher value mean more smoothing (default value: 0).").build());
         cmdLineOpts.addOption(Option.builder("minPH").required(false).hasArg().longOpt("minPsm4Histo").desc("Minimal number of psms to calculate local FDR in histogram (default value: 100000).").build());
-        cmdLineOpts.addOption(Option.builder("fdrM").required(false).hasArg().longOpt("fdrControlMethod").desc("Method to control pFDR: combined or seperate (default combined).").build());
+        cmdLineOpts.addOption(Option.builder("fdrM").required(false).hasArg().longOpt("fdrControlMethod").desc("Method to control pFDR: combined or separate (default combined).").build());
         cmdLineOpts.addOption(Option.builder("minXC").required(false).hasArg().longOpt("minXCorr").desc("Minimal Comet XCorr in histogram").build());
         cmdLineOpts.addOption(Option.builder("maxXC").required(false).hasArg().longOpt("maxXCorr").desc("Maximal Comet XCorr in histogram").build());
         cmdLineOpts.addOption(Option.builder("nrXCB").required(false).hasArg().longOpt("nrXCorrBins").desc("Number of Comet XCorr bins in histogram").build());
