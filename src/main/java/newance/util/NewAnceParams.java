@@ -106,7 +106,7 @@ public class NewAnceParams implements Serializable {
     private String maxquantPsmDir = "";
     private Pattern cometPsmRegExp = null;
     private Pattern maxquantPsmRegExp = null;
-    private boolean includeMaxQuant = true;
+    private boolean includeMaxQuant = false;
     private String outputDir = "";
     private boolean reportHistos = false;
     private String readHistos = "";
@@ -356,14 +356,10 @@ public class NewAnceParams implements Serializable {
 
         if (variableValueMap.containsKey("cometPsmDir")) {
             cometPsmDir = getDirectoryValue("cometPsmDir",variableValueMap.get("cometPsmDir"));
-        } else {
-            throw new RuntimeException("No valid value for Comet directory provided. Abort");
         }
 
         if (variableValueMap.containsKey("cometPsmRegExp")) {
             cometPsmRegExp = getPatternValue("cometPsmRegExp",variableValueMap.get("cometPsmRegExp"));
-        } else {
-            throw new RuntimeException("No valid value for Comet pep.xml file regexp provided. Abort");
         }
 
         if (variableValueMap.containsKey("includeMaxQuant")) {
@@ -385,8 +381,6 @@ public class NewAnceParams implements Serializable {
 
         if (variableValueMap.containsKey("outputDir")) {
             outputDir = getNewDirectoryValue("outputDir",variableValueMap.get("outputDir"));
-        } else {
-            throw new RuntimeException("No valid value for output directory provided. Abort");
         }
 
         if (variableValueMap.containsKey("reportHistos")) {
@@ -403,8 +397,6 @@ public class NewAnceParams implements Serializable {
 
         if (variableValueMap.containsKey("uniprotFastaFile")) {
             uniprotFastaFile = getFileValue("uniprotFastaFile",variableValueMap.get("uniprotFastaFile"));
-        } else {
-            throw new RuntimeException("No valid value for Uniprot fasta file provided. Abort");
         }
 
         if (variableValueMap.containsKey("doPeptideProteinGrouping")) {

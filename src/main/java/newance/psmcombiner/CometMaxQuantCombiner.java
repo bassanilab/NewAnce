@@ -362,49 +362,50 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
 
         this.params = NewAnceParams.getInstance();
 
-        params.add("cometPsmDir", getOptionString(line,"coD"));
-        params.add("cometPsmRegExp", getOptionString(line,"coRE"));
+        params.add("cometPsmDir", getOptionString(line, "coD"));
+        params.add("cometPsmRegExp", getOptionString(line, "coRE"));
 
-        String mqDir = getOptionString(line,"mqD");
-        params.add("includeMaxQuant", mqDir.isEmpty()?"false":"true");
+        String mqDir = getOptionString(line, "mqD");
+        params.add("includeMaxQuant", mqDir.isEmpty() ? "false" : "true");
         params.add("maxquantPsmDir", mqDir);
 
-        params.add("reportHistos", getOptionString(line,"repH"));
-        params.add("readHistos", getOptionString(line,"readH"));
-        params.add("outputDir", getOptionString(line,"outD"));
-        params.add("searchFastaFile", getOptionString(line,"seFa"));
-        params.add("uniprotFastaFile", getOptionString(line,"upFa"));
-        params.add("doPeptideProteinGrouping", getOptionString(line,"ppG"));
-        params.add("writeParamsFile", getOptionString(line,"wP"));
-        params.add("readParamsFile", getOptionString(line,"rP"));
-        params.add("maxRank", getOptionString(line,"maxR"));
-        params.add("minCharge", getOptionString(line,"minZ"));
-        params.add("maxCharge", getOptionString(line,"maxZ"));
-        params.add("minPeptideLength", getOptionString(line,"minL"));
-        params.add("maxPeptideLength", getOptionString(line,"maxL"));
-        params.add("fdrCometThreshold", getOptionString(line,"coFDR"));
-        params.add("protCodingGroup", getOptionString(line,"protG"));
-        params.add("noncanonicalGroup", getOptionString(line,"noncG"));
-        params.add("excludedProtPattern", getOptionString(line,"exclP"));
-        params.add("forcedNoncanonicalProts", getOptionString(line,"noncP"));
-        params.add("spectrumRegExp", getOptionString(line,"spRE"));
-        params.add("codingProtRegExp", getOptionString(line,"protRE"));
-        params.add("outputTag", getOptionString(line,"outT"));
-        params.add("modifications", getOptionString(line,"mod"));
-        params.add("minNrPsmsPerHisto", getOptionString(line,"minPH"));
-        params.add("minXCorr", getOptionString(line,"minXC"));
-        params.add("maxXCorr", getOptionString(line,"maxXC"));
-        params.add("nrXCorrBins", getOptionString(line,"nrXCB"));
-        params.add("minDeltaCn", getOptionString(line,"minDC"));
-        params.add("maxDeltaCn", getOptionString(line,"maxDC"));
-        params.add("nrDeltaCnBins", getOptionString(line,"nrDCB"));
-        params.add("minSpScore", getOptionString(line,"minSP"));
-        params.add("maxSpScore", getOptionString(line,"maxSP"));
-        params.add("nrSpScoreBins", getOptionString(line,"nrSPB"));
-        params.add("nrThreads", getOptionString(line,"nrTh"));
-        params.add("smoothDegree", getOptionString(line,"smD"));
-        params.add("fdrControlMethod", getOptionString(line,"fdrM"));
+        params.add("reportHistos", getOptionString(line, "repH"));
+        params.add("readHistos", getOptionString(line, "readH"));
+        params.add("outputDir", getOptionString(line, "outD"));
+        params.add("searchFastaFile", getOptionString(line, "seFa"));
+        params.add("uniprotFastaFile", getOptionString(line, "upFa"));
+        params.add("doPeptideProteinGrouping", getOptionString(line, "ppG"));
+        params.add("writeParamsFile", getOptionString(line, "wP"));
+        params.add("readParamsFile", getOptionString(line, "rP"));
+        params.add("maxRank", getOptionString(line, "maxR"));
+        params.add("minCharge", getOptionString(line, "minZ"));
+        params.add("maxCharge", getOptionString(line, "maxZ"));
+        params.add("minPeptideLength", getOptionString(line, "minL"));
+        params.add("maxPeptideLength", getOptionString(line, "maxL"));
+        params.add("fdrCometThreshold", getOptionString(line, "coFDR"));
+        params.add("protCodingGroup", getOptionString(line, "protG"));
+        params.add("noncanonicalGroup", getOptionString(line, "noncG"));
+        params.add("excludedProtPattern", getOptionString(line, "exclP"));
+        params.add("forcedNoncanonicalProts", getOptionString(line, "noncP"));
+        params.add("spectrumRegExp", getOptionString(line, "spRE"));
+        params.add("codingProtRegExp", getOptionString(line, "protRE"));
+        params.add("outputTag", getOptionString(line, "outT"));
+        params.add("modifications", getOptionString(line, "mod"));
+        params.add("minNrPsmsPerHisto", getOptionString(line, "minPH"));
+        params.add("minXCorr", getOptionString(line, "minXC"));
+        params.add("maxXCorr", getOptionString(line, "maxXC"));
+        params.add("nrXCorrBins", getOptionString(line, "nrXCB"));
+        params.add("minDeltaCn", getOptionString(line, "minDC"));
+        params.add("maxDeltaCn", getOptionString(line, "maxDC"));
+        params.add("nrDeltaCnBins", getOptionString(line, "nrDCB"));
+        params.add("minSpScore", getOptionString(line, "minSP"));
+        params.add("maxSpScore", getOptionString(line, "maxSP"));
+        params.add("nrSpScoreBins", getOptionString(line, "nrSPB"));
+        params.add("nrThreads", getOptionString(line, "nrTh"));
+        params.add("smoothDegree", getOptionString(line, "smD"));
+        params.add("fdrControlMethod", getOptionString(line, "fdrM"));
 
         params.finalize();
+
     }
 }

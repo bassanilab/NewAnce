@@ -99,7 +99,7 @@ public abstract class ExecutableOptions {
     protected boolean checkReadParamsOption(String[] args,  String optionId) {
 
         for (int i=0;i<args.length-1;i++) {
-            if (args[i].equalsIgnoreCase(optionId) || args[i].equalsIgnoreCase(cmdLineOpts.getOption(optionId).getLongOpt())) {
+            if (args[i].equalsIgnoreCase(optionId) || (cmdLineOpts.getOption(optionId)!=null && args[i].equalsIgnoreCase(cmdLineOpts.getOption(optionId).getLongOpt()))) {
                 if (!(new File(args[i+1]).exists())) {
                     String optStr = "-"+optionId+",--"+cmdLineOpts.getOption(optionId).getLongOpt();
                     throw new InvalidPathException(args[i+1]+" for option "+optStr+". ", "File does not exist");
