@@ -73,17 +73,27 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
 
     public String getHeader() {
 
-        if (tabStringMode == TabStringMode.COMET)
-            return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
-                    "IsVariant\tVariantPosition\tWTAA\tIsDecoy\tRank\tXCorr\tDeltaCn\tSpScore\tExpect\tmassdiff\ttot_num_ions\tnum_matched_ions\tlFDR";
-        if (tabStringMode == TabStringMode.MAXQUANT)
+        if (tabStringMode == TabStringMode.COMET) {
+            if (groupedFDRCalculator != null)
+                return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
+                        "IsVariant\tVariantPosition\tWTAA\tIsDecoy\tRank\tXCorr\tDeltaCn\tSpScore\tExpect\tmassdiff\ttot_num_ions\tnum_matched_ions\tlFDR";
+            else
+                return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
+                        "IsVariant\tVariantPosition\tWTAA\tIsDecoy\tRank\tXCorr\tDeltaCn\tSpScore\tExpect\tmassdiff\ttot_num_ions\tnum_matched_ions";
+        }
+        else if (tabStringMode == TabStringMode.MAXQUANT)
             return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
                     "IsVariant\tIsDecoy\tRank\tMass.Error[ppm]\tScore\tDelta.score\tLocalization.prob";
-        else
-            return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
-                    "IsVariant\tVariantPosition\tWTAA\tIsDecoy\tComet.Rank\tComet.XCorr\tComet.DeltaCn\tComet.SpScore\tComet.Expect\tComet.massdiff\tComet.tot_num_ions\t" +
-                    "Comet.num_matched_ions\tComet.lFDR\tMaxQuant.Mass.Error[ppm]\tMaxQuant.Score\tMaxQuant.Delta.score\tMaxQuant.Localization.prob";
-
+        else {
+            if (groupedFDRCalculator != null)
+                return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
+                        "IsVariant\tVariantPosition\tWTAA\tIsDecoy\tComet.Rank\tComet.XCorr\tComet.DeltaCn\tComet.SpScore\tComet.Expect\tComet.massdiff\tComet.tot_num_ions\t" +
+                        "Comet.num_matched_ions\tComet.lFDR\tMaxQuant.Mass.Error[ppm]\tMaxQuant.Score\tMaxQuant.Delta.score\tMaxQuant.Localization.prob";
+            else
+                return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
+                        "IsVariant\tVariantPosition\tWTAA\tIsDecoy\tComet.Rank\tComet.XCorr\tComet.DeltaCn\tComet.SpScore\tComet.Expect\tComet.massdiff\tComet.tot_num_ions\t" +
+                        "Comet.num_matched_ions\tMaxQuant.Mass.Error[ppm]\tMaxQuant.Score\tMaxQuant.Delta.score\tMaxQuant.Localization.prob";
+        }
     }
 
     public String getTabString(String specID, PeptideSpectrumMatch psm) {
@@ -107,7 +117,7 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
 
         String protACs = psm.getProteinAcc().toString();
         int rank = (int) psm.getScore("rank");
-        String lfdrStr = (groupedFDRCalculator==null)?"NaN":String.format("%.5f",groupedFDRCalculator.getLocalFDR(psm));
+        String lfdrStr = (groupedFDRCalculator==null)?"":String.format("\t%.5f",groupedFDRCalculator.getLocalFDR(psm));
         String expectStr = String.format("%.5f",psm.getScore("expect"));
         Peptide peptide = psm.getPeptide();
         String pepMass = String.format("%.5f",peptide.getMolecularMass());
@@ -117,7 +127,7 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
         return  psm.getPeptide().toString()+"\t"+psm.getPeptide().toSymbolString()+"\t"+pepMass+"\t"+modifString+"\t"+protACs+"\t"+
                 variantString+"\t"+ psm.isDecoy()+"\t"+rank+"\t"+ psm.getScore("xcorr")+"\t"+psm.getScore("deltacn")+"\t"+
                 psm.getScore("spscore")+"\t"+expectStr+"\t+"+ psm.getScore("mass_diff")+"\t"+(int)psm.getScore("tot_num_ions")+"\t"+
-                (int)psm.getScore("matched_num_ions")+"\t"+ lfdrStr;
+                (int)psm.getScore("matched_num_ions") + lfdrStr; // no tab before lfdrStr
     }
 
     protected String getMaxQuantCombString(PeptideSpectrumMatch psm) {
@@ -130,7 +140,7 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
 
         String protACs = psm.getProteinAcc().toString();
         int rank = (int) psm.getScore("rank");
-        String lfdrStr = (groupedFDRCalculator==null)?"NaN":String.format("%.5f",groupedFDRCalculator.getLocalFDR(psm));
+        String lfdrStr = (groupedFDRCalculator==null)?"":String.format("\t%.5f",groupedFDRCalculator.getLocalFDR(psm));
         String expectStr = String.format("%.5f",psm.getScore("expect"));
         Peptide peptide = psm.getPeptide();
         String pepMass = String.format("%.5f",peptide.getMolecularMass());
@@ -139,8 +149,7 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
 
         return  psm.getPeptide().toString()+"\t"+psm.getPeptide().toSymbolString()+"\t"+pepMass+"\t"+modifString+"\t"+protACs+"\t"+variantString+"\t"+psm.isDecoy()+"\t"+
                 rank+"\t"+psm.getScore("xcorr")+"\t"+psm.getScore("deltacn")+"\t"+psm.getScore("spscore")+"\t"+expectStr+"\t+" +
-                psm.getScore("mass_diff")+"\t"+(int)psm.getScore("tot_num_ions")+"\t"+(int)psm.getScore("matched_num_ions")+"\t"+
-                lfdrStr;
+                psm.getScore("mass_diff")+"\t"+(int)psm.getScore("tot_num_ions")+"\t"+(int)psm.getScore("matched_num_ions")+lfdrStr; // no tab before lfdrStr
     }
 
     protected String getMaxQuantString(PeptideSpectrumMatch psm) {
