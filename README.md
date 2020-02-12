@@ -1,6 +1,6 @@
 ## NewAnce 
 
-NewAnce (https://www.biorxiv.org/content/10.1101/758680v1) is a java software tool for proteogenomics. It performs stratified FDR calculation and combines the two MS/MS search engines Comet and MaxQuant. This allows to obtain accurate PSMs even in the case of large proteogenomics databases. Source code and an executable .jar file are provided. 
+NewAnce is a java software tool for proteogenomics. It performs stratified FDR calculation and combines the two MS/MS search engines Comet and MaxQuant. This allows to obtain accurate PSMs even in the case of large proteogenomics databases. Source code and an executable .jar file are provided. The version provided here differs slightly from the version used in the paper (https://www.biorxiv.org/content/10.1101/758680v1).
 
 ### TOC
 
@@ -30,7 +30,7 @@ usage: newance.psmcombiner.CometMaxQuantCombiner
  -coFDR,--cometFDR <arg>            FDR for filtering Comet PSMs before combination (required)
  -coRE,--cometPsmRegex <arg>        Regular expression of Comet psm files (e.g. \.xml$) (required)
  -exclP,--excludeProts <arg>        Regular expression of proteins excluded from analysis. If not set no proteins are excluded.
- -fdrM,--fdrControlMethod <arg>     Method to control pFDR: combined or seperate (default combined).
+ -fdrM,--fdrControlMethod <arg>     Method to control pFDR: combined or separate (default combined).
  -h,--help                          Help option for command line help
  -maxDC,--maxDeltaCn <arg>          Maximal Comet DeltaCn in histogram (default value 2500)
  -maxL,--maxLength <arg>            Maximal length of peptide (default value: 25)
@@ -165,8 +165,10 @@ Minimal length for peptides considered by NewAnce.
 -minPH,--minPsm4Histo <arg>        Minimal number of psms to calculate local FDR in histogram (default value: 100000).
 
 Minimal number of psms to calculate local lFDR in a histogram. If less data points are available, the lFDR estimate is 
-considered unreliable and a precalculated default histogram is used instead. The user can also import his/her own default 
-histograms (see -readH option).
+considered unreliable and a precalculated default histogram is used instead for charge 1-3. For charge states higher than 3 
+the default histogram for charge 3 is used. The default histograms were obtained with immunopeptidomics MS/MS spectra in an 
+OrbiTrap at a resolution of 15'000. For other MS/MS acquistion methods, the user can  import his/her own default histograms 
+(see -readH option).
 ```
 
 ```
@@ -285,7 +287,7 @@ Regular expression (e.g. "sp\||tr\|" or ".*_HUMAN") defining the protein coding 
 
 Instead of being calculated with the available Comet PSMs, score histograms are imported. This is useful in case there is not 
 enough data to build them. NewAnce provides default histograms for high resolution OrbiTrap immunopeptidomics data. Otherwise 
-a user can create histograms by analysing a larger datasets 20+ runs and exporing the histograms with the -repH option. When imporing histograms the histogram settings -maxDC,-maxSP,-maxXC,-maxZ,-minDC,-minSP,-minXC,-minZ,-nrDCB,-nrSPB,-nrXCB are overwritten.
+a user can create histograms by analysing a larger dataset (20+ runs) and exporting the histograms with the -repH option. When importing histograms the histogram settings -maxDC,-maxSP,-maxXC,-maxZ,-minDC,-minSP,-minXC,-minZ,-nrDCB,-nrSPB,-nrXCB are overwritten.
 ```
 
 ```
@@ -366,6 +368,24 @@ java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.psmcombiner.CometMaxQua
 #### 3. Output format
 
 #### 4. Tests
+
+##### 4.1 Testing specific peptides
+
+To obtain more information about specific peptides, e.g. whether they were identified by MaxQuant or Comet before consensus 
+and FDR filtering, you can run the CometMaxQuantScoreCombiner_PeptideTest class. It will print all PSMs related to these 
+peptides to standard output.
+
+```
+-pept,--peptides <arg>          Comma separated list of peptides to be printed (e.g. [TPAPRPLGI,VIDYPPIAY,AQFRVTEA]).
+
+Peptide sequences for which more information is requested.
+```
+
+Running PeptideTest for peptides TPAPRPLGI,VIDYPPIAY, and AQFRVTEA:
+
+```
+java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometMaxQuantScoreCombiner_PeptideTest -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -mqD 0D5P/lncRNA/MaxQuant -coFDR 0.03 -outD 0D5P/lncRNA/NewAnce -outT 0D5P -protRE sp\||tr\| -protG prot -noncG lncRNA -upFa SeqDBs/human_proteome.fasta -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -pepts [TPAPRPLGI,VIDYPPIAY,AQFRVTEA]
+```
 
 #### 5. PVD export
 
