@@ -375,6 +375,8 @@ To obtain more information about specific peptides, e.g. whether they were ident
 and FDR filtering, you can run the CometMaxQuantScoreCombiner_PeptideTest class. It will print all PSMs related to these 
 peptides to standard output.
 
+Option for PeptideTest additional to NewAnce options:
+
 ```
 -pept,--peptides <arg>          Comma separated list of peptides to be printed (e.g. [TPAPRPLGI,VIDYPPIAY,AQFRVTEA]).
 
