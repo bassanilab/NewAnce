@@ -369,7 +369,26 @@ java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.psmcombiner.CometMaxQua
 
 #### 4. Tests
 
-##### 4.1 Testing specific peptides
+##### 4.1 Testing Comet pep.xml reader
+
+The CometXMLReaderTest test reads the Comet pep.xml file and outputs the PSMs in tab format to standard output. This can be used to check whether the Comet pep.xml file is read correctly.
+
+Option for CometXMLReaderTest additional to NewAnce options:
+
+```
+-maxP,--maxDisplayedPsms <arg>          Maximal number of psms written to standard output
+
+Maximal number of psms written to standard output. If option is not set, all PSMs in the pep.xml files are written.
+```
+
+Running CometXMLReaderTest:
+
+```
+java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometXMLReaderTest -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -maxP 10
+```
+
+
+##### 4.2 Testing specific peptides
 
 To obtain more information about specific peptides, e.g. whether they were identified by MaxQuant or Comet before consensus 
 and FDR filtering, you can run the CometMaxQuantScoreCombiner_PeptideTest class. It will print all PSMs related to these 
