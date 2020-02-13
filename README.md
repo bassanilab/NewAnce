@@ -408,13 +408,13 @@ Maximal number of psms written to standard output. If option is not set, all PSM
 Printing MaxQuantPsmReaderTest options:
 
 ```
-java -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometXMLReaderTest -h
+java -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.MaxQuantPsmReaderTest -h
 ```
 
 Running MaxQuantPsmReaderTest:
 
 ```
-java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.MaxQuantPsmReaderTest -mqD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -maxP 10
+java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.MaxQuantPsmReaderTest -mqD 0D5P/lncRNA/Comet -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -maxP 10
 ```
 
 
