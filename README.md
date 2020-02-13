@@ -381,14 +381,42 @@ Option for CometXMLReaderTest additional to NewAnce options:
 Maximal number of psms written to standard output. If option is not set, all PSMs in the pep.xml files are written.
 ```
 
+Printing CometXMLReaderTest options:
+
+```
+java -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometXMLReaderTest -h
+```
 Running CometXMLReaderTest:
 
 ```
 java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometXMLReaderTest -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -maxP 10
 ```
 
+##### 4.2 Testing MaxQuant msms.txt reader
 
-##### 4.2 Testing specific peptides
+The MaxQuantPsmReaderTest test reads the MaxQuant msms.txt and peptides.txt files and outputs the PSMs in tab format to standard output. This can be used to check whether the MaxQuant files are read correctly.
+
+Option for MaxQuantPsmReaderTest additional to NewAnce options:
+
+```
+-maxP,--maxDisplayedPsms <arg>          Maximal number of psms written to standard output
+
+Maximal number of psms written to standard output. If option is not set, all PSMs in the pep.xml files are written.
+```
+
+Printing MaxQuantPsmReaderTest options:
+
+```
+java -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometXMLReaderTest -h
+```
+Running MaxQuantPsmReaderTest:
+
+```
+java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.MaxQuantPsmReaderTest -mqD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -maxP 10
+```
+
+
+##### 4.3 Testing specific peptides
 
 To obtain more information about specific peptides, e.g. whether they were identified by MaxQuant or Comet before consensus 
 and FDR filtering, you can run the CometMaxQuantScoreCombiner_PeptideTest class. It will print all PSMs related to these 
