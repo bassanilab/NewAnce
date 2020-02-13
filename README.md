@@ -417,8 +417,37 @@ Running MaxQuantPsmReaderTest:
 java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.MaxQuantPsmReaderTest -mqD 0D5P/lncRNA/Comet -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -maxP 10
 ```
 
+##### 4.3 Testing fasta file reader
 
-##### 4.3 Testing specific peptides
+The FastaReaderTest test reads a fasta file and the fasta entry in tab format to standard output. This can be used to check whether the fasta files are read correctly. This also outputs the protein id used in NewAnce (NewAnceID), which is the protein id matched by the regular expression in the NewAnce -protRE option.
+
+Option for FastaReaderTest additional to NewAnce options:
+
+```
+-maxP,--maxDisplayedPsms <arg>          Maximal number of psms written to standard output
+
+Maximal number of fasta entries written to standard output. If option is not set, all entries in the fasta file are written.
+```
+
+```
+-fa,--fastaFile <arg>                   Fasta file to be tested
+
+This test reveals how NewAnce reads and interprets the given fasta file
+```
+
+Printing FastaReaderTest options:
+
+```
+java -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.FastaReaderTest -h
+```
+
+Running FastaReaderTest:
+
+```
+java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.FastaReaderTest -fa SeqDBs/uniprot_human_reviewed_proteome_18_12_2018.fasta -maxP 10
+```
+
+##### 4.4 Testing specific peptides
 
 To obtain more information about specific peptides, e.g. whether they were identified by MaxQuant or Comet before consensus 
 and FDR filtering, you can run the CometMaxQuantScoreCombiner_PeptideTest class. It will print all PSMs related to these 
