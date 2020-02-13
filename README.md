@@ -371,7 +371,7 @@ java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.psmcombiner.CometMaxQua
 
 ##### 4.1 Testing Comet pep.xml reader
 
-The CometXMLReaderTest test reads the Comet pep.xml file and outputs the PSMs in tab format to standard output. This can be used to check whether the Comet pep.xml file is read correctly.
+The CometXMLReaderTest tests how NewAnce reads the Comet pep.xml file and outputs the PSMs in tab format to standard output. This can be used to check whether the Comet pep.xml file is read correctly.
 
 Option for CometXMLReaderTest additional to NewAnce options:
 
@@ -395,7 +395,7 @@ java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometXMLReaderT
 
 ##### 4.2 Testing MaxQuant msms.txt reader
 
-The MaxQuantPsmReaderTest test reads the MaxQuant msms.txt and peptides.txt files and outputs the PSMs in tab format to standard output. This can be used to check whether the MaxQuant files are read correctly.
+The MaxQuantPsmReaderTest tests how NewAnce reads the MaxQuant msms.txt and peptides.txt files and outputs the PSMs in tab format to standard output. This can be used to check whether the MaxQuant files are read correctly.
 
 Option for MaxQuantPsmReaderTest additional to NewAnce options:
 
@@ -414,7 +414,7 @@ java -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.MaxQuantPsmReaderTest -
 Running MaxQuantPsmReaderTest:
 
 ```
-java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.MaxQuantPsmReaderTest -mqD 0D5P/lncRNA/Comet -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -maxP 10
+java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.MaxQuantPsmReaderTest -mqD 0D5P/lncRNA/MaxQuant -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -maxP 10
 ```
 
 ##### 4.3 Testing fasta file reader
