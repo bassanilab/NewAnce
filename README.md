@@ -386,6 +386,7 @@ Printing CometXMLReaderTest options:
 ```
 java -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometXMLReaderTest -h
 ```
+
 Running CometXMLReaderTest:
 
 ```
@@ -409,6 +410,7 @@ Printing MaxQuantPsmReaderTest options:
 ```
 java -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometXMLReaderTest -h
 ```
+
 Running MaxQuantPsmReaderTest:
 
 ```
@@ -421,6 +423,12 @@ java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.MaxQuantPsmRead
 To obtain more information about specific peptides, e.g. whether they were identified by MaxQuant or Comet before consensus 
 and FDR filtering, you can run the CometMaxQuantScoreCombiner_PeptideTest class. It will print all PSMs related to these 
 peptides to standard output.
+
+Printing CometMaxQuantScoreCombiner_PeptideTest options:
+
+```
+java -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometMaxQuantScoreCombiner_PeptideTest -h
+```
 
 Option for PeptideTest additional to NewAnce options:
 
