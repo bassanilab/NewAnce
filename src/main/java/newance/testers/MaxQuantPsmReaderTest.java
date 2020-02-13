@@ -52,10 +52,6 @@ import java.util.regex.Pattern;
 
 public class MaxQuantPsmReaderTest extends ExecutableOptions {
 
-    protected String maxquantPsmDir;
-    protected Pattern maxquantPsmRegExp;
-    protected String uniprotFastaFile;
-    protected PsmGrouper psmGrouper;
     protected NewAnceParams params;
     protected int maxNrDisplayedPSMs;
     protected final Psm2StringFunction stringFunction;
@@ -64,18 +60,17 @@ public class MaxQuantPsmReaderTest extends ExecutableOptions {
     public MaxQuantPsmReaderTest() {
 
         stringFunction = new Psm2StringFunction(Psm2StringFunction.TabStringMode.MAXQUANT);
+        maxNrDisplayedPSMs = -1;
         createOptions();
     }
 
     public static void main(String[] args) {
 
+
         MaxQuantPsmReaderTest maxQuantPsmReaderTest =  new MaxQuantPsmReaderTest();
         try {
             maxQuantPsmReaderTest.init(args).parseOptions(args).run();
         } catch (MissingOptionException e) {
-            maxQuantPsmReaderTest.checkHelpOption(args, "-h");
-            maxQuantPsmReaderTest.checkVersionOption(args, NewAnceParams.getInstance().getVersion(), "-v");
-            maxQuantPsmReaderTest.printOptions(args,e.getMessage());
         } catch (ParseException e) {
             maxQuantPsmReaderTest.printOptions(args, e.getMessage());
         } catch (Exception e) {
@@ -91,42 +86,25 @@ public class MaxQuantPsmReaderTest extends ExecutableOptions {
     public int run() throws IOException {
 
         System.out.println("Parsing MaxQuant msms.txt and peptides.txt files ...");
-        MaxQuantMultipleMSMSFileConverter maxQuantMultipleMSMSConverter = new MaxQuantMultipleMSMSFileConverter(maxquantPsmDir, maxquantPsmRegExp);
+        MaxQuantMultipleMSMSFileConverter maxQuantMultipleMSMSConverter =
+                new MaxQuantMultipleMSMSFileConverter(params.getMaxquantPsmDir(), params.getMaxquantPsmRegExp());
         maxQuantMultipleMSMSConverter.run();
 
-        System.out.println("Matching peptides to fasta file: "+uniprotFastaFile+" ...");
-        System.out.println("Loading protein data from fasta file: "+uniprotFastaFile+" ...");
-
-        UniProtDB uniProtDB = new UniProtDB(uniprotFastaFile);
-        long start = System.currentTimeMillis();
-        maxQuantMultipleMSMSConverter.addDBProteins(uniProtDB);
-        System.out.println("Comet DB matching ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
-
         System.out.println("RunTime after Psm parsing: " + RunTime2String.getRuntimeString(Runtime.getRuntime()));
-
-        if (params.getCodingProtRegExp()!=null) {
-            if (params.getForcedNoncanonicalProts().isEmpty())
-                psmGrouper = new RegExpProteinGrouper(params.getCodingProtRegExp(), params.getProtCodingGroup(), params.getNoncanonicalGroup());
-            else
-                psmGrouper = new RegExpProteinGrouper(params.getCodingProtRegExp(), params.getForcedNoncanonicalProts(), params.getProtCodingGroup(), params.getNoncanonicalGroup());
-        } else {
-            psmGrouper = new ModificationPSMGrouper();
-        }
 
         ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  psms = maxQuantMultipleMSMSConverter.getPsms();
 
         int cnt = 0;
 
-        System.out.println(stringFunction.getHeader()+"\tGroup");
+        System.out.println(stringFunction.getHeader());
         for (String specID : psms.keySet()) {
-            if(cnt>=maxNrDisplayedPSMs) break;
+            if(maxNrDisplayedPSMs>=0 && cnt>=maxNrDisplayedPSMs) break;
 
             for (PeptideSpectrumMatch psm : psms.get(specID)) {
 
-                if(cnt>=maxNrDisplayedPSMs) break;
+                if(maxNrDisplayedPSMs>=0 && cnt>=maxNrDisplayedPSMs) break;
 
-                System.out.print(stringFunction.getTabString(specID,psm));
-                System.out.println("\t"+psmGrouper.apply(specID,psm));
+                System.out.println(stringFunction.getTabString(specID,psm));
 
                 cnt++;
             }
@@ -141,13 +119,8 @@ public class MaxQuantPsmReaderTest extends ExecutableOptions {
         this.cmdLineOpts = new Options();
 
         cmdLineOpts.addOption(Option.builder("mqD").required(false).hasArg().longOpt("maxquantPsmDir").desc("MaxQuant psm root directory. If not provided only Comet is used.").hasArg().build());
-        cmdLineOpts.addOption(Option.builder("mqRE").required(false).hasArg().longOpt("maxquantPsmRegex").desc("Regular expression of MaxQuant psm files (e.g. msms\\.txt$). If not provided only Comet is used.").build());
-        cmdLineOpts.addOption(Option.builder("protG").required(false).hasArg().longOpt("proteinGroup").desc("Name of group with protein coding or canonical sequences").build());
-        cmdLineOpts.addOption(Option.builder("crypG").required(false).hasArg().longOpt("crypticGroup").desc("Name of group with non-canonical or cryptic sequences").build());
-        cmdLineOpts.addOption(Option.builder("stdRE").required(false).hasArg().longOpt("stdProtRegExp").desc("Regular expression to match fasta name of coding proteins (e.g. sp\\||tr\\| ").build());
-        cmdLineOpts.addOption(Option.builder("spRE").required(false).hasArg().longOpt("spectrumFilter").desc("If this option is set, only spectrum files that match the regexp are used").build());
-        cmdLineOpts.addOption(Option.builder("exclP").required(false).hasArg().longOpt("excludeCodingProts").desc("Comma separated list of protein names to be excluded from coding prots (e.g. PGBD5_HUMAN,POGZ_HUMAN,PGBD1_HUMAN)").build());
-        cmdLineOpts.addOption(Option.builder("upFa").required(false).hasArg().longOpt("uniProtFastaFile").desc("Fasta file with coding or canonical proteins (e.g. UniProt fasta file)").build());
+        cmdLineOpts.addOption(Option.builder("spRE").required(false).hasArg().longOpt("spectrumFilter").desc("If this option is set, only spectrum ids that match this regexp are used.  If not set no filtering is performed.").build());
+        cmdLineOpts.addOption(Option.builder("mod").required(false).hasArg().longOpt("modifications").desc("Comma separated list of peptide modifications used in search (e.g. Cysteinyl:C3H5NO2S,Oxidation:O)").build());
         cmdLineOpts.addOption(Option.builder("maxR").required(false).hasArg().longOpt("maxRank").desc("Maximal rank of peptide in list of spectrum matches (rank 1 = best) (default value: 1)").build());
         cmdLineOpts.addOption(Option.builder("minZ").required(false).hasArg().longOpt("minCharge").desc("Minimal charge of PSM (default value: 1)").build());
         cmdLineOpts.addOption(Option.builder("maxZ").required(false).hasArg().longOpt("maxCharge").desc("Maximal charge of PSM (default value: 5)").build());
@@ -163,46 +136,21 @@ public class MaxQuantPsmReaderTest extends ExecutableOptions {
 
         this.params = NewAnceParams.getInstance();
 
-        params.add("cometPsmDir", getOptionString(line,"coD"));
-        params.add("cometPsmRegExp", getOptionString(line,"coRE"));
-
         String mqDir = getOptionString(line,"mqD");
-        params.add("includeMaxQuant", mqDir.isEmpty()?"false":"true");
+        params.add("includeMaxQuant", mqDir.isEmpty() ? "false" : "true");
         params.add("maxquantPsmDir", mqDir);
 
-        params.add("reportHistos", getOptionString(line,"repH"));
-        params.add("outputDir", getOptionString(line,"outD"));
-        params.add("searchFastaFile", getOptionString(line,"seFa"));
-        params.add("uniprotFastaFile", getOptionString(line,"upFa"));
-        params.add("doPeptideProteinGrouping", getOptionString(line,"ppG"));
-        params.add("writeParamsFile", getOptionString(line,"wP"));
-        params.add("readParamsFile", getOptionString(line,"rP"));
         params.add("maxRank", getOptionString(line,"maxR"));
         params.add("minCharge", getOptionString(line,"minZ"));
         params.add("maxCharge", getOptionString(line,"maxZ"));
         params.add("minPeptideLength", getOptionString(line,"minL"));
         params.add("maxPeptideLength", getOptionString(line,"maxL"));
-        params.add("fdrCometThreshold", getOptionString(line,"coFDR"));
-        params.add("protCodingGroup", getOptionString(line,"protG"));
-        params.add("noncanonicalGroup", getOptionString(line,"noncG"));
-        params.add("excludedProtPattern", getOptionString(line,"exclP"));
-        params.add("forcedNoncanonicalProts", getOptionString(line,"noncP"));
         params.add("spectrumRegExp", getOptionString(line,"spRE"));
-        params.add("codingProtRegExp", getOptionString(line,"protRE"));
-        params.add("outputPrefix", getOptionString(line,"outP"));
         params.add("modifications", getOptionString(line,"mod"));
-        params.add("minNrPsmsPerHisto", getOptionString(line,"minPH"));
-        params.add("minXCorr", getOptionString(line,"minXC"));
-        params.add("maxXCorr", getOptionString(line,"maxXC"));
-        params.add("nrXCorrBins", getOptionString(line,"nrXCB"));
-        params.add("minDeltaCn", getOptionString(line,"minDC"));
-        params.add("maxDeltaCn", getOptionString(line,"maxDC"));
-        params.add("nrDeltaCnBins", getOptionString(line,"nrDCB"));
-        params.add("minSpScore", getOptionString(line,"minSP"));
-        params.add("maxSpScore", getOptionString(line,"maxSP"));
-        params.add("nrSpScoreBins", getOptionString(line,"nrSPB"));
-        params.add("nrThreads", getOptionString(line,"nrTh"));
-        params.add("fdrControlMethod", getOptionString(line,"fdrM"));
+
+
+        String maxPStr = getOptionString(line,"maxP");
+        maxNrDisplayedPSMs = (maxPStr.isEmpty())?-1:Integer.parseInt(maxPStr);
 
         params.finalize();
     }

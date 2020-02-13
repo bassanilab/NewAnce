@@ -63,7 +63,7 @@ public class MaxQuantMultipleMSMSFileConverter extends MultiplePsmFileConverter 
         final List<File> psmFileList = new ArrayList<>();
         Files.walk(Paths.get(psmRootDirName))
                 .filter(Files::isRegularFile)
-                .filter(f -> f.getFileName().startsWith("msms.txt"))
+                .filter(f -> regex.matcher(f.getFileName().toString()).find())
                 .forEach(f -> psmFileList.add(f.toFile()));
 
         checkState(!psmFileList.isEmpty());
