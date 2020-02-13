@@ -421,7 +421,7 @@ java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.MaxQuantPsmRead
 
 The FastaReaderTest test reads a fasta file and the fasta entry in tab format to standard output. This can be used to check whether the fasta files are read correctly. This also outputs the protein id used in NewAnce (NewAnceID), which is the protein id matched by the regular expression in the NewAnce -protRE option.
 
-Option for FastaReaderTest additional to NewAnce options:
+Options for FastaReaderTest:
 
 ```
 -maxP,--maxDisplayedPsms <arg>          Maximal number of psms written to standard output
