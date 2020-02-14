@@ -1,8 +1,8 @@
-## NewAnce 
+# NewAnce 
 
 NewAnce is a java software tool for proteogenomics. It performs stratified FDR calculation and combines the two MS/MS search engines Comet and MaxQuant. This allows to obtain accurate PSMs even in the case of large proteogenomics databases. Source code and an executable .jar file are provided. The version provided here differs slightly from the version used in the paper (https://www.biorxiv.org/content/10.1101/758680v1).
  
-### TOC
+## TOC
 
 1. [Command line options](#Command-line-options)
 2. [Running NewAnce](#Running-NewAnce)
@@ -10,7 +10,7 @@ NewAnce is a java software tool for proteogenomics. It performs stratified FDR c
 4. [Tests](#Tests)
 5. [PVD export](#PVD-export)
 
-#### Command line options 
+## Command line options 
 
 The NewAnce command line options can be obtained by typing
 
@@ -344,7 +344,7 @@ Write NewAnce parameters to specified parameter file.
 ```
 
 
-#### Running NewAnce
+## Running NewAnce
 
 The NewAnce command line options can be obtained by typing
 
@@ -365,11 +365,11 @@ java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.psmcombiner.CometMaxQua
 ```
 
 
-#### Output format
+## Output format
 
-#### Tests
+## Tests
 
-##### 1 Testing Comet pep.xml reader
+### 1 Testing Comet pep.xml reader
 
 The CometXMLReaderTest tests how NewAnce reads the Comet pep.xml file and outputs the PSMs in tab format to standard output. This can be used to check whether the Comet pep.xml file is read correctly.
 
@@ -393,7 +393,7 @@ Running CometXMLReaderTest:
 java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometXMLReaderTest -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -maxP 10
 ```
 
-##### 2 Testing MaxQuant msms.txt reader
+### 2 Testing MaxQuant msms.txt reader
 
 The MaxQuantPsmReaderTest tests how NewAnce reads the MaxQuant msms.txt and peptides.txt files and outputs the PSMs in tab format to standard output. This can be used to check whether the MaxQuant files are read correctly.
 
@@ -417,7 +417,7 @@ Running MaxQuantPsmReaderTest:
 java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.MaxQuantPsmReaderTest -mqD 0D5P/lncRNA/MaxQuant -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -maxP 10
 ```
 
-##### 3 Testing fasta file reader
+### 3 Testing fasta file reader
 
 The FastaReaderTest test reads a fasta file and the fasta entry in tab format to standard output. This can be used to check whether the fasta files are read correctly. This also outputs the protein id used in NewAnce (NewAnceID), which is the protein id matched by the regular expression in the NewAnce -protRE option.
 
@@ -447,7 +447,7 @@ Running FastaReaderTest:
 java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.FastaReaderTest -fa SeqDBs/uniprot_human_reviewed_proteome_18_12_2018.fasta -maxP 10
 ```
 
-##### 4 Testing specific peptides
+### 4 Testing specific peptides
 
 To obtain more information about specific peptides, e.g. whether they were identified by MaxQuant or Comet before consensus 
 and FDR filtering, you can run the CometMaxQuantScoreCombiner_PeptideTest class. It will print all PSMs related to these 
@@ -473,6 +473,6 @@ Running PeptideTest for peptides TPAPRPLGI,VIDYPPIAY, and AQFRVTEA:
 java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometMaxQuantScoreCombiner_PeptideTest -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -mqD 0D5P/lncRNA/MaxQuant -coFDR 0.03 -outD 0D5P/lncRNA/NewAnce -outT 0D5P -protRE sp\||tr\| -protG prot -noncG lncRNA -upFa SeqDBs/human_proteome.fasta -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -pepts [TPAPRPLGI,VIDYPPIAY,AQFRVTEA]
 ```
 
-#### PVD export
+## PVD export
 
  
