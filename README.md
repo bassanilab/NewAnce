@@ -4,7 +4,7 @@ NewAnce is a java software tool for proteogenomics. It performs stratified FDR c
 
 ### TOC
 
-1. Command line options 
+1. [Command line options](#1. Command line options) 
 2. Running NewAnce
 3. Output format
 4. Tests
