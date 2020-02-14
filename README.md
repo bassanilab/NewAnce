@@ -1,18 +1,16 @@
 ## NewAnce 
 
 NewAnce is a java software tool for proteogenomics. It performs stratified FDR calculation and combines the two MS/MS search engines Comet and MaxQuant. This allows to obtain accurate PSMs even in the case of large proteogenomics databases. Source code and an executable .jar file are provided. The version provided here differs slightly from the version used in the paper (https://www.biorxiv.org/content/10.1101/758680v1).
-
-[Command line options](#1.-Command-line-options) 
-
+ 
 ### TOC
 
-1. Command line options 
-2. Running NewAnce
+1. [Command line options](#Command-line-options)
+2. [Running NewAnce](#2.-Running-NewAnce)
 3. Output format
 4. Tests
 5. PVD export
 
-#### 1. Command line options 
+#### Command line options 
 
 The NewAnce command line options can be obtained by typing
 
