@@ -5,10 +5,10 @@ NewAnce is a java software tool for proteogenomics. It performs stratified FDR c
 ### TOC
 
 1. [Command line options](#Command-line-options)
-2. [Running NewAnce](#2.-Running-NewAnce)
-3. Output format
-4. Tests
-5. PVD export
+2. [Running NewAnce](#Running-NewAnce)
+3. [Output format](#Output-format)
+4. [Tests](#Tests)
+5. [PVD export](#PVD-export)
 
 #### Command line options 
 
