@@ -67,7 +67,7 @@ usage: newance.psmcombiner.CometMaxQuantCombiner
  -spRE,--spectrumFilter <arg>       If this option is set, only spectrum ids that match this regexp are used.  If not set no filtering is performed.
  -upFa,--uniProtFastaFile <arg>     Fasta file with coding or canonical proteins (e.g. UniProt fasta file)
  -v,--version                       Version of NewAnce software
- -wP,--write2ParamFile <arg>        Filename where parameters should to written.
+ -wP,--write2ParamFile <arg>        Filename where parameters should be written to.
 ```
 
 The comand line options in more detail:
@@ -338,7 +338,7 @@ Show NewAnce version.
 ```
 
 ```
--wP,--write2ParamFile <arg>        Filename where parameters should to written.
+-wP,--write2ParamFile <arg>        Filename where parameters should be written to.
 
 Write NewAnce parameters to specified parameter file.
 ```
