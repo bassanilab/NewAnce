@@ -475,4 +475,33 @@ java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometMaxQuantSc
 
 ## PVD export
 
- 
+The [PDV viewer](#http://pdv.zhang-lab.org) is a MS/MS search result viewer. In order to export the peptide-spectrum matches to PDV format, the .mgf files containing the spectra and NewAnce result files are required.
+
+        cmdLineOpts.addOption(Option.builder("naf").required().hasArg().longOpt("newAnceResultFile").desc("Result file from NewAnce analysis (required)").build());
+
+Options for CreatePDVExport:
+
+```
+-mgf,--mgfDir <arg>                    Directory containing mgf files (required)
+
+Directors where mgf files of spectra used for Comet/MaxQuant searches are found.
+```
+
+```
+-naf,--newAnceResultFile <arg>         Result file from NewAnce analysis (required)
+
+NewAnce result file containing peptide spectrum matches.
+```
+
+Printing CreatePDVExport options:
+
+```
+java -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CreatePDVExport -h
+```
+
+Running CreatePDVExport:
+
+```
+java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CreatePDVExport -mgf 0D5P/mgf -naf 0D5P/lncRNA/NewAnce/lncRNA_0D5P_NewAncePSMs.txt
+```
+
