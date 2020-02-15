@@ -473,7 +473,7 @@ Running PeptideTest for peptides TPAPRPLGI,VIDYPPIAY, and AQFRVTEA:
 java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometMaxQuantScoreCombiner_PeptideTest -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -mqD 0D5P/lncRNA/MaxQuant -coFDR 0.03 -outD 0D5P/lncRNA/NewAnce -outT 0D5P -protRE sp\||tr\| -protG prot -noncG lncRNA -upFa SeqDBs/human_proteome.fasta -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -pepts [TPAPRPLGI,VIDYPPIAY,AQFRVTEA]
 ```
 
-## PVD export
+## PDV export
 
 The [PDV viewer](http://pdv.zhang-lab.org) is a MS/MS search result viewer. In order to export the peptide-spectrum matches to PDV format, the .mgf files containing the spectra and NewAnce result files are required.
 
