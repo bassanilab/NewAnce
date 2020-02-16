@@ -370,22 +370,22 @@ java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.psmcombiner.CometMaxQua
 NewAnce writes the PSMs for the protein coding and non-canonical groups to tab delimited text files . The file names are groupName_outputTag_NewAncePSMs.txt. The columnnames in these files are:
 
 * Spectrum : spectrum id in the format raw_file_name.scan_number.scan_number.charge . Leading 0's are removed from scan_number tag. 
-* ScanNr : scan number
+* ScanNr : scan number of MS/MS acquisition 
 * Charge : precursor ion charge 
 * RT : retention time of MS/MS acquisition in minutes
 * NeutralMass : neutral mass of precursor ion
-* Peptide : amino acid sequence of matching peptides with PTM annotation
-* Sequence : amino acid sequence of matching peptides
-* PeptideMass : neutral mass of peptide
+* Peptide : amino acid sequence of matching peptide with PTM annotation
+* Sequence : bare amino acid sequence of matching peptide
+* PeptideMass : neutral mass of matching peptide
 * ModifName : name of PTM (if present, NA otherwise). Comma separated if several PTMs are present.
 * ModifPosition : position of PTM (if present, NA otherwise). Comma separated if several PTMs are present.
 * ModifMass : mass of PTM (if present, NA otherwise). Comma separated if several PTMs are present.   
 * ModifAA : amino acid of PTM (if present, NA otherwise). NT (CT) for n(c)-terminal modification. Comma separated if several PTMs are present. 
 * Proteins : NewAnce protein ids in format: \[protein1,protein2,protein3]     
-* IsVariant : does peptides contain sequence variant annotated in fasta header of Comet or MaxQuant searches.    
+* IsVariant : true if peptide contains sequence variant annotated in fasta header of Comet or MaxQuant searches. false otherwise.   
 * VariantPosition : position of sequence variant (if present, NA otherwise). Comma separated if several variants are present.
 * WTAA : wild type amino acid of sequence variant (if present, NA otherwise). Comma separated if several variants are present.  
-* IsDecoy : true if peptide originates from reversed protein sequence
+* IsDecoy : true if peptide originates from reversed protein sequence. false otherwise.
 * Comet.Rank : rank of PSM in Comet search
 * Comet.XCorr : Comet xcorr score  
 * Comet.DeltaCn : Comet deltacn score  
