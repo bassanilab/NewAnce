@@ -396,7 +396,7 @@ NewAnce writes the PSMs for the protein coding and non-canonical groups to tab d
 * Comet.num_matched_ions : Comet number of theoretical fragment ions that produced a match to experimental fragment masses
 * Comet.lFDR : local FDR calculated by NewAnce 
 * MaxQuant.Mass.Error[ppm] : MaxQuant relative mass error between neutral precursor and peptide masses (ppm)  
-* MaxQuant.Score : MaxQaunt Score
+* MaxQuant.Score : MaxQuant Score
 * MaxQuant.Delta.score : MaxQuant Delta score
 * MaxQuant.Localization.prob : MaxQuant Localization probability of PTM (NA if no PTM is present)
 
