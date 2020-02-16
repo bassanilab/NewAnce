@@ -367,6 +367,38 @@ java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.psmcombiner.CometMaxQua
 
 ## Output format
 
+NewAnce writes the PSMs for the protein coding and non-canonical groups to tab delimited text files . The file names are groupName_outputTag_NewAncePSMs.txt. The columnnames in these files are:
+
+* Spectrum
+* ScanNr  
+* Charge  
+* RT 
+* NeutralMass    
+* Peptide Sequence 
+* PeptideMass 
+* ModifName 
+* ModifPosition  
+* ModifMass      
+* ModifAA Proteins       
+* IsVariant      
+* VariantPosition 
+* WTAA   
+* IsDecoy 
+* Comet.Rank     
+* Comet.XCorr    
+* Comet.DeltaCn  
+* Comet.SpScore  
+* Comet.NegLogPv 
+* Comet.massdiff 
+* Comet.tot_num_ions     
+* Comet.num_matched_ions 
+* Comet.lFDR     
+* MaxQuant.Mass.Error[ppm]       
+* MaxQuant.Score 
+* MaxQuant.Delta.score   
+* MaxQuant.Localization.prob
+
+
 ## Tests
 
 ### 1 Testing Comet pep.xml reader
