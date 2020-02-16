@@ -369,7 +369,7 @@ java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.psmcombiner.CometMaxQua
 
 NewAnce writes the PSMs for the protein coding and non-canonical groups to tab delimited text files . The file names are groupName_outputTag_NewAncePSMs.txt. The columnnames in these files are:
 
-* Spectrum : spectrum id in the format raw_file_name.scan_number.scan_number.charge . Leading 0 are removed from scan_number tag. 
+* Spectrum : spectrum id in the format raw_file_name.scan_number.scan_number.charge . Leading 0's are removed from scan_number tag. 
 * ScanNr : scan number
 * Charge : precursor ion charge 
 * RT : retention time of MS/MS acquisition in minutes
