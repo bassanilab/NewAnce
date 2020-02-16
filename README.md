@@ -369,34 +369,36 @@ java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.psmcombiner.CometMaxQua
 
 NewAnce writes the PSMs for the protein coding and non-canonical groups to tab delimited text files . The file names are groupName_outputTag_NewAncePSMs.txt. The columnnames in these files are:
 
-* Spectrum
-* ScanNr  
-* Charge  
-* RT 
-* NeutralMass    
-* Peptide Sequence 
-* PeptideMass 
-* ModifName 
-* ModifPosition  
-* ModifMass      
-* ModifAA Proteins       
-* IsVariant      
-* VariantPosition 
-* WTAA   
-* IsDecoy 
-* Comet.Rank     
-* Comet.XCorr    
-* Comet.DeltaCn  
-* Comet.SpScore  
-* Comet.NegLogPv 
-* Comet.massdiff 
-* Comet.tot_num_ions     
-* Comet.num_matched_ions 
-* Comet.lFDR     
-* MaxQuant.Mass.Error[ppm]       
-* MaxQuant.Score 
-* MaxQuant.Delta.score   
-* MaxQuant.Localization.prob
+* Spectrum : spectrum id in the format raw_file_name.scan_number.scan_number.charge . Leading 0 are removed from scan_number tag. 
+* ScanNr : scan number
+* Charge : precursor ion charge 
+* RT : retention time of MS/MS acquisition in minutes
+* NeutralMass : neutral mass of precursor ion
+* Peptide : amino acid sequence of matching peptides with PTM annotation
+* Sequence : amino acid sequence of matching peptides
+* PeptideMass : neutral mass of peptide
+* ModifName : name of PTM (if present, NA otherwise). Comma separated if several PTMs are present.
+* ModifPosition : position of PTM (if present, NA otherwise). Comma separated if several PTMs are present.
+* ModifMass : mass of PTM (if present, NA otherwise). Comma separated if several PTMs are present.   
+* ModifAA : amino acid of PTM (if present, NA otherwise). NT (CT) for n(c)-terminal modification. Comma separated if several PTMs are present. 
+* Proteins : NewAnce protein ids in format: \[protein1,protein2,protein3]     
+* IsVariant : does peptides contain sequence variant annotated in fasta header of Comet or MaxQuant searches.    
+* VariantPosition : position of sequence variant (if present, NA otherwise). Comma separated if several variants are present.
+* WTAA : wild type amino acid of sequence variant (if present, NA otherwise). Comma separated if several variants are present.  
+* IsDecoy : true if peptide originates from reversed protein sequence
+* Comet.Rank : rank of PSM in Comet search
+* Comet.XCorr : Comet xcorr score  
+* Comet.DeltaCn : Comet deltacn score  
+* Comet.SpScore : Comet spscore score    
+* Comet.Expect : Comet expect score
+* Comet.massdiff : Comet mass difference between neutral precursor and peptide masses (atomic units)
+* Comet.tot_num_ions : Comet total number of theoretical fragment ions considered for the match  
+* Comet.num_matched_ions : Comet number of theoretical fragment ions that produced a match to experimental fragment masses
+* Comet.lFDR : local FDR calculated by NewAnce 
+* MaxQuant.Mass.Error[ppm] : MaxQuant relative mass error between neutral precursor and peptide masses (ppm)  
+* MaxQuant.Score : MaxQaunt Score
+* MaxQuant.Delta.score : MaxQuant Delta score
+* MaxQuant.Localization.prob : MaxQuant Localization probability of PTM (NA if no PTM is present)
 
 
 ## Tests
