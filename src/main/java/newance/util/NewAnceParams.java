@@ -479,7 +479,7 @@ public class NewAnceParams implements Serializable {
         }
     }
 
-    private Set<Modification> getModifications(String variable, String value) {
+    public static Set<Modification> getModifications(String variable, String value) {
 
         Set<String> modifStrs = getSetValue(variable, value);
         Set<Modification> modifications = new HashSet<>();
@@ -496,7 +496,7 @@ public class NewAnceParams implements Serializable {
         return modifications;
     }
 
-    private String getStringValue(String variable, String value, Set<String> allowedValues) {
+    public static String getStringValue(String variable, String value, Set<String> allowedValues) {
 
         if (allowedValues.contains(value)) {
             return value;
@@ -505,7 +505,7 @@ public class NewAnceParams implements Serializable {
         }
     }
 
-    private String getStringValue(String variable, String value) {
+    public static String getStringValue(String variable, String value) {
 
         if (!value.isEmpty()) {
             return value;
@@ -514,7 +514,7 @@ public class NewAnceParams implements Serializable {
         }
     }
 
-    private Pattern getPatternValue(String variable, String value) {
+    public static Pattern getPatternValue(String variable, String value) {
 
         try {
             return Pattern.compile(value);
@@ -523,7 +523,7 @@ public class NewAnceParams implements Serializable {
         }
     }
 
-    private boolean getBooleanValue(String variable, String value) {
+    public static boolean getBooleanValue(String variable, String value) {
 
         if (value.toLowerCase().equals("true")) {
             return true;
@@ -534,7 +534,7 @@ public class NewAnceParams implements Serializable {
         }
     }
 
-    private String getDirectoryValue(String variable, String value) {
+    public static String getDirectoryValue(String variable, String value) {
 
         File dir = new File(value);
         if (!dir.exists() && !dir.isDirectory()) {
@@ -544,7 +544,7 @@ public class NewAnceParams implements Serializable {
         return value;
     }
 
-    private String getNewDirectoryValue(String variable, String value) {
+    public static String getNewDirectoryValue(String variable, String value) {
 
         File dir = new File(value);
 
@@ -559,7 +559,7 @@ public class NewAnceParams implements Serializable {
         return value;
     }
 
-    private String getFileValue(String variable, String value) {
+    public static String getFileValue(String variable, String value) {
 
         File file = new File(value);
         if (!file.exists()) {
@@ -569,7 +569,7 @@ public class NewAnceParams implements Serializable {
         return value;
     }
 
-    private String getNewFileValue(String variable, String value) {
+    public static String getNewFileValue(String variable, String value) {
 
         File file = new File(value);
         try {
@@ -582,7 +582,7 @@ public class NewAnceParams implements Serializable {
         return value;
     }
 
-    private Double getDoubleValue(String variable, String value) {
+    public static Double getDoubleValue(String variable, String value) {
 
         try {
             return Double.valueOf(value);
@@ -592,7 +592,7 @@ public class NewAnceParams implements Serializable {
         }
     }
 
-    private Integer getIntegerValue(String variable, String value) {
+    public static Integer getIntegerValue(String variable, String value) {
 
         try {
             return Integer.valueOf(value);
@@ -601,7 +601,7 @@ public class NewAnceParams implements Serializable {
         }
     }
 
-    private Set<String> getSetValue(String variable, String value) {
+    public static Set<String> getSetValue(String variable, String value) {
 
         if (value.equals("[]")) {
             return new HashSet<>();

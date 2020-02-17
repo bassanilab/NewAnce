@@ -206,7 +206,7 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
                 modifPos = (modifPos.isEmpty())?posStr:","+posStr;
                 String massStr = String.format("%.5f",modif.getMolecularMass());
                 modifMass = (modifMass.isEmpty())?massStr:","+massStr;
-                modifAA = (modifAA.isEmpty())?"NT":",NT";
+                modifAA = (modifAA.isEmpty())?"CT":",CT";
             }
         }
 
