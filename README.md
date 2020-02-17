@@ -9,6 +9,7 @@ NewAnce is a java software tool for proteogenomics. It performs stratified FDR c
 3. [Output format](#Output-format)
 4. [Tests](#Tests)
 5. [PDV export](#PDV-export)
+6. [Extend MaxQuant features](#Extend-MaxQuant-features)
 
 ## Command line options 
 
@@ -537,3 +538,6 @@ Running CreatePDVExport:
 java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CreatePDVExport -mgf 0D5P/mgf -naf 0D5P/lncRNA/NewAnce/lncRNA_0D5P_NewAncePSMs.txt
 ```
 
+## Extend MaxQuant features
+
+The default NewAnce output file contain the features described above. MaxQuant msms.txt reasult files contain many very useful PSM features, which can be added to the NewAnce result files. This will create a new NewAnce result file with \_extend tag inserted at the end of the filename.  
