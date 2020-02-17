@@ -541,3 +541,35 @@ java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CreatePDVExport
 ## Extend MaxQuant features
 
 The default NewAnce output file contain the features described above. MaxQuant msms.txt reasult files contain many very useful PSM features, which can be added to the NewAnce result files. This will create a new NewAnce result file with \_extend tag inserted at the end of the filename.  
+
+Options for AddMaxQuantFeatures:
+
+```
+-mqD,--maxquantPsmDir <arg>                    MaxQuant psm root directory (required)
+
+Directors under which MaxQuant msms.txt files are found.
+```
+
+```
+-mqF,--maxquantFeatures <arg>                    Comma separated list [feature1,feature2,feature3] of MaxQuant features to be added to NewAnce result file.
+
+Comma separated list in format [feature1,feature2,feature3] of MaxQuant features to be added to NewAnce result file.
+```
+
+```
+-naf,--newAnceResultFile <arg>         Result file from NewAnce analysis (required)
+
+NewAnce result file containing peptide spectrum matches.
+```
+
+Printing AddMaxQuantFeatures options:
+
+```
+java -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.AddMaxQuantFeatures -h
+```
+
+Running CreatePDVExport:
+
+```
+java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.AddMaxQuantFeatures -mqD 0D5P/lncRNA/MaxQuant -mqF "[Matches,Intensities,Mass Deviations [Da]]" -naf 0D5P/lncRNA/NewAnce/lncRNA_0D5P_NewAncePSMs.txt
+```
