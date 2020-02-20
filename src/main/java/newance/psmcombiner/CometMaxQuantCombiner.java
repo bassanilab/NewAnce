@@ -76,10 +76,15 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
 
     public int run() throws IOException {
 
-        long start = System.currentTimeMillis();
-        System.out.println("Load UniProt sequences from "+params.getUniprotFastaFile()+" ...");
-        UniProtDB uniProtDB = new UniProtDB(params.getUniprotFastaFile());
-        System.out.println("Loading UniProt sequences ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
+        long start;
+
+        UniProtDB uniProtDB = null;
+        if (!params.getUniprotFastaFile().isEmpty()) {
+            start = System.currentTimeMillis();
+            System.out.println("Load UniProt sequences from "+params.getUniprotFastaFile()+" ...");
+            uniProtDB = new UniProtDB(params.getUniprotFastaFile());
+            System.out.println("Loading UniProt sequences ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
+        }
 
         System.out.println("Parsing Comet pep.xml files ...");
         GroupedFDRCalculator groupedFDRCalculator = buildGroupedFDRCalculator(uniProtDB);
@@ -112,8 +117,6 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         start = System.currentTimeMillis();
         writePeptideProteinGroupReport(uniProtDB);
         System.out.println("Protein grouping ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
-
-        System.out.println("RunTime after Psm parsing: " + RunTime2String.getRuntimeString(Runtime.getRuntime()));
 
         return 0;
     }

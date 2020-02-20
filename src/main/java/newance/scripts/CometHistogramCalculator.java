@@ -85,7 +85,7 @@ public class CometHistogramCalculator extends ExecutableOptions {
         cometMultiplePepXMLConverter.run();
 
         System.out.println("Write histograms ...");
-        groupedFDRCalculator.writeHistograms(params.getOutputDir()+File.separator+"histos", params.getOutputTag(),1);
+        groupedFDRCalculator.writeHistograms(params.getOutputDir(), params.getOutputTag(),1);
 
         return 0;
     }

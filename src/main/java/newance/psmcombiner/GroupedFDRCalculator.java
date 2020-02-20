@@ -208,7 +208,7 @@ public class GroupedFDRCalculator {
 
     public void importPriorHistos() {
 
-        histogramTreeRoot.importPriorHisto();
+        histogramTreeRoot.importPriorCoreHistos();
     }
 
 

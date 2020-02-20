@@ -216,19 +216,36 @@ public class HistogramTree {
         }
     }
 
-    public void importPriorHisto() {
+    // import non-leaf histos
+    public void importPriorCoreHistos() {
 
+        if (isLeaf()) return;
+
+        // import histos from files if provided
         if (!NewAnceParams.getInstance().getReadHistos().isEmpty()) {
             File histoFile = new File(NewAnceParams.getInstance().getReadHistos() + File.separatorChar + "prior_histo_" + id + ".txt");
 
             if (!histoFile.exists()) {
-                System.out.println("ERROR: histogram file "+histoFile.getAbsolutePath()+" for charge "+id+" does not exist. Please check your -minZ, -maxZ options. Abort.");
-                System.exit(1);
+
+                if (!id.equals("root") && !id.equals("Z1") && !id.equals("Z2") && !id.equals("Z3")) {
+                    histoFile = new File(NewAnceParams.getInstance().getReadHistos() + File.separatorChar + "prior_histo_Z3.txt");
+                    if (histoFile.exists()) {
+                        System.out.println("WARNING: histogram file " + NewAnceParams.getInstance().getReadHistos() + File.separatorChar + "prior_histo_" + id + ".txt does not exist. Taking prior_histo_Z3.txt instead.");
+                    } else {
+                        System.out.println("ERROR: histogram file " + histoFile.getAbsolutePath() + " does not exist.  Abort.");
+                        System.exit(1);
+                    }
+                } else {
+                    System.out.println("ERROR: histogram file " + histoFile.getAbsolutePath() + " does not exist. Abort.");
+                    System.exit(1);
+                }
             }
             CometScoreHistogram scoreHistogram = CometScoreHistogram.read(histoFile);
             setScoreHistogram(scoreHistogram);
             scoreHistogram.setCanCalculateFDR(NewAnceParams.getInstance().getMinNrPsmsPerHisto());
-        } else if (!scoreHistogram.canCalculateFDR() && !isLeaf()) {
+
+        } else if (!scoreHistogram.canCalculateFDR()) {
+            // take dafault histos in NewAnce distribution
 
             System.out.println("Setting histogram " +id+" to prior values since there are not enough PSMs to estimate the distribution.");
             URL histoURL = getClass().getResource("prior_histo_" + id + ".txt");
@@ -237,12 +254,11 @@ public class HistogramTree {
             if (histoURL!=null) {
                 histoFile = new File(histoURL.getFile());
             } else { // charge state higher than available in prior histograms (Z=3)
-                if (id.startsWith("Z")) {
-                   histoFile = new File(getClass().getResource("prior_histo_Z3.txt").getFile());
-                   System.out.println("WARNING: histogram file "+histoFile.getAbsolutePath()+" for charge "+id+" does not exist. Taking prior_histo_Z3.txt instead.");
+                if (!id.equals("root") && !id.equals("Z1") && !id.equals("Z2") && !id.equals("Z3")) {
+                    histoFile = new File(getClass().getResource("prior_histo_Z3.txt").getFile());
+                    System.out.println("WARNING: histogram file "+histoFile.getAbsolutePath()+" does not exist. Taking prior_histo_Z3.txt instead.");
                 } else {
-
-                    System.out.println("ERROR: histogram file "+histoFile.getAbsolutePath()+" for charge "+id+" does not exist. Please set -minZ=1, -maxZ=3 options. Abort.");
+                    System.out.println("ERROR: histogram file "+histoFile.getAbsolutePath()+" does not exist. Abort.");
                     System.exit(1);
                 }
             }
@@ -253,7 +269,7 @@ public class HistogramTree {
         }
 
         for (HistogramTree node : children) {
-            node.importPriorHisto();
+            node.importPriorCoreHistos();
         }
     }
 
