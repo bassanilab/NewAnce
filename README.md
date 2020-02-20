@@ -10,6 +10,7 @@ NewAnce is a java software tool for proteogenomics. It performs stratified FDR c
 4. [Tests](#Tests)
 5. [PDV export](#PDV-export)
 6. [Extend MaxQuant features](#Extend-MaxQuant-features)
+7. [Export score histograms](#Export-score-histograms)
 
 ## Command line options 
 
@@ -540,7 +541,7 @@ java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CreatePDVExport
 
 ## Extend MaxQuant features
 
-The default NewAnce output file contain the features described above. MaxQuant msms.txt reasult files contain many very useful PSM features, which can be added to the NewAnce result files. This will create a new NewAnce result file with \_extend tag inserted at the end of the filename.  
+The default NewAnce output files contain the features described above. MaxQuant msms.txt result files contain many very useful PSM features, which can be added to the NewAnce result files. This will create a new NewAnce result file with \_extend tag inserted at the end of the filename.  
 
 Options for AddMaxQuantFeatures:
 
@@ -568,8 +569,27 @@ Printing AddMaxQuantFeatures options:
 java -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.AddMaxQuantFeatures -h
 ```
 
-Running CreatePDVExport:
+Running AddMaxQuantFeatures:
 
 ```
 java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.AddMaxQuantFeatures -mqD 0D5P/lncRNA/MaxQuant -mqF "[Matches,Intensities,Mass Deviations [Da]]" -naf 0D5P/lncRNA/NewAnce/lncRNA_0D5P_NewAncePSMs.txt
 ```
+
+## Export score histograms
+
+This class can be used to calculate and export prior score histograms for NewAnce. It is implemented in a memory efficient 
+way, so it can be run with many (100's) Comet .pep.xml files. The prior score histograms can then be imported by NewAnce with 
+the -readH option in case NewAnce is run with only a few .pep.xml files, which do not contain sufficient PSMs to calculate the score histograms accurately. Histograms will be writte to a subfolder names 'histos' in the output directory specified with the -outD option. The file will be named outputTag_Z1.txt for charge 1, for example.
+
+Printing CometHistogramCalculator options:
+
+```
+java -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CometHistogramCalculator -h
+```
+
+Running CometHistogramCalculator:
+
+```
+java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CometHistogramCalculator -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -outD 0D5P/lncRNA/NewAnce -outT prior_histo -spRE .* -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -nrTh 5
+```
+
