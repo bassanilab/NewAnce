@@ -579,7 +579,7 @@ java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.AddMaxQuantFeat
 
 This class can be used to calculate and export prior score histograms for NewAnce. It is implemented in a memory efficient 
 way, so it can be run with many (100's) Comet .pep.xml files. The prior score histograms can then be imported by NewAnce with 
-the -readH option in case NewAnce is run with only a few .pep.xml files, which do not contain sufficient PSMs to calculate the score histograms accurately. Histograms will be writte to a subfolder names 'histos' in the output directory specified with the -outD option. The file will be named outputTag_Z1.txt for charge 1, for example.
+the -readH option in case NewAnce is run with only a few .pep.xml files, which do not contain sufficient PSMs to calculate the score histograms accurately. Histograms will be written to the output directory specified with the -outD option. There will be a histogram file for each charge x, which will be named outputTag_Zx.txt.
 
 Printing CometHistogramCalculator options:
 
@@ -590,6 +590,6 @@ java -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CometHistogramCalculato
 Running CometHistogramCalculator:
 
 ```
-java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CometHistogramCalculator -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -outD 0D5P/lncRNA/NewAnce -outT prior_histo -spRE .* -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -nrTh 5
+java -Xmx12G -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CometHistogramCalculator -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -outD 0D5P/lncRNA/NewAnce/histos -outT prior_histo -spRE .* -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -nrTh 5
 ```
 
