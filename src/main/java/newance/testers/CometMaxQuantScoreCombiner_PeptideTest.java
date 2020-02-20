@@ -52,7 +52,6 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
     protected PsmGrouper psmGrouper;
     protected NewAnceParams params;
     protected SpectrumAccumulator spectrumAccumulator;
-
     protected Set<String> peptides;
 
     public CometMaxQuantScoreCombiner_PeptideTest() {
@@ -113,7 +112,6 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
 
         System.out.println("RunTime after Psm parsing: " + RunTime2String.getRuntimeString(Runtime.getRuntime()));
 
-
         return 0;
     }
 
@@ -132,10 +130,8 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         groupedFDRCalculator.addAll(allPsms);
         groupedFDRCalculator.setCanCalculateFDR(params.getMinNrPsmsPerHisto());
         groupedFDRCalculator.calcClassProbs();
-        if (params.isReportHistos()) groupedFDRCalculator.writeHistograms(params.getOutputDir()+File.separator+"histos", params.getOutputTag());
         groupedFDRCalculator.smoothHistogram(params.getSmoothDegree());
         groupedFDRCalculator.calcLocalFDR();
-        if (params.isReportHistos()) groupedFDRCalculator.writeHistograms(params.getOutputDir()+File.separator+"histos", params.getOutputTag()+"_smoothed");
 
         return groupedFDRCalculator;
     }
@@ -292,7 +288,6 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("coRE").required().hasArg().longOpt("cometPsmRegex").desc("Regular expression of Comet psm files (e.g. \\.xml$)").build());
         cmdLineOpts.addOption(Option.builder("coFDR").required().hasArg().longOpt("cometFDR").desc("FDR for filtering Comet PSMs before combination (required)").build());
         cmdLineOpts.addOption(Option.builder("outD").required().hasArg().longOpt("outputDir").desc("Output directory for results (required)").build());
-        cmdLineOpts.addOption(Option.builder("repH").required(false).hasArg(false).longOpt("reportHistogram").desc("Report histograms to text files").build());
         cmdLineOpts.addOption(Option.builder("protG").required(false).hasArg().longOpt("proteinGroup").desc("Name of group with protein coding or canonical sequences").build());
         cmdLineOpts.addOption(Option.builder("noncG").required(false).hasArg().longOpt("noncanonicalGroup").desc("Name of group with non-canonical or cryptic sequences").build());
         cmdLineOpts.addOption(Option.builder("protRE").required(false).hasArg().longOpt("protRegExp").desc("Regular expression to match fasta name of coding proteins (e.g. sp\\||tr\\| ").build());
@@ -342,7 +337,6 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
         params.add("includeMaxQuant", mqDir.isEmpty()?"false":"true");
         params.add("maxquantPsmDir", mqDir);
 
-        params.add("reportHistos", getOptionString(line,"repH"));
         params.add("outputDir", getOptionString(line,"outD"));
         params.add("searchFastaFile", getOptionString(line,"seFa"));
         params.add("uniprotFastaFile", getOptionString(line,"upFa"));

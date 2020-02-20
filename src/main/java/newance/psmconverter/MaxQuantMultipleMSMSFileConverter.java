@@ -29,6 +29,8 @@
 
 package newance.psmconverter;
 
+import newance.util.NewAnceParams;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -69,23 +71,34 @@ public class MaxQuantMultipleMSMSFileConverter extends MultiplePsmFileConverter 
         checkState(!psmFileList.isEmpty());
 
         int nrTasks = psmFileList.size();
-        ExecutorService exe = Executors.newFixedThreadPool(nrTasks);
+        int maxNrThreads = NewAnceParams.getInstance().getNrThreads();
 
-        CountDownLatch latch = new CountDownLatch(nrTasks);
-        for (int i = 0; i < nrTasks; i++) {
-            exe.submit(new MaxQuantMSMSConverter(psmFileList.get(i), psms, latch));
+        int nrIter = nrTasks/maxNrThreads;
+        int threadCnt = 0;
+        for (int i=0;i<=nrIter;i++) {
+
+            int nrThreads = (nrTasks-threadCnt>maxNrThreads)?maxNrThreads:nrTasks-threadCnt;
+            if (nrThreads<=0) break;
+
+            ExecutorService exe = Executors.newFixedThreadPool(nrThreads);
+
+            CountDownLatch latch = new CountDownLatch(nrThreads);
+            for (int j =0;j<nrThreads;j++) {
+                exe.submit(new MaxQuantMSMSConverter(psmFileList.get(threadCnt), psms, latch));
+                threadCnt++;
+            }
+
+            try {
+                latch.await();
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            exe.shutdown();
         }
 
-        try {
-            latch.await();
+        System.out.println("Number of MaxQuant spectra converted: " + psms.size());
+        System.out.println("MaxQuant msms.txt conversion ran in " + (System.currentTimeMillis() - start) / 1000d + "s");
 
-            System.out.println("Number of MaxQuant spectra converted: "+psms.size());
-            System.out.println("MaxQuant msms.txt conversion ran in " + (System.currentTimeMillis() - start) / 1000d + "s");
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        exe.shutdown();
     }
 }

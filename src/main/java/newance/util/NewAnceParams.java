@@ -266,9 +266,11 @@ public class NewAnceParams implements Serializable {
 
         if (variableValueMap.containsKey("nrThreads")) {
             nrThreads = getIntegerValue("nrThreads",variableValueMap.get("nrThreads"));
+            nrThreads = (nrThreads>256)?256:nrThreads;
         } else {
             int nrProc = Runtime.getRuntime().availableProcessors();
             nrThreads = (nrProc>2)?nrProc-2:1;
+            nrThreads = (nrThreads>256)?256:nrThreads;
         }
 
         if (variableValueMap.containsKey("smoothDegree")) {

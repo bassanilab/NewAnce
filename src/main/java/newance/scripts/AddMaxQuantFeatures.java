@@ -80,6 +80,7 @@ public class AddMaxQuantFeatures extends ExecutableOptions {
         } catch (IOException e) {
         }
     }
+
     private void readMaxQuantFile(File file) {
 
         maxQuantLines = new HashMap<>();
@@ -99,6 +100,16 @@ public class AddMaxQuantFeatures extends ExecutableOptions {
 
             // Select the ID and NAME columns from sample.csv
             ResultSet results = stmt.executeQuery("SELECT * FROM " + FilenameUtils.removeExtension(file.getName()));
+
+
+            Set<String> invalidFeatures = new HashSet<>();
+            for (String feature : maxQuantFeatures) {
+                if (results.findColumn(feature)==0) {
+                    invalidFeatures.add(feature);
+                    System.out.println("WARNING: feature "+feature+" is not a valid msms.txt column name. This feature is ignored.");
+                }
+            }
+            maxQuantFeatures.removeAll(invalidFeatures);
 
             while (results.next()) {
 
@@ -174,7 +185,6 @@ public class AddMaxQuantFeatures extends ExecutableOptions {
 
         } catch (IOException e) {
         }
-
     }
 
     public ExecutableOptions init(String[] args) throws IOException {

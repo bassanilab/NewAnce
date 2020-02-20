@@ -29,6 +29,8 @@
 
 package newance.psmcombiner;
 
+import newance.proteinmatch.UniProtDB;
+import newance.psmconverter.AddUniProtIds2Psm;
 import newance.psmconverter.PeptideSpectrumMatch;
 import newance.util.NewAnceParams;
 import newance.util.PsmGrouper;
@@ -47,6 +49,7 @@ public class GroupedFDRCalculator {
     protected final Map<String, HistogramTree> histogramMap;
     protected final PsmGrouper psmGrouper;
     protected final int[] nrBins;
+    protected final AddUniProtIds2Psm addUniProtIds2Psm;
 
     public GroupedFDRCalculator(PsmGrouper psmGrouper) {
 
@@ -62,6 +65,29 @@ public class GroupedFDRCalculator {
         this.histogramMap = new HashMap<>();
         this.histogramMap.put("root",this.histogramTreeRoot);
         this.psmGrouper = psmGrouper;
+        this.addUniProtIds2Psm = null;
+
+        buildTree();
+    }
+
+    public GroupedFDRCalculator(PsmGrouper psmGrouper, UniProtDB uniProtDB) {
+
+        this.nrBins = new int[3];
+        nrBins[0] = NewAnceParams.getInstance().getNrXCorrBins();
+        nrBins[1] = NewAnceParams.getInstance().getNrDeltaCnBins();
+        nrBins[2] = NewAnceParams.getInstance().getNrSpScoreBins();
+
+        CometScoreHistogram cometScoreHistogram = new CometScoreHistogram(nrBins);
+
+        this.histogramTreeRoot = new HistogramTree(cometScoreHistogram, "root","");
+
+        this.histogramMap = new HashMap<>();
+        this.histogramMap.put("root",this.histogramTreeRoot);
+        this.psmGrouper = psmGrouper;
+        if (uniProtDB!=null)
+            this.addUniProtIds2Psm = new AddUniProtIds2Psm(uniProtDB);
+        else
+            this.addUniProtIds2Psm = null;
 
         buildTree();
     }
@@ -108,15 +134,17 @@ public class GroupedFDRCalculator {
     public void addAll(ConcurrentHashMap<String,List<PeptideSpectrumMatch>> psms) {
 
         for (String specID : psms.keySet()) {
+            if (addUniProtIds2Psm!=null) addUniProtIds2Psm.accept(specID, psms.get(specID));
+
             for (PeptideSpectrumMatch psm : psms.get(specID)) {
                 add(psm);
             }
         }
-
     }
 
 
-    public void add(PeptideSpectrumMatch peptideSpectrumMatch) {
+    protected void add(PeptideSpectrumMatch peptideSpectrumMatch) {
+
         String id = getNodeID(peptideSpectrumMatch);
 
         HistogramTree histogramTree = histogramMap.get(id);
@@ -162,6 +190,16 @@ public class GroupedFDRCalculator {
         histogramTreeRoot.writeHistogram(outputDir, filePrefix);
     }
 
+    public void writeHistograms(String outputDir, String filePrefix, int level) {
+        try {
+            File dir = new File(outputDir);
+            if (!dir.exists()) dir.mkdirs();
+        } catch (SecurityException e) {
+            System.out.println("Cannot create directory "+outputDir);
+        }
+
+        histogramTreeRoot.writeHistogram(outputDir, filePrefix, level);
+    }
 
     public void setCanCalculateFDR(int minNrPsms) {
 
@@ -176,9 +214,8 @@ public class GroupedFDRCalculator {
 
     public void calcLocalFDR() {
 
-        for (String id : histogramMap.keySet()) {
+        for (HistogramTree node : histogramMap.values()) {
 
-            HistogramTree node = histogramMap.get(id);
             if (node.isLeaf()) {
                 node.calcLocalFDR();
             }
@@ -186,6 +223,7 @@ public class GroupedFDRCalculator {
     }
 
     public float getLocalFDR(PeptideSpectrumMatch peptideSpectrumMatch) {
+
         String id = getNodeID(peptideSpectrumMatch);
 
         HistogramTree histogramTree = histogramMap.get(id);
@@ -209,11 +247,12 @@ public class GroupedFDRCalculator {
         float decoySum = 0;
         float targetSum = 0;
 
-        for (String id : histogramMap.keySet()) {
+        for (HistogramTree node : histogramMap.values()) {
 
-            HistogramTree node = histogramMap.get(id);
-            if (node.isLeaf() && (group.isEmpty()) || node.getGroup().equals(group)) {
+            if (node.isLeaf() && (group.isEmpty() || node.getGroup().equals(group))) {
                 float[] values = node.getTargetDecoyCounts(lFDR);
+
+                System.out.println(node.getId()+","+node.getGroup()+","+node.isLeaf()+". Decoy: "+values[0]+". Target: "+values[1]);
                 decoySum += values[0];
                 targetSum += values[1];
             }
@@ -227,9 +266,8 @@ public class GroupedFDRCalculator {
         float decoySum = 0;
         float targetSum = 0;
 
-        for (String id : histogramMap.keySet()) {
+        for (HistogramTree node : histogramMap.values()) {
 
-            HistogramTree node = histogramMap.get(id);
             if (node.isLeaf() && (group.isEmpty()) || node.getGroup().equals(group)) {
                 float[] values = node.getTargetDecoyCounts(lFDR);
                 decoySum += values[0];
@@ -321,7 +359,7 @@ public class GroupedFDRCalculator {
     }
 
 
-    public ConcurrentHashMap<String, List<PeptideSpectrumMatch>> filterPsms(ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  psms, float lFDRThreshold) {
+    public ConcurrentHashMap<String, List<PeptideSpectrumMatch>> filterPsms(ConcurrentHashMap<String, List<PeptideSpectrumMatch>> psms, float lFDRThreshold) {
 
         ConcurrentHashMap<String, List<PeptideSpectrumMatch>> filteredPsms = new ConcurrentHashMap<>();
 

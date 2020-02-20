@@ -193,6 +193,20 @@ public class HistogramTree {
         }
     }
 
+    public void writeHistogram(String outputDir, String fileprefix, int level) {
+
+        if (this.level<=level) {
+            String filename = outputDir+File.separatorChar+fileprefix+"_"+id+".txt";
+            scoreHistogram.write(new File(filename));
+        }
+
+        if (this.level==level) return;
+
+        for (HistogramTree node : children) {
+            node.writeHistogram(outputDir, fileprefix);
+        }
+    }
+
     public void setCanCalculateFDR(int minNrPsms) {
 
         scoreHistogram.setCanCalculateFDR(minNrPsms);

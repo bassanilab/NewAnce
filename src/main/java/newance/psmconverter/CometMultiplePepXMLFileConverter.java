@@ -29,11 +29,15 @@
 
 package newance.psmconverter;
 
+import newance.psmcombiner.GroupedFDRCalculator;
+import newance.util.NewAnceParams;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -47,9 +51,23 @@ import static com.google.common.base.Preconditions.checkState;
 
 public class CometMultiplePepXMLFileConverter extends MultiplePsmFileConverter {
 
+    private final GroupedFDRCalculator groupedFDRCalculator;
+    private final boolean reportHistosOnly;
+
     public CometMultiplePepXMLFileConverter(String psmRootDirName, Pattern regex) {
 
         super(psmRootDirName, regex);
+
+        this.groupedFDRCalculator = null;
+        this.reportHistosOnly = false;
+    }
+
+    public CometMultiplePepXMLFileConverter(String psmRootDirName, Pattern regex, GroupedFDRCalculator groupedFDRCalculator, boolean reportHistosOnly) {
+
+        super(psmRootDirName, regex);
+
+        this.groupedFDRCalculator = groupedFDRCalculator;
+        this.reportHistosOnly = reportHistosOnly;
     }
 
     public void run() throws IOException{
@@ -65,24 +83,39 @@ public class CometMultiplePepXMLFileConverter extends MultiplePsmFileConverter {
         checkState(!psmFileList.isEmpty());
 
         int nrTasks = psmFileList.size();
-        ExecutorService exe = Executors.newFixedThreadPool(nrTasks);
+        int maxNrThreads = NewAnceParams.getInstance().getNrThreads();
 
-        CountDownLatch latch = new CountDownLatch(nrTasks);
-        for (int i = 0; i < nrTasks; i++) {
-            exe.submit(new CometPepXmlConverter(psmFileList.get(i), psms, latch));
+        int nrIter = nrTasks/maxNrThreads;
+        int threadCnt = 0;
+        for (int i=0;i<=nrIter;i++) {
+
+            final ConcurrentHashMap<String,List<PeptideSpectrumMatch>> psmBuffer = new ConcurrentHashMap<>();
+            int nrThreads = (nrTasks-threadCnt>maxNrThreads)?maxNrThreads:nrTasks-threadCnt;
+            if (nrThreads<=0) break;
+
+            ExecutorService exe = Executors.newFixedThreadPool(nrThreads);
+
+            CountDownLatch latch = new CountDownLatch(nrThreads);
+            for (int j =0;j<nrThreads;j++) {
+                exe.submit(new CometPepXmlConverter(psmFileList.get(threadCnt), psmBuffer, latch));
+                threadCnt++;
+            }
+
+            try {
+                latch.await();
+
+                if (groupedFDRCalculator!=null) groupedFDRCalculator.addAll(psmBuffer);
+                if (!reportHistosOnly) psms.putAll(psmBuffer);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            exe.shutdown();
         }
 
-        try {
-            latch.await();
-
-            System.out.println("Number of Comet spectra converted: "+psms.size());
-            System.out.println("Comet PepXML conversion ran in " + (System.currentTimeMillis() - start) / 1000d + "s");
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        exe.shutdown();
+        System.out.println("Number of Comet spectra converted: "+psms.size());
+        System.out.println("Comet PepXML conversion ran in " + (System.currentTimeMillis() - start) / 1000d + "s");
 
     }
+
 }
