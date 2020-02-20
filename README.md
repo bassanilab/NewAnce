@@ -33,6 +33,7 @@ usage: newance.psmcombiner.CometMaxQuantCombiner
  -coRE,--cometPsmRegex <arg>        Regular expression of Comet psm files (e.g. \.xml$) (required)
  -exclP,--excludeProts <arg>        Regular expression of proteins excluded from analysis. If not set no proteins are excluded.
  -fdrM,--fdrControlMethod <arg>     Method to control pFDR: combined or separate (default combined).
+ -fH,--forceHistograms              Histograms are imported even if enough PSMs are available.
  -h,--help                          Help option for command line help
  -maxDC,--maxDeltaCn <arg>          Maximal Comet DeltaCn in histogram (default value 2500)
  -maxL,--maxLength <arg>            Maximal length of peptide (default value: 25)
@@ -111,6 +112,13 @@ string, the protein is excluded.
 The FDR can be controlled in two ways: global and groupwise. In both cases, the local lFDR is calculated in the same way. The 
 lFDR threshold is then adjusted to yield the target FDR, which is estimated for both groups together (combined) or for each 
 group seperately (separate). Estimating the FDR seperately for each group usually yields less PSMs.
+```
+
+```
+-fH,--forceHistograms              Histograms are imported even if enough PSMs are available.
+
+This option is only used if the -readH option is set. If both the -fH and -readH options are set, the histograms are imported 
+even if there are enough PSMs for a specific histogram are available (as defined by the -minPH option).
 ```
 
 ```
@@ -363,7 +371,7 @@ java -jar NewAnce-1.4.0-SNAPSHOT.jar -v
 Running NewAnce with 12GB memory
 
 ```
-java -Xmx12G -jar NewAnce-1.4.0-SNAPSHOT.jar -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -mqD 0D5P/lncRNA/MaxQuant -coFDR 0.03 -outD 0D5P/lncRNA/NewAnce -outT 0D5P -protRE sp\||tr\| -protG prot -noncG lncRNA -upFa SeqDBs/human_proteome.fasta -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15
+java -Xmx12G -jar NewAnce-1.4.0-SNAPSHOT.jar -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -mqD 0D5P/lncRNA/MaxQuant -coFDR 0.03 -outD 0D5P/lncRNA/NewAnce -outT 0D5P -protRE "sp\||tr\|" -protG prot -noncG lncRNA -upFa SeqDBs/human_proteome.fasta -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15
 ```
 
 
