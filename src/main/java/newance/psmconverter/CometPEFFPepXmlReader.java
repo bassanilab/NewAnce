@@ -117,8 +117,6 @@ public class CometPEFFPepXmlReader {
             proteins.add(altProtein.getProtein());
         }
 
-
-
         if (!peptideSpectrumMatchList.isValidProtein(proteins)) return;
 
         PeptideMatchDataWrapper peptideMatch = new PeptideMatchDataWrapper(peptideSequence);

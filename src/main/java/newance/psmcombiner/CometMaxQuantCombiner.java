@@ -37,7 +37,9 @@ import newance.proteinmatch.UniProtDB;
 import newance.psmconverter.MaxQuantMultipleMSMSFileConverter;
 import newance.psmconverter.CometMultiplePepXMLFileConverter;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
@@ -56,7 +58,9 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
 
     public CometMaxQuantCombiner() {
 
-        version = NewAnceParams.getInstance().getVersion();
+        params = NewAnceParams.getInstance();
+        version = params.getVersion();
+
         createOptions();
         spectrumAccumulator = new SpectrumAccumulator();
     }
@@ -113,6 +117,8 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
             controlFDRSeparate(groupedFDRCalculator, cometMultiplePepXMLConverter, maxQuantMultipleMSMSConverter);
         }
         System.out.println("Grouped global FDR calculation ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
+
+        if (params.isWriteParamsFile()) writeParams();
 
         start = System.currentTimeMillis();
         writePeptideProteinGroupReport(uniProtDB);
@@ -205,7 +211,7 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
 
         System.out.print(groupedFDRCalculator.printTree(grpThresholdMap));
 
-        SummaryReportWriter summaryReportWriter = new SummaryReportWriter(params.getOutputDir() +File.separator+ "SummaryReport.txt", params.isIncludeMaxQuant());
+        SummaryReportWriter summaryReportWriter = new SummaryReportWriter(params.getOutputDir() +File.separator+params.getOutputTag()+"_SummaryReport.txt", params.isIncludeMaxQuant());
 
         for (String group : groupedFDRCalculator.getGroups()) {
 
@@ -314,6 +320,18 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         }
     }
 
+    protected void writeParams() {
+
+        String paramsFileName = params.getOutputDir() + File.separator + params.getOutputTag()+"_NewAnceParameters.txt";
+
+        try {
+            BufferedWriter paramsWriter = new BufferedWriter(new FileWriter(new File(paramsFileName)));
+            paramsWriter.write(params.toString());
+            paramsWriter.close();
+        } catch (IOException e) {
+            System.out.println("Cannot write NewAnce parameters to file "+paramsFileName+".");
+        }
+    }
 
     protected void createOptions() {
 
@@ -326,6 +344,7 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("outD").required().hasArg().longOpt("outputDir").desc("Output directory for results (required)").build());
         cmdLineOpts.addOption(Option.builder("repH").required(false).hasArg(false).longOpt("reportHistogram").desc("Report histograms to text files").build());
         cmdLineOpts.addOption(Option.builder("readH").required(false).hasArg().longOpt("readHistograms").desc("Directory where histograms files are placed.").build());
+        cmdLineOpts.addOption(Option.builder("fH").required(false).hasArg(false).longOpt("forceHistograms").desc("Histograms are imported even if enough PSMs are available.").build());
         cmdLineOpts.addOption(Option.builder("protG").required(false).hasArg().longOpt("proteinGroup").desc("Name of group with protein coding or canonical sequences (default \"prot\"). Will be used as prefix for output files.").build());
         cmdLineOpts.addOption(Option.builder("noncG").required(false).hasArg().longOpt("noncanonicalGroup").desc("Name of group with non-canonical or cryptic sequences (default \"nonc\"). Will be used as prefix for output files.").build());
         cmdLineOpts.addOption(Option.builder("protRE").required(false).hasArg().longOpt("protRegExp").desc("Regular expression to match fasta name of coding proteins (e.g. sp\\||tr\\| ).").build());
@@ -355,7 +374,7 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("minDC").required(false).hasArg().longOpt("minDeltaCn").desc("Minimal Comet DeltaCn in histogram (default value 0)").build());
         cmdLineOpts.addOption(Option.builder("maxDC").required(false).hasArg().longOpt("maxDeltaCn").desc("Maximal Comet DeltaCn in histogram (default value 2500)").build());
         cmdLineOpts.addOption(Option.builder("nrDCB").required(false).hasArg().longOpt("nrDeltaCnBins").desc("Number of Comet DeltaCn bins in histogram (default value 40)").build());
-        cmdLineOpts.addOption(Option.builder("wP").required(false).hasArg().longOpt("write2ParamFile").desc("Filename where parameters should be written to.").build());
+        cmdLineOpts.addOption(Option.builder("wP").required(false).hasArg(false).longOpt("write2ParamFile").desc("This option is set if parameters should be written to file.").build());
         cmdLineOpts.addOption(Option.builder("rP").required(false).hasArg().longOpt("readParamFile").desc("Name of file from which parameters should to read.").build());
         cmdLineOpts.addOption(Option.builder("h").required(false).hasArg(false).longOpt("help").desc("Help option for command line help").build());
         cmdLineOpts.addOption(Option.builder("v").required(false).hasArg(false).longOpt("version").desc("Version of NewAnce software").build());
@@ -372,9 +391,10 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         params.add("cometPsmRegExp", getOptionString(line, "coRE"));
 
         String mqDir = getOptionString(line, "mqD");
-        params.add("includeMaxQuant", mqDir.isEmpty() ? "false" : "true");
-        params.add("maxquantPsmDir", mqDir);
+        params.add("includeMaxQuant", mqDir.isEmpty()?"false":"true");
+        params.add("maxquantPsmDir", getOptionString(line, "mqD"));
 
+        params.add("forceHistos", getOptionString(line, "fH"));
         params.add("reportHistos", getOptionString(line, "repH"));
         params.add("readHistos", getOptionString(line, "readH"));
         params.add("outputDir", getOptionString(line, "outD"));

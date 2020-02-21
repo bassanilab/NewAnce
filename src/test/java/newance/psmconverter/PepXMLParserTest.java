@@ -61,7 +61,7 @@ public class PepXMLParserTest {
 
     }
 
-    @Test
+    @Ignore
     public void testListFiles() throws IOException {
         File dir = new File("/Users/markusmueller/Documents/data/0D5P/lncRNA/complete");
 

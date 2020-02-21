@@ -221,9 +221,12 @@ public class HistogramTree {
 
         if (isLeaf()) return;
 
+        NewAnceParams params = NewAnceParams.getInstance();
+
         // import histos from files if provided
-        if (!NewAnceParams.getInstance().getReadHistos().isEmpty()) {
-            File histoFile = new File(NewAnceParams.getInstance().getReadHistos() + File.separatorChar + "prior_histo_" + id + ".txt");
+        if (!NewAnceParams.getInstance().getReadHistos().isEmpty() && (!scoreHistogram.canCalculateFDR() || params.isForceHistos())) {
+
+            File histoFile = new File(params.getReadHistos() + File.separatorChar + "prior_histo_" + id + ".txt");
 
             if (!histoFile.exists()) {
 
@@ -237,28 +240,6 @@ public class HistogramTree {
                     }
                 } else {
                     System.out.println("ERROR: histogram file " + histoFile.getAbsolutePath() + " does not exist. Abort.");
-                    System.exit(1);
-                }
-            }
-            CometScoreHistogram scoreHistogram = CometScoreHistogram.read(histoFile);
-            setScoreHistogram(scoreHistogram);
-            scoreHistogram.setCanCalculateFDR(NewAnceParams.getInstance().getMinNrPsmsPerHisto());
-
-        } else if (!scoreHistogram.canCalculateFDR()) {
-            // take dafault histos in NewAnce distribution
-
-            System.out.println("Setting histogram " +id+" to prior values since there are not enough PSMs to estimate the distribution.");
-            URL histoURL = getClass().getResource("prior_histo_" + id + ".txt");
-
-            File histoFile = null;
-            if (histoURL!=null) {
-                histoFile = new File(histoURL.getFile());
-            } else { // charge state higher than available in prior histograms (Z=3)
-                if (!id.equals("root") && !id.equals("Z1") && !id.equals("Z2") && !id.equals("Z3")) {
-                    histoFile = new File(getClass().getResource("prior_histo_Z3.txt").getFile());
-                    System.out.println("WARNING: histogram file "+histoFile.getAbsolutePath()+" does not exist. Taking prior_histo_Z3.txt instead.");
-                } else {
-                    System.out.println("ERROR: histogram file "+histoFile.getAbsolutePath()+" does not exist. Abort.");
                     System.exit(1);
                 }
             }
@@ -309,8 +290,10 @@ public class HistogramTree {
             if (validParent!=null) {
                 float ratio = (pi0==0)?10000:pi1/pi0;
                 scoreHistogram.calcLocalFDR(ratio, parent.getScoreHistogram());
+                System.out.println("Not enough PSMs in group "+id+" to calculate local FDR. Parent histograms "+parent.getId()+" used instead.");
             } else {
-                System.out.println("Cannot calculate local FDR of group: "+id);
+                System.out.println("Cannot calculate local FDR of group: "+id+". No valid parent found. Make sure that you import prior histos. Abort.");
+                System.exit(1);
             }
         }
 

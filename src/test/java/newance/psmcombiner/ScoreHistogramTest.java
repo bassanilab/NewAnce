@@ -64,10 +64,4 @@ public class ScoreHistogramTest {
         }
     }
 
-    @Test
-    public void readPriorHistoTest() {
-        String filename = getClass().getResource("prior_histo_Z2.txt").getFile();
-        CometScoreHistogram histogram = CometScoreHistogram.read(new File(filename));
-    }
-
 }

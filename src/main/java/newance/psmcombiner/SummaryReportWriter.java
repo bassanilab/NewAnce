@@ -57,13 +57,12 @@ public class SummaryReportWriter {
             writeHeader(includeMaxQuant);
 
         } catch (IOException e) {
-            System.out.println("Unable to writeHistograms to file "+ fileName);
+            System.out.println("Unable to write report to file "+ fileName);
             reportWriter = null;
         }
     }
 
     private void writeHeader(boolean includeMaxQuant) throws IOException {
-        reportWriter.write(NewAnceParams.getInstance().toString()+"\n\n");
         if (includeMaxQuant) reportWriter.write("Group\tNrCometPSMs\tNrMaxQuantPSMs\tNrCombinedPSMs\tNrCometPepts\tNrMaxQuantPepts\tNrCombinedPepts\n");
         else reportWriter.write("Group\tNrCometPSMs\tNrCometPepts\n");
     }

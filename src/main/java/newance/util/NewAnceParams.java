@@ -110,10 +110,11 @@ public class NewAnceParams implements Serializable {
     private String outputDir = "";
     private boolean reportHistos = false;
     private String readHistos = "";
+    private boolean forceHistos = false;
     private String searchFastaFile = "";
     private String uniprotFastaFile= "";
     private boolean doPeptideProteinGrouping = false;
-    private String writeParamsFile = "";
+    private boolean writeParamsFile = false;
     private String readParamsFile = "";
 
     private String maxQuantMainScore = "Score";
@@ -147,7 +148,7 @@ public class NewAnceParams implements Serializable {
         res +=  "modifications="+Arrays.asList(modifications).toString()+"\n";
         res +=  "modifMatchMassTol="+modifMatchMassTol+"\n";
         res +=  "cometDecoyProtPrefix="+ cometDecoyProtPrefix +"\n";
-        res +=  "excludedProtPattern="+excludedProtPattern+"\n";
+        res +=  "excludedProtPattern="+((excludedProtPattern==null)?"":excludedProtPattern.toString())+"\n";
         res +=  "minCharge="+minCharge+"\n";
         res +=  "maxCharge="+maxCharge+"\n";
         res +=  "minPeptideLength="+minPeptideLength+"\n";
@@ -182,11 +183,16 @@ public class NewAnceParams implements Serializable {
         res +=  "outputDir="+outputDir+"\n";
         res +=  "reportHistos="+reportHistos+"\n";
         res +=  "readHistos="+readHistos+"\n";
+        res +=  "forceHistos="+forceHistos+"\n";
         res +=  "searchFastaFile="+searchFastaFile+"\n";
         res +=  "uniprotFastaFile="+uniprotFastaFile+"\n";
         res +=  "doPeptideProteinGrouping="+doPeptideProteinGrouping+"\n";
+        res +=  "maxQuantMainScore="+maxQuantMainScore+"\n";
+        res +=  "cometMainScore="+cometMainScore+"\n";
+        res +=  "maxQuantMainScoreMinValue="+maxQuantMainScoreMinValue+"\n";
+        res +=  "cometMainScoreMinValue="+cometMainScoreMinValue+"\n";
+
         res +=  "writeParamsFile="+writeParamsFile+"\n";
-        res +=  "readParamsFile="+readParamsFile+"\n";
 
         return res;
     }
@@ -221,14 +227,19 @@ public class NewAnceParams implements Serializable {
 
         if (variableValueMap.containsKey("modifications")) {
             String buf = "";
-            modifications.clear();
+            Set<Modification> modifs = new HashSet<>();
             try {
                 for (String modif : getSetValue("modifications", variableValueMap.get("modifications"))) {
                     buf = modif;
-                    modifications.add(Modification.parseModification(modif));
+                    if (!modif.trim().isEmpty()) modifs.add(Modification.parseModification(modif));
                 }
             } catch(IllegalArgumentException e) {
-                new RuntimeException("Invalid modification string "+buf+" provided. Abort");
+                throw new RuntimeException("Invalid modification string "+buf+" provided. Abort");
+            }
+
+            if (!modifs.isEmpty()) {
+                modifications.clear();
+                modifications.addAll(modifs);
             }
         }
 
@@ -393,6 +404,10 @@ public class NewAnceParams implements Serializable {
             readHistos = getDirectoryValue("readHistos",variableValueMap.get("readHistos"));
         }
 
+        if (variableValueMap.containsKey("forceHistos")) {
+            forceHistos = getBooleanValue("forceHistos",variableValueMap.get("forceHistos"));
+        }
+
         if (variableValueMap.containsKey("searchFastaFile")) {
             searchFastaFile = getFileValue("searchFastaFile",variableValueMap.get("searchFastaFile"));
         }
@@ -406,34 +421,30 @@ public class NewAnceParams implements Serializable {
         }
 
         if (variableValueMap.containsKey("writeParamsFile")) {
-            writeParamsFile = getNewFileValue("writeParamsFile",variableValueMap.get("writeParamsFile"));
+            writeParamsFile = getBooleanValue("writeParamsFile",variableValueMap.get("writeParamsFile"));
         }
 
         if (variableValueMap.containsKey("readParamsFile")) {
-            readParamsFile = getNewFileValue("readParamsFile",variableValueMap.get("readParamsFile"));
+            readParamsFile = getFileValue("readParamsFile",variableValueMap.get("readParamsFile"));
         }
 
         if (variableValueMap.containsKey("maxQuantMainScoreMinValue")) {
-            maxSpScore = getDoubleValue("maxQuantMainScoreMinValue",variableValueMap.get("maxQuantMainScoreMinValue"));
+            maxQuantMainScoreMinValue = getDoubleValue("maxQuantMainScoreMinValue",variableValueMap.get("maxQuantMainScoreMinValue"));
         }
 
         if (variableValueMap.containsKey("cometMainScoreMinValue")) {
-            maxSpScore = getDoubleValue("cometMainScoreMinValue",variableValueMap.get("cometMainScoreMinValue"));
+            cometMainScoreMinValue = getDoubleValue("cometMainScoreMinValue",variableValueMap.get("cometMainScoreMinValue"));
         }
 
         if (variableValueMap.containsKey("maxQuantMainScore")) {
-            outputTag = variableValueMap.get("maxQuantMainScore");
+            maxQuantMainScore = variableValueMap.get("maxQuantMainScore");
         }
 
         if (variableValueMap.containsKey("cometMainScore")) {
-            outputTag = variableValueMap.get("cometMainScore");
+            cometMainScore = variableValueMap.get("cometMainScore");
         }
 
         checkVariableValues();
-
-        if (!writeParamsFile.isEmpty()) {
-            write(writeParamsFile);
-        }
     }
 
     private boolean checkVariableValues() {
@@ -518,6 +529,8 @@ public class NewAnceParams implements Serializable {
 
     public static Pattern getPatternValue(String variable, String value) {
 
+        if (value.isEmpty()) return null;
+
         try {
             return Pattern.compile(value);
         } catch (NumberFormatException e) {
@@ -571,19 +584,6 @@ public class NewAnceParams implements Serializable {
         return value;
     }
 
-    public static String getNewFileValue(String variable, String value) {
-
-        File file = new File(value);
-        try {
-            if (file.exists()) file.delete();
-            if (file.createNewFile()) return value;
-        } catch (IOException e) {
-            throw new InvalidPathException("Invalid value "+value+" for variable "+variable+"."," File cannot be created.");
-        }
-
-        return value;
-    }
-
     public static Double getDoubleValue(String variable, String value) {
 
         try {
@@ -605,13 +605,18 @@ public class NewAnceParams implements Serializable {
 
     public static Set<String> getSetValue(String variable, String value) {
 
-        if (value.equals("[]")) {
+        int i = 0;
+        while (value.charAt(i)=='[' && i<value.length()) i++;
+        int j = value.length()-1;
+        while (value.charAt(j)==']' && j>=0) j--;
+        j++;
+
+        String listStr = value.substring(i,j);
+
+        if (listStr.isEmpty()) {
             return new HashSet<>();
-        } else if (value.startsWith("[") && value.endsWith("]") ) {
-            String s = value.substring(1,value.length()-1);
-            return new HashSet<>(Arrays.asList(s.split(",")));
         } else {
-            throw new RuntimeException("Invalid value "+value+" for variable "+variable+". Not a comma separated list value.");
+            return new HashSet<>(Arrays.asList(listStr.split(",")));
         }
     }
 
@@ -779,7 +784,7 @@ public class NewAnceParams implements Serializable {
         return doPeptideProteinGrouping;
     }
 
-    public String getWriteParamsFile() {
+    public boolean isWriteParamsFile() {
         return writeParamsFile;
     }
 
@@ -809,5 +814,9 @@ public class NewAnceParams implements Serializable {
 
     public double getCometMainScoreMinValue() {
         return cometMainScoreMinValue;
+    }
+
+    public boolean isForceHistos() {
+        return forceHistos;
     }
 }

@@ -105,6 +105,7 @@ public abstract class ExecutableOptions {
                     throw new InvalidPathException(args[i+1]+" for option "+optStr+". ", "File does not exist");
                 }
 
+                NewAnceParams.getInstance().add("readParamsFile",args[i+1]);
                 NewAnceParams.getInstance().read(args[i+1]);
                 return true;
             }
