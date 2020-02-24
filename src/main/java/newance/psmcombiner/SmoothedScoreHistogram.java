@@ -42,6 +42,8 @@ import java.util.Set;
 public abstract class SmoothedScoreHistogram extends ScoreHistogram {
 
     protected float tmpCnt;
+    // if smoothedHistogram!=null, methods will be passed to smoothedHistogram its results returned. If smoothedHistogram==null
+    // methods from ScoreHistogram will be called.
     protected SmoothedScoreHistogram smoothedHistogram;
 
     public SmoothedScoreHistogram(int[] nrBins) {
@@ -106,15 +108,15 @@ public abstract class SmoothedScoreHistogram extends ScoreHistogram {
     public void calcLocalFDR() {
         if (smoothedHistogram!=null)
             smoothedHistogram.calcLocalFDR();
-        else
-            super.calcLocalFDR();
+
+        super.calcLocalFDR();
     }
 
     public void calcLocalFDR(float p1_p0_ratio, ScoreHistogram parent) {
         if (smoothedHistogram!=null)
             smoothedHistogram.calcLocalFDR(p1_p0_ratio,parent);
-        else
-            super.calcLocalFDR(p1_p0_ratio,parent);
+
+        super.calcLocalFDR(p1_p0_ratio,parent);
     }
 
     @Override
@@ -314,6 +316,10 @@ public abstract class SmoothedScoreHistogram extends ScoreHistogram {
         gamma.clear();
         lFDR.clear();
         pFDR.clear();
+    }
+
+    public boolean isSmoothed() {
+        return smoothedHistogram!=null;
     }
 
 }

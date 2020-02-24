@@ -236,7 +236,15 @@ public class CometScoreHistogram extends SmoothedScoreHistogram {
     }
 
 
-    public void write(File outputFile) {
+    public void write(String outputDir, String fileTag, String id) {
+
+        if (smoothedHistogram!=null)
+            smoothedHistogram.write(new File(outputDir+File.separatorChar+fileTag+"_smoothed_"+id+".txt"));
+
+        write(new File(outputDir+File.separatorChar+fileTag+"_"+id+".txt"));
+    }
+
+    protected void write(File outputFile) {
 
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
@@ -269,7 +277,6 @@ public class CometScoreHistogram extends SmoothedScoreHistogram {
 
         }
     }
-
 
     public static CometScoreHistogram read(File inputFile) {
 

@@ -148,11 +148,10 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         groupedFDRCalculator.setCanCalculateFDR(params.getMinNrPsmsPerHisto());
         groupedFDRCalculator.importPriorHistos();
         groupedFDRCalculator.calcClassProbs();
-        if (params.isReportHistos()) groupedFDRCalculator.writeHistograms(params.getOutputDir()+File.separator+"histos", params.getOutputTag());
-
+        groupedFDRCalculator.calcLocalFDR();
         groupedFDRCalculator.smoothHistogram(params.getSmoothDegree());
         groupedFDRCalculator.calcLocalFDR();
-        if (params.isReportHistos() && params.getSmoothDegree()>0) groupedFDRCalculator.writeHistograms(params.getOutputDir()+File.separator+"histos", params.getOutputTag()+"_smoothed");
+        if (params.isReportHistos()) groupedFDRCalculator.writeHistograms(params.getOutputDir()+File.separator+"histos", params.getOutputTag());
 
         return groupedFDRCalculator;
     }
@@ -161,7 +160,8 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
 
         float lFDRThreshold = groupedFDRCalculator.calcLocalFDRThreshold((float)params.getFdrCometThreshold());
 
-        System.out.print(groupedFDRCalculator.printTree(lFDRThreshold));
+
+        writeGroupHistoTree(groupedFDRCalculator.printTree(lFDRThreshold));
 //        test(cometMultiplePepXMLConverter.getPsms(),groupedFDRCalculator,lFDRThreshold);
 
         SummaryReportWriter summaryReportWriter = new SummaryReportWriter(params.getOutputDir() +File.separator+params.getOutputTag()+"_SummaryReport.txt", params.isIncludeMaxQuant());
@@ -280,6 +280,19 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         float[] counts = groupedFDRCalculator.getTargetDecoyCounts(lFDRThreshold,group);
 
         System.out.println(group+": test Psm count. tCnt= "+tCnt+"/"+counts[1]+", dCnt= "+dCnt+"/"+counts[0]);
+    }
+
+    protected void writeGroupHistoTree(String grpStatisticsInfo) {
+
+        String paramsFileName = params.getOutputDir() + File.separator + params.getOutputTag()+"_NewAnceStatistics.txt";
+
+        try {
+            BufferedWriter paramsWriter = new BufferedWriter(new FileWriter(new File(paramsFileName)));
+            paramsWriter.write(grpStatisticsInfo);
+            paramsWriter.close();
+        } catch (IOException e) {
+            System.out.println("Cannot write NewAnce parameters to file "+paramsFileName+".");
+        }
     }
 
     protected ConcurrentHashMap<String, List<PeptideSpectrumMatch>> combine(ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  cometPsms, ConcurrentHashMap<String, List<PeptideSpectrumMatch>> maxQuantPsms) {

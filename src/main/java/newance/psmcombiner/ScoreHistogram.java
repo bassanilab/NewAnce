@@ -389,7 +389,8 @@ public abstract class ScoreHistogram implements Serializable {
 
     protected abstract int index(PeptideSpectrumMatch peptideSpectrumMatch);
     protected abstract Set<Integer> getNeighbourIndex(int bin);
-    public abstract void write(File outputFile);
+    protected abstract void write(File outputFile);
+    public abstract void write(String outputDir, String fileTag, String id);
     protected abstract List<Float> getMids(int bin);
 
     public float getTotTargetCnt() {

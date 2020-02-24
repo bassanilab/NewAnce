@@ -116,6 +116,7 @@ public class HistogramTree {
     public String print(float lFDRThreshold) {
 
         String treeString = "";
+        if (level==0) treeString += String.format("lFDRThreshold = %.4f",lFDRThreshold)+"\n\n";
         String tab = "";
         for (int i=0;i<level;i++) tab += "\t";
 
@@ -148,6 +149,7 @@ public class HistogramTree {
     public String print(Map<String, Float> grpThresholdMap) {
 
         String treeString = "";
+        if (level==0) for (String group : grpThresholdMap.keySet())  treeString += String.format("%s lFDRThreshold = %.4f",group, grpThresholdMap.get(group))+"\n";
         String tab = "";
         for (int i=0;i<level;i++) tab += "\t";
 
@@ -183,21 +185,19 @@ public class HistogramTree {
         return treeString;
     }
 
-    public void writeHistogram(String outputDir, String fileprefix) {
+    public void writeHistogram(String outputDir, String fileTag) {
 
-        String filename = outputDir+File.separatorChar+fileprefix+"_"+id+".txt";
-        scoreHistogram.write(new File(filename));
+        scoreHistogram.write(outputDir,fileTag,id);
 
         for (HistogramTree node : children) {
-            node.writeHistogram(outputDir, fileprefix);
+            node.writeHistogram(outputDir, fileTag);
         }
     }
 
     public void writeHistogram(String outputDir, String fileprefix, int level) {
 
         if (this.level<=level) {
-            String filename = outputDir+File.separatorChar+fileprefix+"_"+id+".txt";
-            scoreHistogram.write(new File(filename));
+            scoreHistogram.write(outputDir,fileprefix,id);
         }
 
         if (this.level==level) return;

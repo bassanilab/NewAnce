@@ -216,9 +216,9 @@ public class GroupedFDRCalculator {
 
         for (HistogramTree node : histogramMap.values()) {
 
-            if (node.isLeaf()) {
+//            if (node.isLeaf()) {
                 node.calcLocalFDR();
-            }
+//            }
         }
     }
 
@@ -296,6 +296,7 @@ public class GroupedFDRCalculator {
         float pfdrP = 0;
         float lfdrP = 0;
 
+        // find lfdr interval where pfdr becomes larger than pFDR
         for (int i=0;i<=10;i++) {
             lfdr = i*0.1f;
             pfdr = calcGlobalFDR(lfdr, group);
@@ -310,6 +311,7 @@ public class GroupedFDRCalculator {
 
         if (pfdr<pFDR) return 1f;
 
+        // refine search
         return calcLocalFDRThreshold(lfdrP, pfdrP, lfdr, pfdr, pFDR, eps, group);
     }
 
