@@ -92,10 +92,31 @@ public class GroupedFDRCalculator {
         buildTree();
     }
 
+    public GroupedFDRCalculator() {
+
+        this.nrBins = new int[3];
+        nrBins[0] = NewAnceParams.getInstance().getNrXCorrBins();
+        nrBins[1] = NewAnceParams.getInstance().getNrDeltaCnBins();
+        nrBins[2] = NewAnceParams.getInstance().getNrSpScoreBins();
+
+        CometScoreHistogram cometScoreHistogram = new CometScoreHistogram(nrBins);
+
+        this.histogramTreeRoot = new HistogramTree(cometScoreHistogram, "root","");
+
+        this.histogramMap = new HashMap<>();
+        this.histogramMap.put("root",this.histogramTreeRoot);
+        this.psmGrouper = null;
+        this.addUniProtIds2Psm = null;
+
+        buildTree();
+    }
+
 
     private void buildTree() {
 
-        Set<String> groups = psmGrouper.getGroups();
+        Set<String> groups = new HashSet<>();
+
+        if (psmGrouper!=null) groups = psmGrouper.getGroups();
         CometScoreHistogram cometScoreHistogram;
 
         for (int Z=NewAnceParams.getInstance().getMinCharge();Z<=NewAnceParams.getInstance().getMaxCharge();Z++) {
@@ -158,7 +179,10 @@ public class GroupedFDRCalculator {
 
     public String getNodeID(PeptideSpectrumMatch peptideSpectrumMatch) {
 
-        return "Z"+ peptideSpectrumMatch.getCharge()+"_"+psmGrouper.apply("", peptideSpectrumMatch);
+        if (psmGrouper==null)
+            return "Z"+ peptideSpectrumMatch.getCharge();
+        else
+            return "Z"+ peptideSpectrumMatch.getCharge()+"_"+psmGrouper.apply("", peptideSpectrumMatch);
     }
 
 

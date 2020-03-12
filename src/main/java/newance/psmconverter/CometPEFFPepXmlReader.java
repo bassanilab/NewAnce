@@ -188,7 +188,9 @@ public class CometPEFFPepXmlReader {
             List<Character> wtAAs = new ArrayList<>();
             for (ModInfoDataType.AminoacidSubstitution aminoacidSubstitution : modInfo.getAminoacidSubstitution()) {
 
-                int position = aminoacidSubstitution.getPosition().intValue() - 1;
+                int position = 0;
+                if (aminoacidSubstitution.getPosition()!=null)
+                    position = aminoacidSubstitution.getPosition().intValue() - 1;
                 char wtAA = aminoacidSubstitution.getOrigAa().charAt(0);
                 wtAAs.add(wtAA);
                 positions.add(position);

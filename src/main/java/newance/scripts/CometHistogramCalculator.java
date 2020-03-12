@@ -78,8 +78,7 @@ public class CometHistogramCalculator extends ExecutableOptions {
 
         System.out.println("Build groupedFDRCalculator ...");
 
-        psmGrouper = new DoNothingProteinGrouper();
-        GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper);
+        GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator();
 
         CometMultiplePepXMLFileConverter cometMultiplePepXMLConverter = new CometMultiplePepXMLFileConverter(params.getCometPsmDir(), params.getCometPsmRegExp(), groupedFDRCalculator, true);
         cometMultiplePepXMLConverter.run();
