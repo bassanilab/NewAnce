@@ -4,13 +4,38 @@ NewAnce is a java software tool for proteogenomics. It performs stratified FDR c
  
 ## TOC
 
-1. [Command line options](#Command-line-options)
-2. [Running NewAnce](#Running-NewAnce)
-3. [Output format](#Output-format)
-4. [Tests](#Tests)
-5. [PDV export](#PDV-export)
-6. [Extend MaxQuant features](#Extend-MaxQuant-features)
-7. [Export score histograms](#Export-score-histograms)
+1. [Licence] (#Licence)
+2. [Developper](#Developper)
+3. [Command line options](#Command-line-options)
+4. [Running NewAnce](#Running-NewAnce)
+5. [Output format](#Output-format)
+6. [Tests](#Tests)
+7. [PDV export](#PDV-export)
+8. [Extend MaxQuant features](#Extend-MaxQuant-features)
+9. [Export score histograms](#Export-score-histograms)
+
+## License 
+
+Copyright (C) SIB  - Swiss Institute of Bioinformatics, Lausanne, Switzerland   
+Copyright (C) LICR - Ludwig Institute of Cancer Research, Lausanne, Switzerland       
+
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+## Developper
+
+Markus Müller, SIB, Swiss Institute of Bioinformatics, Lausanne, Switzerland
 
 ## Command line options 
 
