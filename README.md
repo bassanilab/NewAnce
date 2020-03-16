@@ -13,6 +13,7 @@ NewAnce is a java software tool for proteogenomics. It performs stratified FDR c
 7. [PDV export](#PDV-export)
 8. [Extend MaxQuant features](#Extend-MaxQuant-features)
 9. [Export score histograms](#Export-score-histograms)
+10. [Match peptides to fasta file](#Match-peptides-to-fasta-file)
 
 ## License 
 
@@ -624,5 +625,19 @@ Running CometHistogramCalculator:
 
 ```
 java -Xmx12G -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CometHistogramCalculator -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -outD 0D5P/lncRNA/NewAnce/histos -outT prior_histo -spRE .* -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -nrTh 5
+```
+
+## Match peptides to fasta file
+
+This class can be used to match peptide sequences from a tab file to protein sequences in a fasta file (matches treat I/L as equal). This can be useful if you want to check whether ceratin peptides are part of UniProt for example.
+
+```
+java -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.AnnotatePeptides -h
+```
+
+Running AnnotatePeptides:
+
+```
+java -Xmx12G -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.AnnotatePeptides -fa SeqDBs/human_proteome.fasta -col PeptideSequence -p 0D5P/tmp/peptides.txt 
 ```
 
