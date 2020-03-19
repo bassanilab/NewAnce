@@ -44,6 +44,7 @@ public class CometPEFFPepXmlReader {
 
     protected final boolean discardAmbiguous;
     protected final ModificationMatchResolver modMatchResolver;
+    protected final boolean debug;
 
     protected static final BitSet UNKNOWN_AA = new BitSet();
 
@@ -58,6 +59,8 @@ public class CometPEFFPepXmlReader {
         UNKNOWN_AA.set('U');
         UNKNOWN_AA.set('Z');
         UNKNOWN_AA.set('X');
+
+        debug = NewAnceParams.getInstance().isDebug();
     }
 
     public void parse(File file, PeptideSpectrumMatchList peptideSpectrumMatchList) {
@@ -99,6 +102,7 @@ public class CometPEFFPepXmlReader {
 
                     for (MsmsPipelineAnalysis.MsmsRunSummary.SpectrumQuery.SearchResult.SearchHit searchHit : result.getSearchHit()) {
 
+                        if (debug) System.out.println(spectrumInfo.getSpectrum()+" : "+searchHit.getPeptide());
                         processSearchHit(peptideSpectrumMatchList, spectrumInfo, searchHit);
                     }
                 }

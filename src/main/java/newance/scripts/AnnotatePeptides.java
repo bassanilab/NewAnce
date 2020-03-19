@@ -56,7 +56,7 @@ public class AnnotatePeptides extends ExecutableOptions {
 
         cmdLineOpts.addOption(Option.builder("fa").required(true).hasArg().longOpt("fastaFile").desc("Fasta file with protein sequences.").hasArg().build());
         cmdLineOpts.addOption(Option.builder("p").required(true).hasArg().longOpt("peptideFile").desc("Peptide file in tab format. See -col argument.").hasArg().build());
-        cmdLineOpts.addOption(Option.builder("col").required(false).hasArg().longOpt("peptideColumnName").desc("Name of coumn which contains peptide sequences to be searched. If not provided, first column without header is used.").hasArg().build());
+        cmdLineOpts.addOption(Option.builder("col").required(false).hasArg().longOpt("peptideColumnName").desc("Name of coumn which contains peptide sequences to be searched. If not provided, first column is used (assuming there is no header).").hasArg().build());
         cmdLineOpts.addOption(Option.builder("h").required(false).hasArg(false).longOpt("help").desc("Help option for command line help").build());
         cmdLineOpts.addOption(Option.builder("v").required(false).hasArg(false).longOpt("version").desc("Version of NewAnce software").build());
     }

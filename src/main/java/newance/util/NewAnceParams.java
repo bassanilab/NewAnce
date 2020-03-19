@@ -53,6 +53,7 @@ public class NewAnceParams implements Serializable {
     private int maxRank = 1;
 
     private int nrThreads = 1;
+    private boolean debug = false;
 
     private double fdrCometThreshold = 0.03;
 
@@ -135,6 +136,7 @@ public class NewAnceParams implements Serializable {
         res +=  "minPeptideLength="+minPeptideLength+"\n";
         res +=  "maxPeptideLength="+maxPeptideLength+"\n";
         res +=  "maxRank="+maxRank+"\n";
+        res +=  "debug="+debug+"\n";
         res +=  "smoothDegree="+smoothDegree+"\n";
         res +=  "nrThreads="+nrThreads+"\n";
         res +=  "fdrCometThreshold="+fdrCometThreshold+"\n";
@@ -379,6 +381,10 @@ public class NewAnceParams implements Serializable {
 
         if (variableValueMap.containsKey("reportHistos")) {
             reportHistos = getBooleanValue("reportHistos",variableValueMap.get("reportHistos"));
+        }
+
+        if (variableValueMap.containsKey("debug")) {
+            debug = getBooleanValue("debug",variableValueMap.get("debug"));
         }
 
         if (variableValueMap.containsKey("readHistos")) {
@@ -799,5 +805,9 @@ public class NewAnceParams implements Serializable {
 
     public boolean isForceHistos() {
         return forceHistos;
+    }
+
+    public boolean isDebug() {
+        return debug;
     }
 }
