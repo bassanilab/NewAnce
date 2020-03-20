@@ -10,7 +10,6 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.psmcombiner;
 
-import org.expasy.mzjava.stats.Histogram;
 import org.junit.Assert;
 import org.junit.Test;
 

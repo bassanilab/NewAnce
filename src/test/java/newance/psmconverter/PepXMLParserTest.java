@@ -10,19 +10,17 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.psmconverter;
 
+import newance.mzjava.mol.modification.AbsoluteTolerance;
+import newance.mzjava.mol.modification.ModListModMatchResolver;
+import newance.mzjava.mol.modification.Modification;
 import newance.util.NewAnceParams;
 import newance.util.PsmPredicate;
-import org.expasy.mzjava.core.ms.AbsoluteTolerance;
-import org.expasy.mzjava.proteomics.mol.modification.Modification;
-import org.expasy.mzjava.proteomics.ms.ident.ModListModMatchResolver;
 import org.junit.Ignore;
-import org.junit.Test;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.*;
 import java.util.*;
 import java.util.regex.Pattern;

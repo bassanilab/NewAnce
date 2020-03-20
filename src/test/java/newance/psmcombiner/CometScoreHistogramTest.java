@@ -12,8 +12,8 @@ package newance.psmcombiner;
 
 import gnu.trove.map.TObjectDoubleMap;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
+import newance.mzjava.mol.Peptide;
 import newance.psmconverter.PeptideSpectrumMatch;
-import org.expasy.mzjava.proteomics.mol.Peptide;
 import newance.util.NewAnceParams;
 import org.junit.Assert;
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class CometScoreHistogramTest {
         scoreMap.put("deltacn",NewAnceParams.getInstance().getMinDeltaCn()-1.0);
         scoreMap.put("spscore",NewAnceParams.getInstance().getMinSpScore()-1.0);
 
-        peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+        peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile", Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
                 100, 101, 1001.1, false, false, null, null);
 
         Assert.assertEquals(0, cometScoreHistogram.index(peptideSpectrumMatch));

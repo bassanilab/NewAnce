@@ -10,11 +10,8 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.psmconverter;
 
-import gnu.trove.impl.unmodifiable.TUnmodifiableObjectDoubleMap;
 import gnu.trove.map.TObjectDoubleMap;
-import gnu.trove.map.hash.TObjectDoubleHashMap;
-import org.expasy.mzjava.proteomics.mol.AminoAcid;
-import org.expasy.mzjava.proteomics.mol.Peptide;
+import newance.mzjava.mol.Peptide;
 
 import java.util.Collections;
 import java.util.List;

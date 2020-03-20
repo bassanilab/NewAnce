@@ -10,8 +10,6 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.psmconverter;
 
-import org.expasy.mzjava.core.ms.spectrum.MsnSpectrum;
-import org.expasy.mzjava.proteomics.ms.ident.SpectrumIdentifier;
 import newance.util.SpectrumKeyFunction;
 
 import java.util.regex.Pattern;
@@ -20,7 +18,7 @@ import java.util.regex.Pattern;
  * @author Markus Müller
  */
 
-public class SpectrumKeyFunctionImpl implements SpectrumKeyFunction<MsnSpectrum> {
+public class SpectrumKeyFunctionImpl implements SpectrumKeyFunction {
 
     private Pattern regEx = Pattern.compile("\\.[0]+");
 

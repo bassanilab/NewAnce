@@ -14,12 +14,13 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
+import newance.mzjava.mol.AminoAcid;
+import newance.mzjava.mol.modification.ModAttachment;
+import newance.mzjava.mol.modification.Modification;
+import newance.mzjava.mol.modification.ModificationResolver;
+import newance.mzjava.mol.modification.unimod.UnimodModificationResolver;
 import org.apache.commons.io.FilenameUtils;
-import org.expasy.mzjava.proteomics.mol.AminoAcid;
-import org.expasy.mzjava.proteomics.mol.modification.ModAttachment;
-import org.expasy.mzjava.proteomics.mol.modification.Modification;
-import org.expasy.mzjava.proteomics.mol.modification.ModificationResolver;
-import org.expasy.mzjava.proteomics.mol.modification.unimod.UnimodModificationResolver;
+
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;

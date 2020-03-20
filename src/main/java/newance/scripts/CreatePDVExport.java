@@ -10,14 +10,15 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.scripts;
 
+import newance.mzjava.mol.MassCalculator;
+import newance.mzjava.ms.io.mgf.MgfReader;
+import newance.mzjava.ms.io.mgf.MgfWriter;
+import newance.mzjava.ms.io.mgf.MsConvertTitleParser;
+import newance.mzjava.ms.peaklist.PeakList;
+import newance.mzjava.ms.spectrum.MsnSpectrum;
 import newance.util.ExecutableOptions;
 import org.apache.commons.cli.*;
 import org.apache.commons.io.FilenameUtils;
-import org.expasy.mzjava.core.io.ms.spectrum.MgfReader;
-import org.expasy.mzjava.core.io.ms.spectrum.MgfWriter;
-import org.expasy.mzjava.core.mol.MassCalculator;
-import org.expasy.mzjava.core.ms.peaklist.PeakList;
-import org.expasy.mzjava.core.ms.spectrum.MsnSpectrum;
 
 import java.io.*;
 import java.net.URLEncoder;
@@ -110,7 +111,7 @@ public class CreatePDVExport extends ExecutableOptions {
 
         fileWriter.write(charge+"\t"+results.getString("PeptideMass")+"\t");
 
-        double mz = (pm+dm+charge+MassCalculator.PROTON_MASS)/charge;
+        double mz = (pm+dm+charge+ MassCalculator.PROTON_MASS)/charge;
         fileWriter.write(String.format("%.5f",mz)+"\t");
 
         String modifStr = "-";
@@ -157,7 +158,7 @@ public class CreatePDVExport extends ExecutableOptions {
 
         try {
 
-            MgfReader reader = new MgfReader(mgfFile, precision);
+            MgfReader reader = new MgfReader(mgfFile, new MsConvertTitleParser());
 
             MsnSpectrum spectrum = null;
             while (reader.hasNext()) {
@@ -250,5 +251,5 @@ public class CreatePDVExport extends ExecutableOptions {
             e.printStackTrace();
         }
     }
-
 }
+

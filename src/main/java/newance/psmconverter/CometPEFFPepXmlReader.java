@@ -10,17 +10,17 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.psmconverter;
 
-import com.google.common.base.Optional;
+import newance.mzjava.mol.AminoAcid;
+import newance.mzjava.mol.PeriodicTable;
+import newance.mzjava.mol.modification.ModAttachment;
+import newance.mzjava.mol.modification.Modification;
+import newance.mzjava.mol.modification.ModificationMatch;
+import newance.mzjava.mol.modification.ModificationMatchResolver;
 import newance.psmconverter.pepxml_v120.AltProteinDataType;
 import newance.psmconverter.pepxml_v120.ModInfoDataType;
 import newance.psmconverter.pepxml_v120.MsmsPipelineAnalysis;
 import newance.psmconverter.pepxml_v120.NameValueType;
 import newance.util.NewAnceParams;
-import org.expasy.mzjava.core.mol.PeriodicTable;
-import org.expasy.mzjava.proteomics.mol.AminoAcid;
-import org.expasy.mzjava.proteomics.mol.modification.ModAttachment;
-import org.expasy.mzjava.proteomics.mol.modification.Modification;
-import org.expasy.mzjava.proteomics.ms.ident.*;
 
 
 import javax.xml.bind.JAXBContext;
@@ -33,6 +33,8 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.util.StreamReaderDelegate;
 import java.io.*;
 import java.util.*;
+import com.google.common.base.Optional;
+
 
 import static newance.psmconverter.pepxml_v120.MsmsPipelineAnalysis.MsmsRunSummary.SpectrumQuery;
 import static newance.psmconverter.pepxml_v120.MsmsPipelineAnalysis.MsmsRunSummary.SpectrumQuery.SearchResult.SearchHit;

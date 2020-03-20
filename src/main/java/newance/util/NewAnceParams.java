@@ -11,7 +11,8 @@ You should have received a copy of the GNU General Public License along with thi
 package newance.util;
 
 
-import org.expasy.mzjava.proteomics.mol.modification.Modification;
+
+import newance.mzjava.mol.modification.Modification;
 
 import java.io.*;
 import java.nio.file.InvalidPathException;
@@ -82,7 +83,7 @@ public class NewAnceParams implements Serializable {
 
     private String fdrControlMethod = "combined";
 
-    private String version = "version 1.4.0";
+    private String version = "version 1.5.0";
 
     private String cometPsmDir = "";
     private String maxquantPsmDir = "";

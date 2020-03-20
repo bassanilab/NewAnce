@@ -10,10 +10,10 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.psmcombiner;
 
+import newance.mzjava.mol.modification.ModAttachment;
+import newance.mzjava.mol.modification.Modification;
+import newance.mzjava.mol.modification.ModificationList;
 import newance.util.PsmGrouper;
-import org.expasy.mzjava.proteomics.mol.modification.ModAttachment;
-import org.expasy.mzjava.proteomics.mol.modification.Modification;
-import org.expasy.mzjava.proteomics.mol.modification.ModificationList;
 import newance.psmconverter.PeptideSpectrumMatch;
 
 import java.util.HashSet;

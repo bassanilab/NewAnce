@@ -10,9 +10,8 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.psmconverter;
 
+import newance.mzjava.mol.Peptide;
 import newance.util.PsmPredicate;
-import org.expasy.mzjava.core.ms.spectrum.MsnSpectrum;
-import org.expasy.mzjava.proteomics.mol.Peptide;
 import newance.util.SpectrumFilter;
 import newance.util.NewAnceParams;
 import newance.util.SpectrumKeyFunction;
@@ -34,12 +33,12 @@ public class PeptideSpectrumMatchList {
     protected final NewAnceParams params;
     protected final Pattern decoyProtPattern;
     protected final Pattern excludedProtPattern;
-    protected final SpectrumKeyFunction<MsnSpectrum> spectrumKeyFunction;
+    protected final SpectrumKeyFunction spectrumKeyFunction;
     protected final SpectrumFilter spectrumFilter;
     protected final PsmPredicate psmPredicate;
 
 
-    public PeptideSpectrumMatchList(SpectrumKeyFunction<MsnSpectrum> spectrumKeyFunction,
+    public PeptideSpectrumMatchList(SpectrumKeyFunction spectrumKeyFunction,
                                     PsmPredicate psmPredicate,
                                     Map<String, List<PeptideSpectrumMatch>> psmMap) {
 

@@ -16,13 +16,9 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import gnu.trove.map.TObjectDoubleMap;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
-import org.expasy.mzjava.proteomics.mol.AminoAcid;
-import org.expasy.mzjava.proteomics.mol.modification.ModAttachment;
-import org.expasy.mzjava.proteomics.mol.modification.Modification;
-import org.expasy.mzjava.proteomics.mol.Peptide;
-import org.expasy.mzjava.proteomics.ms.ident.ModificationMatch;
-import org.expasy.mzjava.proteomics.ms.ident.ModificationMatchResolver;
-import org.expasy.mzjava.proteomics.ms.ident.UnresolvableModificationMatchException;
+import newance.mzjava.mol.AminoAcid;
+import newance.mzjava.mol.Peptide;
+import newance.mzjava.mol.modification.*;
 
 import java.util.*;
 

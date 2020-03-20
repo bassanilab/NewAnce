@@ -12,8 +12,8 @@ package newance.psmcombiner;
 
 import gnu.trove.map.TObjectDoubleMap;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
+import newance.mzjava.mol.Peptide;
 import newance.psmconverter.PeptideSpectrumMatch;
-import org.expasy.mzjava.proteomics.mol.Peptide;
 import newance.util.NewAnceParams;
 import org.junit.Assert;
 import org.junit.Test;
@@ -52,7 +52,7 @@ public class GroupedFDRCalculatorTest {
         prots.add("sp|protein1");
         prots.add("protein2");
 
-        PeptideSpectrumMatch peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+        PeptideSpectrumMatch peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile", Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
                 100, 101, 1001.1, false, false, null, null);
 
         groupedFDRCalculator.add(peptideSpectrumMatch);

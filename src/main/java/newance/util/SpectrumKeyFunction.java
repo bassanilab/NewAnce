@@ -11,8 +11,6 @@ You should have received a copy of the GNU General Public License along with thi
 package newance.util;
 
 import newance.psmconverter.SpectrumInfo;
-import org.expasy.mzjava.core.ms.spectrum.MsnSpectrum;
-import org.expasy.mzjava.proteomics.ms.ident.SpectrumIdentifier;
 
 import java.io.Serializable;
 
@@ -20,7 +18,7 @@ import java.io.Serializable;
  * @author: Markus Müller, SIB
  */
 
-public interface SpectrumKeyFunction <S extends MsnSpectrum> extends Serializable {
+public interface SpectrumKeyFunction extends Serializable {
 
     public String apply(SpectrumInfo spectrumInfo);
 }

@@ -12,8 +12,8 @@ package newance.psmcombiner;
 
 import gnu.trove.map.TObjectDoubleMap;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
+import newance.mzjava.mol.Peptide;
 import newance.psmconverter.PeptideSpectrumMatch;
-import org.expasy.mzjava.proteomics.mol.Peptide;
 import newance.util.NewAnceParams;
 import org.junit.Assert;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class CometMaxQuantPsmMergerTest {
         scoreMap.put("deltacn",0.1);
         scoreMap.put("spscore",100.0);
 
-        PeptideSpectrumMatch peptideSpectrumMatch1 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
+        PeptideSpectrumMatch peptideSpectrumMatch1 = new PeptideSpectrumMatch("spectrumFile", Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
                 100, 101, 1001.1, false, false, null, null);
 
         scoreMap = new TObjectDoubleHashMap<>();

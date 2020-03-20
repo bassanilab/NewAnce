@@ -1,0 +1,982 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2002-2006 Unimod; this information may be copied, distributed and/or -->
+<!-- modified under certain conditions, but it comes WITHOUT ANY WARRANTY; see the -->
+<!-- accompanying Design Science License for more details -->
+
+<unimod majorVersion="1" minorVersion="0">  
+  <modifications>
+    <modifications_row ex_code_name="Acetyl" record_id="1" full_name="Acetylation" code_name="Acetyl"/>
+    <modifications_row ex_code_name="Amidated" record_id="2" full_name="Amidation" code_name="Amide"/>
+    <modifications_row ex_code_name="Biotin" record_id="3" full_name="Biotinylation" code_name="Biotin"/>
+    <modifications_row ex_code_name="Carbamidomethyl" record_id="4" full_name="Iodoacetamide derivative" code_name="Carbamidomethyl"/>
+    <modifications_row ex_code_name="Carbamyl" record_id="5" full_name="Carbamylation" code_name="Carbamyl"/>
+    <modifications_row ex_code_name="Carboxymethyl" record_id="6" full_name="Iodoacetic acid derivative" code_name="Carboxymethyl"/>
+    <modifications_row ex_code_name="Deamidated" record_id="7" full_name="Deamidation" code_name="Deamidation"/>
+    <modifications_row ex_code_name="ICAT-G" record_id="8" full_name="Gygi ICAT(TM) d0" code_name="Gygi_ICATd0"/>
+    <modifications_row ex_code_name="ICAT-G:2H(8)" record_id="9" full_name="Gygi ICAT(TM) d8" code_name="Gygi_ICATd8"/>
+    <modifications_row ex_code_name="Met-&gt;Hse" record_id="10" full_name="Homoserine" code_name="HSe"/>
+    <modifications_row ex_code_name="Met-&gt;Hsl" record_id="11" full_name="Homoserine lactone" code_name="Hse_lact"/>
+    <modifications_row ex_code_name="ICAT-D:2H(8)" record_id="12" full_name="Applied Biosystems original ICAT(TM) d8" code_name="AB_old_ICATd8"/>
+    <modifications_row ex_code_name="ICAT-D" record_id="13" full_name="Applied Biosystems original ICAT(TM) d0" code_name="AB_old_ICATd0"/>
+    <modifications_row ex_code_name="NIPCAM" record_id="17" full_name="N-isopropylcarboxamidomethyl" code_name="NIPCAM"/>
+    <modifications_row ex_code_name="PEO-Iodoacetyl-LC-Biotin" record_id="20" full_name="Biotinyl-iodoacetamidyl-3,6-dioxaoctanediamine" code_name="PEO-Biotin"/>
+    <modifications_row ex_code_name="Phospho" record_id="21" full_name="Phosphorylation" code_name="Phospho"/>
+    <modifications_row ex_code_name="Dehydrated" record_id="23" full_name="Dehydration" code_name="Phospho+PL"/>
+    <modifications_row ex_code_name="Propionamide" record_id="24" full_name="Acrylamide adduct" code_name="Propionamide"/>
+    <modifications_row ex_code_name="Pyridylacetyl" record_id="25" full_name="pyridylacetyl" code_name="pyridylacetyl"/>
+    <modifications_row ex_code_name="Pyro-carbamidomethyl" record_id="26" full_name="S-carbamoylmethylcysteine cyclization (N-terminus)" code_name="Pyro-cmC"/>
+    <modifications_row ex_code_name="Glu-&gt;pyro-Glu" record_id="27" full_name="Pyro-glu from E" code_name="Pyro_glu"/>
+    <modifications_row ex_code_name="Gln-&gt;pyro-Glu" record_id="28" full_name="Pyro-glu from Q" code_name="Pyro-glu"/>
+    <modifications_row ex_code_name="SMA" record_id="29" full_name="N-Succinimidyl-2-morpholine acetate" code_name="SMA"/>
+    <modifications_row ex_code_name="Cation:Na" record_id="30" full_name="Sodium adduct" code_name="Sodiated"/>
+    <modifications_row ex_code_name="Pyridylethyl" record_id="31" full_name="S-pyridylethylation" code_name="S-pyridylethyl"/>
+    <modifications_row ex_code_name="Methyl" record_id="34" full_name="Methylation" code_name="Methyl"/>
+    <modifications_row ex_code_name="Oxidation" record_id="35" full_name="Oxidation or Hydroxylation" code_name="Hydroxylation"/>
+    <modifications_row ex_code_name="Dimethyl" record_id="36" full_name="di-Methylation" code_name="di-Methylation"/>
+    <modifications_row ex_code_name="Trimethyl" record_id="37" full_name="tri-Methylation" code_name="tri-Methylation"/>
+    <modifications_row ex_code_name="Methylthio" record_id="39" full_name="Beta-methylthiolation" code_name="b-methylthiol"/>
+    <modifications_row ex_code_name="Sulfo" record_id="40" full_name="O-Sulfonation" code_name="Sulfation"/>
+    <modifications_row ex_code_name="Hex" record_id="41" full_name="Hexose" code_name="Hex"/>
+    <modifications_row ex_code_name="Lipoyl" record_id="42" full_name="Lipoyl" code_name="Lipoyl"/>
+    <modifications_row ex_code_name="HexNAc" record_id="43" full_name="N-Acetylhexosamine" code_name="HexNAc"/>
+    <modifications_row ex_code_name="Farnesyl" record_id="44" full_name="Farnesylation" code_name="Farnesylation"/>
+    <modifications_row ex_code_name="Myristoyl" record_id="45" full_name="Myristoylation" code_name="Myristoylation"/>
+    <modifications_row ex_code_name="PyridoxalPhosphate" record_id="46" full_name="Pyridoxal phosphate" code_name="Pyridoxal-phos"/>
+    <modifications_row ex_code_name="Palmitoyl" record_id="47" full_name="Palmitoylation" code_name="Palmitoylation"/>
+    <modifications_row ex_code_name="GeranylGeranyl" record_id="48" full_name="Geranyl-geranyl" code_name="Geranyl-geranyl"/>
+    <modifications_row ex_code_name="Phosphopantetheine" record_id="49" full_name="Phosphopantetheine" code_name="p-pantetheine"/>
+    <modifications_row ex_code_name="FAD" record_id="50" full_name="Flavin adenine dinucleotide" code_name="FAD"/>
+    <modifications_row ex_code_name="Tripalmitate" record_id="51" full_name="N-acyl diglyceride cysteine" code_name="Tripalmitate"/>
+    <modifications_row ex_code_name="Guanidinyl" record_id="52" full_name="Guanidination" code_name="Guanidination"/>
+    <modifications_row ex_code_name="HNE" record_id="53" full_name="4-hydroxynonenal (HNE)" code_name="HNE"/>
+    <modifications_row ex_code_name="Glucuronyl" record_id="54" full_name="N-glucuronylation" code_name="N-glucuronyl"/>
+    <modifications_row ex_code_name="Glutathione" record_id="55" full_name="glutathione disulfide" code_name="Glutathione"/>
+    <modifications_row ex_code_name="Acetyl:2H(3)" record_id="56" full_name="Acetate labeling reagent (N-term &amp; K) (heavy form, +3amu)" code_name="Acetyl_heavy"/>
+    <modifications_row ex_code_name="Propionyl" record_id="58" full_name="Propionate labeling reagent light form (N-term &amp; K)" code_name="Propionyl_light"/>
+    <modifications_row ex_code_name="Propionyl:13C(3)" record_id="59" full_name="Propionate labeling reagent heavy form (+3amu), N-term &amp; K" code_name="Propionyl_heavy"/>
+    <modifications_row ex_code_name="GIST-Quat" record_id="60" full_name="Quaternary amine labeling reagent light form (N-term &amp; K)" code_name="Quat_0"/>
+    <modifications_row ex_code_name="GIST-Quat:2H(3)" record_id="61" full_name="Quaternary amine labeling reagent heavy (+3amu) form, N-term &amp; K" code_name="Quat_3"/>
+    <modifications_row ex_code_name="GIST-Quat:2H(6)" record_id="62" full_name="Quaternary amine labeling reagent heavy form (+6amu), N-term &amp; K" code_name="Quat_6"/>
+    <modifications_row ex_code_name="GIST-Quat:2H(9)" record_id="63" full_name="Quaternary amine labeling reagent heavy form (+9amu), N-term &amp; K" code_name="Quat_9"/>
+    <modifications_row ex_code_name="Succinyl" record_id="64" full_name="Succinic anhydride labeling reagent light form (N-term &amp; K)" code_name="Suc_anh_light"/>
+    <modifications_row ex_code_name="Succinyl:2H(4)" record_id="65" full_name="Succinic anhydride labeling reagent, heavy form (+4amu, 4H2), N-term &amp; K" code_name="Suc_anh+4H2"/>
+    <modifications_row ex_code_name="Succinyl:13C(4)" record_id="66" full_name="Succinic anhydride labeling reagent, heavy form (+4amu, 4C13), N-term &amp; K" code_name="Suc_anh+4C13"/>
+    <modifications_row ex_code_name="" record_id="357" full_name="oxidized proline biotinylated with biotin hydrazide" code_name="probiotinhydrazide"/>
+    <modifications_row ex_code_name="Pro-&gt;pyro-Glu" record_id="359" full_name="proline oxidation to pyroglutamic acid" code_name="Pyroglutamic"/>
+    <modifications_row ex_code_name="His-&gt;Asn" record_id="348" full_name="His-&gt;Asn substitution" code_name="His2Asn"/>
+    <modifications_row ex_code_name="His-&gt;Asp" record_id="349" full_name="His-&gt;Asp substitution" code_name="His2Asp"/>
+    <modifications_row ex_code_name="Trp-&gt;Hydroxykynurenin" record_id="350" full_name="tryptophan oxidation to hydroxykynurenin" code_name="hydroxykynurenin"/>
+    <modifications_row ex_code_name="Delta:H(4)C(3)" record_id="256" full_name="Propionaldehyde +40" code_name="Propionald+40"/>
+    <modifications_row ex_code_name="Delta:H(4)C(2)" record_id="255" full_name="Acetaldehyde +28" code_name="Acetald+28"/>
+    <modifications_row ex_code_name="Cys-&gt;Dha" record_id="368" full_name="Dehydroalanine (from Cysteine)" code_name="DehydroalaC"/>
+    <modifications_row ex_code_name="Arg-&gt;GluSA" record_id="344" full_name="Arginine oxidation to glutamic semialdehyde" code_name="Argglutamicsealde"/>
+    <modifications_row ex_code_name="Trioxidation" record_id="345" full_name="cysteine oxidation to cysteic acid" code_name="Cysteic_acid"/>
+    <modifications_row ex_code_name="Iminobiotin" record_id="89" full_name="Iminobiotinylation" code_name="Im_biotin"/>
+    <modifications_row ex_code_name="ESP" record_id="90" full_name="ESP-Tag light d0" code_name="ESP-Tag_light"/>
+    <modifications_row ex_code_name="ESP:2H(10)" record_id="91" full_name="ESP-Tag heavy d10" code_name="ESP-Tag_heavy"/>
+    <modifications_row ex_code_name="NHS-LC-Biotin" record_id="92" full_name="NHS-LC-Biotin" code_name="Biot_LC"/>
+    <modifications_row ex_code_name="EDT-maleimide-PEO-biotin" record_id="93" full_name="EDT-maleimide-PEO-biotin" code_name="EDT-m-biotin"/>
+    <modifications_row ex_code_name="IMID" record_id="94" full_name="IMID d0" code_name="IMID_light"/>
+    <modifications_row ex_code_name="IMID:2H(4)" record_id="95" full_name="IMID d4" code_name="IMID_heavy"/>
+    <modifications_row ex_code_name="" record_id="353" full_name="oxidized Lysine biotinylated with biotin hydrazide" code_name="Lysbiotinhydrazide"/>
+    <modifications_row ex_code_name="Propionamide:2H(3)" record_id="97" full_name="Acrylamide d3" code_name="Acrylamide_heavy"/>
+    <modifications_row ex_code_name="Nitro" record_id="354" full_name="Oxidation to nitro" code_name="Nitro"/>
+    <modifications_row ex_code_name="ICAT-C" record_id="105" full_name="Applied Biosystems cleavable ICAT(TM) light" code_name="ICAT_light"/>
+    <modifications_row ex_code_name="Delta:H(2)C(2)" record_id="254" full_name="Acetaldehyde +26" code_name="Acetald+26"/>
+    <modifications_row ex_code_name="Trp-&gt;Kynurenin" record_id="351" full_name="tryptophan oxidation to kynurenin" code_name="kynurenin"/>
+    <modifications_row ex_code_name="Lys-&gt;Allysine" record_id="352" full_name="Lysine oxidation to aminoadipic semialdehyde" code_name="Lysaminoadipicsealde"/>
+    <modifications_row ex_code_name="ICAT-C:13C(9)" record_id="106" full_name="Applied Biosystems cleavable ICAT(TM) heavy" code_name="ICAT_heavy"/>
+    <modifications_row ex_code_name="FormylMet" record_id="107" full_name="Addition of N-formyl met" code_name="+N-formyl-met"/>
+    <modifications_row ex_code_name="Nethylmaleimide" record_id="108" full_name="N-ethylmaleimide on cysteines" code_name="NEM"/>
+    <modifications_row ex_code_name="" record_id="112" full_name="Oxidized lysine biotinylated with biotin-LC-hydrazide, reduced" code_name="OxLysBiotinRed"/>
+    <modifications_row ex_code_name="IBTP" record_id="119" full_name="Thio Ether Formation - BTP Adduct" code_name="IBTP"/>
+    <modifications_row ex_code_name="" record_id="113" full_name="Oxidized lysine biotinylated with biotin-LC-hydrazide" code_name="OxLysBiotin"/>
+    <modifications_row ex_code_name="" record_id="114" full_name="Oxidized proline biotinylated with biotin-LC-hydrazide, reduced" code_name="OxProBiotinRed"/>
+    <modifications_row ex_code_name="" record_id="115" full_name="Oxidized Proline biotinylated with biotin-LC-hydrazide" code_name="OxProBiotin"/>
+    <modifications_row ex_code_name="" record_id="116" full_name="Oxidized arginine biotinylated with biotin-LC-hydrazide" code_name="OxArgBiotin"/>
+    <modifications_row ex_code_name="" record_id="117" full_name="Oxidized arginine biotinylated with biotin-LC-hydrazide, reduced" code_name="OxArgBiotinRed"/>
+    <modifications_row ex_code_name="EDT-iodoacetyl-PEO-biotin" record_id="118" full_name="EDT-iodo-PEO-biotin" code_name="EDT-i-biotin"/>
+    <modifications_row ex_code_name="GlyGly" record_id="121" full_name="ubiquitinylation residue" code_name="GlyGly"/>
+    <modifications_row ex_code_name="Formyl" record_id="122" full_name="Formylation" code_name="Formyl"/>
+    <modifications_row ex_code_name="ICAT-H" record_id="123" full_name="N-iodoacetyl, p-chlorobenzyl-12C6-glucamine" code_name="Harbury_ICAT_C12"/>
+    <modifications_row ex_code_name="ICAT-H:13C(6)" record_id="124" full_name="N-iodoacetyl, p-chlorobenzyl-13C6-glucamine" code_name="Harbury_ICAT_C13"/>
+    <modifications_row ex_code_name="Cation:K" record_id="530" full_name="Replacement of proton by potassium" code_name="Cation:K"/>
+    <modifications_row ex_code_name="Thioacyl" record_id="126" full_name="3-sulfanylpropanoyl" code_name="DSP"/>
+    <modifications_row ex_code_name="Fluoro" record_id="127" full_name="fluorination" code_name="Fphe"/>
+    <modifications_row ex_code_name="Fluorescein" record_id="128" full_name="5-Iodoacetamidofluorescein (Molecular Probe, Eugene, OR)" code_name="Fluorescein"/>
+    <modifications_row ex_code_name="Iodo" record_id="129" full_name="Iodination" code_name="Iodination"/>
+    <modifications_row ex_code_name="Diiodo" record_id="130" full_name="di-Iodination" code_name="di-Iodination"/>
+    <modifications_row ex_code_name="Triiodo" record_id="131" full_name="tri-Iodination" code_name="tri-Iodination"/>
+    <modifications_row ex_code_name="Myristoleyl" record_id="134" full_name="(cis-delta 5)-tetradecaenoyl" code_name="myristoleylation"/>
+    <modifications_row ex_code_name="Pro-&gt;Pyrrolidinone" record_id="360" full_name="Proline oxidation to pyrrolidinone" code_name="Pyrrolidinone"/>
+    <modifications_row ex_code_name="Myristoyl+Delta:H(-4)" record_id="135" full_name="(cis,cis-delta 5, delta 8)-tetradecadienoyl" code_name="myristoyl-4H"/>
+    <modifications_row ex_code_name="Benzoyl" record_id="136" full_name="labeling reagent light form (N-term &amp; K)" code_name="benzoyl"/>
+    <modifications_row ex_code_name="Hex(5)HexNAc(2)" record_id="137" full_name="N-linked glycan core" code_name="N-glycan"/>
+    <modifications_row ex_code_name="Dansyl" record_id="139" full_name="5-dimethylaminonaphthalene-1-sulfonyl" code_name="dansyl"/>
+    <modifications_row ex_code_name="a-type-ion" record_id="140" full_name="ISD a-series (C-Term)" code_name="a-type_Ion"/>
+    <modifications_row ex_code_name="Amidine" record_id="141" full_name="amidination of lysines or N-terminal amines with methyl acetimidate" code_name="amidine"/>
+    <modifications_row ex_code_name="HexNAc(1)dHex(1)" record_id="142" full_name="HexNAc1dHex1" code_name="HexNAc1dHex1"/>
+    <modifications_row ex_code_name="HexNAc(2)" record_id="143" full_name="HexNAc2" code_name="HexNAc2"/>
+    <modifications_row ex_code_name="Hex(3)" record_id="144" full_name="Hex3" code_name="Hex3"/>
+    <modifications_row ex_code_name="HexNAc(1)dHex(2)" record_id="145" full_name="HexNAc1dHex2" code_name="HexNAc1dHex2"/>
+    <modifications_row ex_code_name="Hex(1)HexNAc(1)dHex(1)" record_id="146" full_name="Hex1HexNAc1dHex1" code_name="Hex1HexNAc1dHex1"/>
+    <modifications_row ex_code_name="HexNAc(2)dHex(1)" record_id="147" full_name="HexNAc2dHex1" code_name="HexNAc2dHex1"/>
+    <modifications_row ex_code_name="Hex(1)HexNAc(2)" record_id="148" full_name="Hex1HexNAc2" code_name="Hex1HexNAc2"/>
+    <modifications_row ex_code_name="Hex(1)HexNAc(1)NeuAc(1)" record_id="149" full_name="Hex1HexNAc1NeuAc1" code_name="Hex1HexNAc1NeuAc1"/>
+    <modifications_row ex_code_name="HexNAc(2)dHex(2)" record_id="150" full_name="HexNAc2dHex2" code_name="HexNAc2dHex2"/>
+    <modifications_row ex_code_name="Hex(1)HexNAc(2)Pent(1)" record_id="151" full_name="Hex1HexNAc2Pent1" code_name="Hex1HexNAc2Pent1"/>
+    <modifications_row ex_code_name="Hex(1)HexNAc(2)dHex(1)" record_id="152" full_name="Hex1HexNAc2dHex1" code_name="Hex1HexNAc2dHex1"/>
+    <modifications_row ex_code_name="Hex(2)HexNAc(2)" record_id="153" full_name="Hex2HexNAc2" code_name="Hex2HexNAc2"/>
+    <modifications_row ex_code_name="Hex(3)HexNAc(1)Pent(1)" record_id="154" full_name="Hex3HexNAc1Pent1" code_name="Hex3HexNAc1Pent1"/>
+    <modifications_row ex_code_name="Hex(1)HexNAc(2)dHex(1)Pent(1)" record_id="155" full_name="Hex1HexNAc2dHex1Pent1" code_name="Hex1HexNAc2dHex1Pent1"/>
+    <modifications_row ex_code_name="Hex(1)HexNAc(2)dHex(2)" record_id="156" full_name="Hex1HexNAc2dHex2" code_name="Hex1HexNAc2dHex2"/>
+    <modifications_row ex_code_name="Hex(2)HexNAc(2)Pent(1)" record_id="157" full_name="Hex2HexNAc2Pent1" code_name="Hex2HexNAc2Pent1"/>
+    <modifications_row ex_code_name="Hex(2)HexNAc(2)dHex(1)" record_id="158" full_name="Hex2HexNAc2dHex1" code_name="Hex2HexNAc2dHex1"/>
+    <modifications_row ex_code_name="Hex(3)HexNAc(2)" record_id="159" full_name="Hex3HexNAc2" code_name="Hex3HexNAc2"/>
+    <modifications_row ex_code_name="Hex(1)HexNAc(1)NeuAc(2)" record_id="160" full_name="Hex1HexNAc1NeuAc2" code_name="Hex1HexNAc1NeuAc2"/>
+    <modifications_row ex_code_name="Hex(3)HexNAc(2)P(1)" record_id="161" full_name="Hex3HexNAc2P1" code_name="Hex3HexNAc2P1"/>
+    <modifications_row ex_code_name="Delta:S(-1)Se(1)" record_id="162" full_name="Selenium replaces sulfur" code_name="SeMet"/>
+    <modifications_row ex_code_name="NBS:13C(6)" record_id="171" full_name="Shimadzu NBS-13C" code_name="NBS-13C"/>
+    <modifications_row ex_code_name="Methyl:2H(3)13C(1)" record_id="329" full_name="monomethylated arginine" code_name="Methyl-Heavy"/>
+    <modifications_row ex_code_name="Dimethyl:2H(6)13C(2)" record_id="330" full_name="dimethylated arginine" code_name="Dimethyl-Heavy"/>
+    <modifications_row ex_code_name="NBS" record_id="172" full_name="Shimadzu NBS-12C" code_name="NBS-12C"/>
+    <modifications_row ex_code_name="Delta:H(1)O(-1)18O(1)" record_id="170" full_name="glycosylated asparagine 18O labeling" code_name="GN18Olabeling"/>
+    <modifications_row ex_code_name="QAT" record_id="195" full_name="APTA-d0" code_name="QAT"/>
+    <modifications_row ex_code_name="BHT" record_id="176" full_name="Michael addition of BHT quinone methide to Cysteine and Lysine" code_name="BHT"/>
+    <modifications_row ex_code_name="Delta:H(4)C(2)O(-1)S(1)" record_id="327" full_name="S-Ethylcystine from Serine" code_name="S-Eth"/>
+    <modifications_row ex_code_name="DAET" record_id="178" full_name="phosphorylation to amine thiol" code_name="ser_thr_DAET"/>
+    <modifications_row ex_code_name="Pro-&gt;Pyrrolidone" record_id="369" full_name="Pyrrolidone from Proline" code_name="OxPro"/>
+    <modifications_row ex_code_name="Label:13C(9)" record_id="184" full_name="13C(9) Silac label" code_name="13C9"/>
+    <modifications_row ex_code_name="Label:13C(9)+Phospho" record_id="185" full_name="C13 label (Phosphotyrosine)" code_name="13C9_Phospho_Tyr"/>
+    <modifications_row ex_code_name="Label:13C(6)" record_id="188" full_name="13C(6) Silac label" code_name="13C6"/>
+    <modifications_row ex_code_name="HPG" record_id="186" full_name="Hydroxyphenylglyoxal arginine" code_name="Arg1HPG"/>
+    <modifications_row ex_code_name="2HPG" record_id="187" full_name="bis(hydroxphenylglyoxal) arginine" code_name="Arg2HPG"/>
+    <modifications_row ex_code_name="QAT:2H(3)" record_id="196" full_name="APTA d3" code_name="QATd3"/>
+    <modifications_row ex_code_name="Label:18O(2)" record_id="193" full_name="O18 label at both C-terminal oxygens" code_name="double_O18"/>
+    <modifications_row ex_code_name="AccQTag" record_id="194" full_name="6-aminoquinolyl-N-hydroxysuccinimidyl carbamate" code_name="AccQTag"/>
+    <modifications_row ex_code_name="Dimethyl:2H(4)" record_id="199" full_name="DiMethyl-CHD2" code_name="CHD2"/>
+    <modifications_row ex_code_name="EQAT" record_id="197" full_name="EAPTA d0" code_name="EQAT"/>
+    <modifications_row ex_code_name="EQAT:2H(5)" record_id="198" full_name="EAPTA d5" code_name="EQATd5"/>
+    <modifications_row ex_code_name="Ethanedithiol" record_id="200" full_name="EDT" code_name="EDT"/>
+    <modifications_row ex_code_name="NEIAA:2H(5)" record_id="212" full_name="N-ethyl iodoacetamide-d5" code_name="NEIAA-d5"/>
+    <modifications_row ex_code_name="Delta:H(6)C(6)O(1)" record_id="205" full_name="Acrolein addition +94" code_name="Acrolein94"/>
+    <modifications_row ex_code_name="Delta:H(4)C(3)O(1)" record_id="206" full_name="Acrolein addition +56" code_name="Acrolein56"/>
+    <modifications_row ex_code_name="Delta:H(2)C(3)" record_id="207" full_name="Acrolein addition +38" code_name="Acrolein38"/>
+    <modifications_row ex_code_name="Delta:H(4)C(6)" record_id="208" full_name="Acrolein addition +76" code_name="Acrolein76"/>
+    <modifications_row ex_code_name="Delta:H(8)C(6)O(2)" record_id="209" full_name="Acrolein addition +112" code_name="Acrolein112"/>
+    <modifications_row ex_code_name="ADP-Ribosyl" record_id="213" full_name="ADP  Ribose addition" code_name="ADP-Ribose"/>
+    <modifications_row ex_code_name="NEIAA" record_id="211" full_name="N-ethyl iodoacetamide-d0" code_name="NEIAA-d0"/>
+    <modifications_row ex_code_name="iTRAQ4plex" record_id="214" full_name="Representative mass and accurate mass for 116 &amp; 117" code_name="iTRAQ"/>
+    <modifications_row ex_code_name="Crotonaldehyde" record_id="253" full_name="Crotonaldehyde" code_name="Croton"/>
+    <modifications_row ex_code_name="Bromo" record_id="340" full_name="bromination" code_name="bromo"/>
+    <modifications_row ex_code_name="Amino" record_id="342" full_name="Tyrosine oxidation to 2-aminotyrosine" code_name="aminotyrosine"/>
+    <modifications_row ex_code_name="" record_id="343" full_name="oxidized Arginine biotinylated with biotin hydrazide" code_name="Argbiotinhydrazide"/>
+    <modifications_row ex_code_name="Label:18O(1)" record_id="258" full_name="O18 Labeling" code_name="O18_STY"/>
+    <modifications_row ex_code_name="Label:13C(6)15N(2)" record_id="259" full_name="13C(6) 15N(2) Silac label" code_name="13C6-15N2"/>
+    <modifications_row ex_code_name="Thiophospho" record_id="260" full_name="Thiophosphorylation" code_name="Thio-phospho"/>
+    <modifications_row ex_code_name="SPITC" record_id="261" full_name="4-sulfophenyl isothiocyanate" code_name="SPITC"/>
+    <modifications_row ex_code_name="IGBP" record_id="243" full_name="Light IDBEST tag for quantitation" code_name="IGBP"/>
+    <modifications_row ex_code_name="Cytopiloyne" record_id="270" full_name="nucleophilic addtion to cytopiloyne" code_name="cytopiloyne"/>
+    <modifications_row ex_code_name="Cytopiloyne+water" record_id="271" full_name="nucleophilic addition to cytopiloyne+H2O" code_name="cytopiloyne+H2O"/>
+    <modifications_row ex_code_name="Label:13C(6)15N(4)" record_id="267" full_name="13C(6) 15N(4) Silac label" code_name="13C6-15N4"/>
+    <modifications_row ex_code_name="Label:13C(9)15N(1)" record_id="269" full_name="13C(9) 15N(1) Silac label" code_name="13C9-15N1"/>
+    <modifications_row ex_code_name="Label:2H(3)" record_id="262" full_name="Trideuteration" code_name="D3_Label"/>
+    <modifications_row ex_code_name="Label:13C(5)15N(1)" record_id="268" full_name="13C(5) 15N(1) Silac label" code_name="13C5-15N1"/>
+    <modifications_row ex_code_name="PET" record_id="264" full_name="phosphorylation to pyridyl thiol" code_name="PET"/>
+    <modifications_row ex_code_name="CAF" record_id="272" full_name="sulfonation of N-terminus" code_name="CAF"/>
+    <modifications_row ex_code_name="Xlink:SSD" record_id="273" full_name="covalent modification of lysine by cross-linking reagent" code_name="SSD_K"/>
+    <modifications_row ex_code_name="Nitrosyl" record_id="275" full_name="S-nitrosylation" code_name="SNO"/>
+    <modifications_row ex_code_name="AEBS" record_id="276" full_name="Aminoethylbenzenesulfonylation" code_name="AEBS"/>
+    <modifications_row ex_code_name="Ethanolyl" record_id="278" full_name="Ethanolation" code_name="EtOH"/>
+    <modifications_row ex_code_name="" record_id="987" full_name="Dimethyl 13C(6)15N(2) Silac label" code_name="Label:13C(6)15N(2)+Dimethyl"/>
+    <modifications_row ex_code_name="HMVK" record_id="371" full_name="Michael addition of hydroxymethylvinyl ketone to cysteine" code_name="HMVK86"/>
+    <modifications_row ex_code_name="Ethyl" record_id="280" full_name="Ethylation" code_name="Ethyl"/>
+    <modifications_row ex_code_name="CoenzymeA" record_id="281" full_name="Cysteine modified Coenzyme A" code_name="CysCoA"/>
+    <modifications_row ex_code_name="Methyl+Deamidated" record_id="528" full_name="Deamidation followed by a methylation" code_name="Methyl+Deamidated"/>
+    <modifications_row ex_code_name="Delta:H(5)C(2)" record_id="529" full_name="Dimethylation of proline residue" code_name="Delta:H(5)C(2)"/>
+    <modifications_row ex_code_name="Methyl:2H(2)" record_id="284" full_name="Deuterium Methylation of Lysine" code_name="DeMet"/>
+    <modifications_row ex_code_name="SulfanilicAcid" record_id="285" full_name="Light Sulfanilic Acid (SA) C12" code_name="SA_light"/>
+    <modifications_row ex_code_name="SulfanilicAcid:13C(6)" record_id="286" full_name="Heavy Sulfanilic Acid (SA) C13" code_name="SA_heavy"/>
+    <modifications_row ex_code_name="Biotin-PEO-Amine" record_id="289" full_name="Biotin polyethyleneoxide amine" code_name="BiotinPEO-amine"/>
+    <modifications_row ex_code_name="Trp-&gt;Oxolactone" record_id="288" full_name="Tryptophan oxidation to oxolactone" code_name="oxolactone"/>
+    <modifications_row ex_code_name="Biotin-HPDP" record_id="290" full_name="Pierce EZ-Link Biotin-HPDP" code_name="Biotin:Thermo-21341"/>
+    <modifications_row ex_code_name="Delta:Hg(1)" record_id="291" full_name="Mercury Mercaptan" code_name="Hg"/>
+    <modifications_row ex_code_name="IodoU-AMP" record_id="292" full_name="Cross-link of (Iodo)-uracil MP with W,F,Y" code_name="IodoU-AMP"/>
+    <modifications_row ex_code_name="CAMthiopropanoyl" record_id="293" full_name="3-(carbamidomethylthio)propanoyl" code_name="CAMthiopropanoyl"/>
+    <modifications_row ex_code_name="IED-Biotin" record_id="294" full_name="biotinoyl-iodoacetyl-ethylenediamine" code_name="ied-biotin"/>
+    <modifications_row ex_code_name="dHex" record_id="295" full_name="Fucose" code_name="Fuc"/>
+    <modifications_row ex_code_name="Methyl:2H(3)" record_id="298" full_name="deuterated methyl ester" code_name="D3-Me-ester"/>
+    <modifications_row ex_code_name="Carboxy" record_id="299" full_name="Carboxylation" code_name="carboxyl"/>
+    <modifications_row ex_code_name="Bromobimane" record_id="301" full_name="Monobromobimane derivative" code_name="Bromobimane"/>
+    <modifications_row ex_code_name="Menadione" record_id="302" full_name="Menadione quinone derivative" code_name="Menadione-Q"/>
+    <modifications_row ex_code_name="DeStreak" record_id="303" full_name="Cysteine mercaptoethanol" code_name="DeStreak"/>
+    <modifications_row ex_code_name="dHex(1)Hex(3)HexNAc(4)" record_id="305" full_name="Fucosylated biantennary (-2 galactose)" code_name="G0"/>
+    <modifications_row ex_code_name="dHex(1)Hex(4)HexNAc(4)" record_id="307" full_name="Fucosylated biantennary (-1 galactose)" code_name="G1"/>
+    <modifications_row ex_code_name="dHex(1)Hex(5)HexNAc(4)" record_id="308" full_name="Fucosylated biantennary" code_name="G2"/>
+    <modifications_row ex_code_name="Hex(3)HexNAc(4)" record_id="309" full_name="Biantennary (-2 galactose)" code_name="G0-Fuc"/>
+    <modifications_row ex_code_name="Hex(4)HexNAc(4)" record_id="310" full_name="Biantennary (-1 galactose)" code_name="G1-Fuc"/>
+    <modifications_row ex_code_name="Hex(5)HexNAc(4)" record_id="311" full_name="Biantennary" code_name="G2-Fuc"/>
+    <modifications_row ex_code_name="Cysteinyl" record_id="312" full_name="Cysteinylation" code_name="Cysteinyl"/>
+    <modifications_row ex_code_name="Lys-loss" record_id="313" full_name="Loss of C-terminal K from Heavy Chain of MAb" code_name="-K"/>
+    <modifications_row ex_code_name="Nmethylmaleimide" record_id="314" full_name="Nmethylmaleimide" code_name="NMM"/>
+    <modifications_row ex_code_name="CyDye-Cy3" record_id="494" full_name="Cy3 CyDye DIGE Fluor saturation dye" code_name="CyDye-Cy3"/>
+    <modifications_row ex_code_name="DimethylpyrroleAdduct" record_id="316" full_name="2,5-dimethypyrrole" code_name="pyrrole"/>
+    <modifications_row ex_code_name="Delta:H(2)C(5)" record_id="318" full_name="MDA adduct +62" code_name="MDA62"/>
+    <modifications_row ex_code_name="Delta:H(2)C(3)O(1)" record_id="319" full_name="MDA adduct +54" code_name="MDA54"/>
+    <modifications_row ex_code_name="Nethylmaleimide+water" record_id="320" full_name="Nethylmaleimidehydrolysis" code_name="NEMhyd"/>
+    <modifications_row ex_code_name="" record_id="768" full_name="Mono-methylated lysine labelled with Acetyl_heavy" code_name="Methyl+Acetyl:2H(3)"/>
+    <modifications_row ex_code_name="Xlink:B10621" record_id="323" full_name="bis-N-I-sulfonerahodamine" code_name="bNis"/>
+    <modifications_row ex_code_name="DTBP" record_id="324" full_name="dimethyl 3,3\'-dithiobispropionimidate" code_name="DTBP"/>
+    <modifications_row ex_code_name="FP-Biotin" record_id="325" full_name="10-ethoxyphosphinyl-N-(biotinamidopentyl)decanamide" code_name="FP-Biotin"/>
+    <modifications_row ex_code_name="Thiophos-S-S-biotin" record_id="332" full_name="thiophosphate labeled with biotin-HPDP" code_name="Thiophos-S-S-biotin"/>
+    <modifications_row ex_code_name="Can-FP-biotin" record_id="333" full_name="6-N-biotinylaminohexyl isopropyl phosphate" code_name="Biotin:TRC-B394885"/>
+    <modifications_row ex_code_name="HNE+Delta:H(2)" record_id="335" full_name="reduced 4-Hydroxynonenal" code_name="redHNE"/>
+    <modifications_row ex_code_name="" record_id="361" full_name="oxidized Threonine biotinylated with biotin hydrazide" code_name="Thrbiotinhydrazide"/>
+    <modifications_row ex_code_name="Methylamine" record_id="337" full_name="Michael addition with methylamine" code_name="MethylamineST"/>
+    <modifications_row ex_code_name="Diisopropylphosphate" record_id="362" full_name="O-Diisopropylphosphorylation" code_name="O-Diisopropylphosphate"/>
+    <modifications_row ex_code_name="Isopropylphospho" record_id="363" full_name="O-Isopropylphosphorylation" code_name="O-Isopropylphosphate"/>
+    <modifications_row ex_code_name="ICPL:13C(6)" record_id="364" full_name="Bruker Daltonics SERVA-ICPL(TM) quantification chemistry, heavy form" code_name="ICPL_heavy"/>
+    <modifications_row ex_code_name="" record_id="893" full_name="Carbamidomethylated DTT modification of cysteine" code_name="CarbamidomethylDTT"/>
+    <modifications_row ex_code_name="ICPL" record_id="365" full_name="Bruker Daltonics SERVA-ICPL(TM) quantification chemistry, light form" code_name="ICPL_light"/>
+    <modifications_row ex_code_name="Deamidated:18O(1)" record_id="366" full_name="Deamidation in presence of O18" code_name="Deamidation_O18"/>
+    <modifications_row ex_code_name="Arg-&gt;Orn" record_id="372" full_name="Ornithine from Arginine" code_name="Arg2Orn"/>
+    <modifications_row ex_code_name="Cation:Cu[I]" record_id="531" full_name="Replacement of proton by copper" code_name="Cation:Cu"/>
+    <modifications_row ex_code_name="Dehydro" record_id="374" full_name="Half of a disulfide bridge" code_name="Cystine"/>
+    <modifications_row ex_code_name="Diphthamide" record_id="375" full_name="Diphthamide" code_name="Diphthamide"/>
+    <modifications_row ex_code_name="Hydroxyfarnesyl" record_id="376" full_name="hydroxyfarnesyl" code_name="hydroxyfarnesyl"/>
+    <modifications_row ex_code_name="Diacylglycerol" record_id="377" full_name="diacylglycerol" code_name="diacylglycerol"/>
+    <modifications_row ex_code_name="Carboxyethyl" record_id="378" full_name="carboxyethyl" code_name="carboxyethyl"/>
+    <modifications_row ex_code_name="Hypusine" record_id="379" full_name="hypusine" code_name="hypusine"/>
+    <modifications_row ex_code_name="Retinylidene" record_id="380" full_name="retinal" code_name="retinal"/>
+    <modifications_row ex_code_name="Lys-&gt;AminoadipicAcid" record_id="381" full_name="alpha-amino adipic acid" code_name="aminoadipic"/>
+    <modifications_row ex_code_name="Cys-&gt;PyruvicAcid" record_id="382" full_name="pyruvic acid from N-term cys" code_name="pyruvicC"/>
+    <modifications_row ex_code_name="Ammonia-loss" record_id="385" full_name="Loss of ammonia" code_name="N-oxobutanoic"/>
+    <modifications_row ex_code_name="Phycocyanobilin" record_id="387" full_name="phycocyanobilin" code_name="phycocyanobilin"/>
+    <modifications_row ex_code_name="Phycoerythrobilin" record_id="388" full_name="phycoerythrobilin" code_name="phycoerythrobilin"/>
+    <modifications_row ex_code_name="Phytochromobilin" record_id="389" full_name="phytochromobilin" code_name="phytochromobilin"/>
+    <modifications_row ex_code_name="Heme" record_id="390" full_name="heme" code_name="heme"/>
+    <modifications_row ex_code_name="Molybdopterin" record_id="391" full_name="molybdopterin" code_name="molybdopterin"/>
+    <modifications_row ex_code_name="Quinone" record_id="392" full_name="quinone" code_name="quinone"/>
+    <modifications_row ex_code_name="Glucosylgalactosyl" record_id="393" full_name="glucosylgalactosyl hydroxylysine" code_name="glucosylgalactosyl"/>
+    <modifications_row ex_code_name="GPIanchor" record_id="394" full_name="glycosylphosphatidylinositol" code_name="GPI-anchor"/>
+    <modifications_row ex_code_name="PhosphoribosyldephosphoCoA" record_id="395" full_name="phosphoribosyl dephospho-coenzyme A" code_name="pRibodePcoA"/>
+    <modifications_row ex_code_name="GlycerylPE" record_id="396" full_name="glycerylphosphorylethanolamine" code_name="glycerylPE"/>
+    <modifications_row ex_code_name="Triiodothyronine" record_id="397" full_name="triiodo" code_name="triiodo"/>
+    <modifications_row ex_code_name="Thyroxine" record_id="398" full_name="tetraiodo" code_name="tetraiodo"/>
+    <modifications_row ex_code_name="Tyr-&gt;Dha" record_id="400" full_name="Dehydroalanine (from Tyrosine)" code_name="DehydroalaY"/>
+    <modifications_row ex_code_name="Didehydro" record_id="401" full_name="2-amino-3-oxo-butanoic_acid" code_name="didehydro"/>
+    <modifications_row ex_code_name="Cys-&gt;Oxoalanine" record_id="402" full_name="oxoalanine" code_name="oxoalanine"/>
+    <modifications_row ex_code_name="Ser-&gt;LacticAcid" record_id="403" full_name="lactic acid from N-term Ser" code_name="lactic"/>
+    <modifications_row ex_code_name="GluGlu" record_id="451" full_name="diglutamyl" code_name="-Glu-Glu-"/>
+    <modifications_row ex_code_name="Phosphoadenosine" record_id="405" full_name="AMP binding site" code_name="p-adenosine"/>
+    <modifications_row ex_code_name="Glu" record_id="450" full_name="monoglutamyl" code_name="-Glu-"/>
+    <modifications_row ex_code_name="Hydroxycinnamyl" record_id="407" full_name="hydroxycinnamyl" code_name="hydroxycinnamyl"/>
+    <modifications_row ex_code_name="Glycosyl" record_id="408" full_name="glycosyl-L-hydroxyproline" code_name="glycosyl"/>
+    <modifications_row ex_code_name="FMNH" record_id="409" full_name="flavin mononucleotide" code_name="FMN"/>
+    <modifications_row ex_code_name="Archaeol" record_id="410" full_name="S-diphytanylglycerol diether" code_name="S-archaeol"/>
+    <modifications_row ex_code_name="Phenylisocyanate" record_id="411" full_name="phenyl isocyanate" code_name="PIC"/>
+    <modifications_row ex_code_name="Phenylisocyanate:2H(5)" record_id="412" full_name="d5-phenyl isocyanate" code_name="d5-PIC"/>
+    <modifications_row ex_code_name="Phosphoguanosine" record_id="413" full_name="phospho-guanosine" code_name="p-guanosine"/>
+    <modifications_row ex_code_name="Hydroxymethyl" record_id="414" full_name="hydroxymethyl" code_name="hydroxymethyl"/>
+    <modifications_row ex_code_name="MolybdopterinGD+Delta:S(-1)Se(1)" record_id="415" full_name="L-selenocysteinyl molybdenum bis(molybdopterin guanine dinucleotide)" code_name="molybdopterin-se"/>
+    <modifications_row ex_code_name="Dipyrrolylmethanemethyl" record_id="416" full_name="dipyrrolylmethanemethyl" code_name="dipyrrole"/>
+    <modifications_row ex_code_name="PhosphoUridine" record_id="417" full_name="uridine phosphodiester" code_name="p-uridine"/>
+    <modifications_row ex_code_name="Glycerophospho" record_id="419" full_name="glycerophospho" code_name="glycerophospho"/>
+    <modifications_row ex_code_name="Carboxy-&gt;Thiocarboxy" record_id="420" full_name="thiocarboxylic acid" code_name="thiocarboxy"/>
+    <modifications_row ex_code_name="Sulfide" record_id="421" full_name="persulfide" code_name="persulfide"/>
+    <modifications_row ex_code_name="PyruvicAcidIminyl" record_id="422" full_name="N-pyruvic acid 2-iminyl" code_name="pyruv-iminyl"/>
+    <modifications_row ex_code_name="Delta:Se(1)" record_id="423" full_name="selenyl" code_name="selenyl"/>
+    <modifications_row ex_code_name="MolybdopterinGD" record_id="424" full_name="molybdenum bis(molybdopterin guanine dinucleotide)" code_name="molybdopterin-gd"/>
+    <modifications_row ex_code_name="Dioxidation" record_id="425" full_name="dihydroxy" code_name="dihydroxy"/>
+    <modifications_row ex_code_name="Octanoyl" record_id="426" full_name="octanoyl" code_name="octanoyl"/>
+    <modifications_row ex_code_name="PhosphoHexNAc" record_id="428" full_name="N-acetylglucosamine-1-phosphoryl" code_name="p-GlcNAc"/>
+    <modifications_row ex_code_name="PhosphoHex" record_id="429" full_name="phosphoglycosyl-D-mannose-1-phosphoryl" code_name="p-Man"/>
+    <modifications_row ex_code_name="Palmitoleyl" record_id="431" full_name="palmitoleyl" code_name="palmitoleyl"/>
+    <modifications_row ex_code_name="Cholesterol" record_id="432" full_name="cholesterol ester" code_name="C-cholesterol"/>
+    <modifications_row ex_code_name="Didehydroretinylidene" record_id="433" full_name="3,4-didehydroretinylidene" code_name="didehydroretinyl"/>
+    <modifications_row ex_code_name="CHDH" record_id="434" full_name="cis-14-hydroxy-10,13-dioxo-7-heptadecenoic ester" code_name="LTP1-lipid"/>
+    <modifications_row ex_code_name="Methylpyrroline" record_id="435" full_name="4-methyl-delta-1-pyrroline-5-carboxyl" code_name="me-pyrroline"/>
+    <modifications_row ex_code_name="Hydroxyheme" record_id="436" full_name="hydroxyheme" code_name="hydroxyheme"/>
+    <modifications_row ex_code_name="MicrocinC7" record_id="437" full_name="(3-aminopropyl)(L-aspartyl-1-amino)phosphoryl-5-adenosine" code_name="C-Asn-deriv"/>
+    <modifications_row ex_code_name="Cyano" record_id="438" full_name="cyano" code_name="cyano"/>
+    <modifications_row ex_code_name="Diironsubcluster" record_id="439" full_name="hydrogenase diiron subcluster" code_name="Fe-cluster"/>
+    <modifications_row ex_code_name="Amidino" record_id="440" full_name="amidino" code_name="amidino"/>
+    <modifications_row ex_code_name="FMN" record_id="442" full_name="O3-(riboflavin phosphoryl)" code_name="FMN2"/>
+    <modifications_row ex_code_name="FMNC" record_id="443" full_name="S-(4a-FMN)" code_name="FMN3"/>
+    <modifications_row ex_code_name="CuSMo" record_id="444" full_name="copper sulfido molybdopterin cytosine dinuncleotide" code_name="CuSMo"/>
+    <modifications_row ex_code_name="Hydroxytrimethyl" record_id="445" full_name="5-hydroxy-N6,N6,N6-trimethyl" code_name="trimethyl-OH"/>
+    <modifications_row ex_code_name="Deoxy" record_id="447" full_name="reduction" code_name="semialdehyde"/>
+    <modifications_row ex_code_name="Microcin" record_id="448" full_name="microcin E492 siderophore ester from serine" code_name="microcin"/>
+    <modifications_row ex_code_name="Decanoyl" record_id="449" full_name="lipid" code_name="decanoyl"/>
+    <modifications_row ex_code_name="GluGluGlu" record_id="452" full_name="triglutamyl" code_name="-Glu-Glu-Glu-"/>
+    <modifications_row ex_code_name="GluGluGluGlu" record_id="453" full_name="tetraglutamyl" code_name="-Glu-Glu-Glu-Glu-"/>
+    <modifications_row ex_code_name="HexN" record_id="454" full_name="Hexosamine" code_name="HexN"/>
+    <modifications_row ex_code_name="Xlink:DMP-s" record_id="455" full_name="One end of crosslink attached, one end free" code_name="DMP-s"/>
+    <modifications_row ex_code_name="Xlink:DMP" record_id="456" full_name="Both ends of crosslink attached to same peptide" code_name="DMP"/>
+    <modifications_row ex_code_name="NDA" record_id="457" full_name="naphthalene-2,3-dicarboxaldehyde" code_name="NDA"/>
+    <modifications_row ex_code_name="SPITC:13C(6)" record_id="464" full_name="4-sulfophenyl isothiocyanate (Heavy C13)" code_name="SPITC_Heavy"/>
+    <modifications_row ex_code_name="TMAB:2H(9)" record_id="477" full_name="d9-4-trimethyllammoniumbutyryl-" code_name="TMAB-d9"/>
+    <modifications_row ex_code_name="TMAB" record_id="476" full_name="4-trimethyllammoniumbutyryl-" code_name="TMAB-d0"/>
+    <modifications_row ex_code_name="FTC" record_id="478" full_name="fluorescein-5-thiosemicarbazide" code_name="FTC"/>
+    <modifications_row ex_code_name="AEC-MAEC" record_id="472" full_name="aminoethylcysteine" code_name="AEC-MAEC"/>
+    <modifications_row ex_code_name="BADGE" record_id="493" full_name="Bisphenol A diglycidyl ether derivative" code_name="BADGE"/>
+    <modifications_row ex_code_name="Label:2H(4)" record_id="481" full_name="4,4,5,5-D4 Lysine" code_name="Lys4"/>
+    <modifications_row ex_code_name="Hep" record_id="490" full_name="Heptose" code_name="Hep"/>
+    <modifications_row ex_code_name="CyDye-Cy5" record_id="495" full_name="Cy5 CyDye DIGE Fluor saturation dye" code_name="CyDye-Cy5"/>
+    <modifications_row ex_code_name="DHP" record_id="488" full_name="Dehydropyrrolizidine alkaloid (dehydroretronecine) on cysteines" code_name="DHP"/>
+    <modifications_row ex_code_name="BHTOH" record_id="498" full_name="Michael addition of t-butyl hydroxylated BHT (BHTOH) to C, H or K" code_name="BHTOH"/>
+    <modifications_row ex_code_name="IGBP:13C(2)" record_id="499" full_name="Heavy IDBEST tag for quantitation" code_name="IGBP:13C(2)"/>
+    <modifications_row ex_code_name="Nmethylmaleimide+water" record_id="500" full_name="Nmethylmaleimidehydrolysis" code_name="NMMhyd"/>
+    <modifications_row ex_code_name="PyMIC" record_id="501" full_name="3-methyl-2-pyridyl isocyanate" code_name="PyMIC"/>
+    <modifications_row ex_code_name="" record_id="503" full_name="Levuglandinyl - lysine lactam adduct" code_name="LG-lactam-K"/>
+    <modifications_row ex_code_name="BisANS" record_id="519" full_name="4,4\'-dianilino-1,1\'-binaphthyl-5,5\'-disulfonic acid" code_name="BisANS"/>
+    <modifications_row ex_code_name="Piperidine" record_id="520" full_name="Piperidination" code_name="Piperidination"/>
+    <modifications_row ex_code_name="Diethyl" record_id="518" full_name="Diethylation, analogous to Dimethylation" code_name="Diethylation"/>
+    <modifications_row ex_code_name="" record_id="504" full_name="Levuglandinyl - lysine hydroxylactam adduct" code_name="LG-Hlactam-K"/>
+    <modifications_row ex_code_name="Dimethyl:2H(4)13C(2)" record_id="510" full_name="DiMethyl-C13HD2" code_name="C13HD2"/>
+    <modifications_row ex_code_name="C8-QAT" record_id="513" full_name="[3-(2,5)-Dioxopyrrolidin-1-yloxycarbonyl)-propyl]dimethyloctylammonium" code_name="C8-QAT"/>
+    <modifications_row ex_code_name="Hex(2)" record_id="512" full_name="Lactosylation" code_name="Gal-Glu"/>
+    <modifications_row ex_code_name="" record_id="505" full_name="Levuglandinyl - arginine lactam adduct" code_name="LG-lactam-R"/>
+    <modifications_row ex_code_name="" record_id="1036" full_name="Modification of cystein by withaferin" code_name="Withaferin"/>
+    <modifications_row ex_code_name="" record_id="1037" full_name="desthiobiotin fluorophosphonate" code_name="Biotin:Thermo-88317"/>
+    <modifications_row ex_code_name="" record_id="525" full_name="CLIP_TRAQ_2" code_name="CLIP_TRAQ_2"/>
+    <modifications_row ex_code_name="" record_id="506" full_name="Levuglandinyl - arginine hydroxylactam adduct" code_name="LG-Hlactam-R"/>
+    <modifications_row ex_code_name="Maleimide-PEO2-Biotin" record_id="522" full_name="Maleimide-Biotin" code_name="Biotin:Thermo-21901"/>
+    <modifications_row ex_code_name="Sulfo-NHS-LC-LC-Biotin" record_id="523" full_name="Biot_LC_LC" code_name="Biotin:Thermo-21338"/>
+    <modifications_row ex_code_name="FNEM" record_id="515" full_name="fluorescein-5-maleimide" code_name="F-NEM"/>
+    <modifications_row ex_code_name="PropylNAGthiazoline" record_id="514" full_name="propyl-1,2-dideoxy-2\'-methyl-alpha-D-glucopyranoso-[2,1-d]-Delta2\'-thiazoline" code_name="propyl-NAG-thiazoline"/>
+    <modifications_row ex_code_name="Dethiomethyl" record_id="526" full_name="Prompt loss of side chain from oxidised Met" code_name="Dethiomethyl"/>
+    <modifications_row ex_code_name="iTRAQ4plex114" record_id="532" full_name="Accurate mass for 114" code_name="iTRAQ114"/>
+    <modifications_row ex_code_name="iTRAQ4plex115" record_id="533" full_name="Accurate mass for 115" code_name="iTRAQ115"/>
+    <modifications_row ex_code_name="Dibromo" record_id="534" full_name="Dibromo" code_name="Dibromo"/>
+    <modifications_row ex_code_name="LeuArgGlyGly" record_id="535" full_name="Ubiquitination" code_name="LeuArgGlyGly"/>
+    <modifications_row ex_code_name="" record_id="536" full_name="CLIP_TRAQ_3" code_name="CLIP_TRAQ_3"/>
+    <modifications_row ex_code_name="" record_id="537" full_name="CLIP_TRAQ_4" code_name="CLIP_TRAQ_4"/>
+    <modifications_row ex_code_name="" record_id="538" full_name="was 15dB-biotin" code_name="Biotin:Cayman-10141"/>
+    <modifications_row ex_code_name="" record_id="539" full_name="was PGA1-biotin" code_name="Biotin:Cayman-10013"/>
+    <modifications_row ex_code_name="" record_id="540" full_name="Ala-&gt;Ser substitution" code_name="Ala-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="541" full_name="Ala-&gt;Thr substitution" code_name="Ala-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="542" full_name="Ala-&gt;Asp substitution" code_name="Ala-&gt;Asp"/>
+    <modifications_row ex_code_name="" record_id="543" full_name="Ala-&gt;Pro substitution" code_name="Ala-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="544" full_name="Ala-&gt;Gly substitution" code_name="Ala-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="545" full_name="Ala-&gt;Glu substitution" code_name="Ala-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="546" full_name="Ala-&gt;Val substitution" code_name="Ala-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="547" full_name="Cys-&gt;Phe substitution" code_name="Cys-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="548" full_name="Cys-&gt;Ser substitution" code_name="Cys-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="549" full_name="Cys-&gt;Trp substitution" code_name="Cys-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="550" full_name="Cys-&gt;Tyr substitution" code_name="Cys-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="551" full_name="Cys-&gt;Arg substitution" code_name="Cys-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="552" full_name="Cys-&gt;Gly substitution" code_name="Cys-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="553" full_name="Asp-&gt;Ala substitution" code_name="Asp-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="554" full_name="Asp-&gt;His substitution" code_name="Asp-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="555" full_name="Asp-&gt;Asn substitution" code_name="Asp-&gt;Asn"/>
+    <modifications_row ex_code_name="" record_id="556" full_name="Asp-&gt;Gly substitution" code_name="Asp-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="557" full_name="Asp-&gt;Tyr substitution" code_name="Asp-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="558" full_name="Asp-&gt;Glu substitution" code_name="Asp-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="559" full_name="Asp-&gt;Val substitution" code_name="Asp-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="560" full_name="Glu-&gt;Ala substitution" code_name="Glu-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="561" full_name="Glu-&gt;Gln substitution" code_name="Glu-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="562" full_name="Glu-&gt;Asp substitution" code_name="Glu-&gt;Asp"/>
+    <modifications_row ex_code_name="" record_id="563" full_name="Glu-&gt;Lys substitution" code_name="Glu-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="564" full_name="Glu-&gt;Gly substitution" code_name="Glu-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="565" full_name="Glu-&gt;Val substitution" code_name="Glu-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="566" full_name="Phe-&gt;Ser substitution" code_name="Phe-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="567" full_name="Phe-&gt;Cys substitution" code_name="Phe-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="568" full_name="Phe-&gt;Leu/Ile substitution" code_name="Phe-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="569" full_name="Phe-&gt;Tyr substitution" code_name="Phe-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="570" full_name="Phe-&gt;Val substitution" code_name="Phe-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="571" full_name="Gly-&gt;Ala substitution" code_name="Gly-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="572" full_name="Gly-&gt;Ser substitution" code_name="Gly-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="573" full_name="Gly-&gt;Trp substitution" code_name="Gly-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="574" full_name="Gly-&gt;Glu substitution" code_name="Gly-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="575" full_name="Gly-&gt;Val substitution" code_name="Gly-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="576" full_name="Gly-&gt;Asp substitution" code_name="Gly-&gt;Asp"/>
+    <modifications_row ex_code_name="" record_id="577" full_name="Gly-&gt;Cys substitution" code_name="Gly-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="578" full_name="Gly-&gt;Arg substitution" code_name="Gly-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="698" full_name="deuterated Nicotinic Acid" code_name="dNIC"/>
+    <modifications_row ex_code_name="" record_id="580" full_name="His-&gt;Pro substitution" code_name="His-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="581" full_name="His-&gt;Tyr substitution" code_name="His-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="582" full_name="His-&gt;Gln substitution" code_name="His-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="697" full_name="Nicotinic Acid" code_name="NIC"/>
+    <modifications_row ex_code_name="" record_id="584" full_name="His-&gt;Arg substitution" code_name="His-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="585" full_name="His-&gt;Leu/Ile substitution" code_name="His-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="1125" full_name="Leu/Ile-&gt;Ala substitution" code_name="Xle-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="588" full_name="Leu/Ile-&gt;Thr substitution" code_name="Xle-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="589" full_name="Leu/Ile-&gt;Asn substitution" code_name="Xle-&gt;Asn"/>
+    <modifications_row ex_code_name="" record_id="590" full_name="Leu/Ile-&gt;Lys substitution" code_name="Xle-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="594" full_name="Lys-&gt;Thr substitution" code_name="Lys-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="595" full_name="Lys-&gt;Asn substitution" code_name="Lys-&gt;Asn"/>
+    <modifications_row ex_code_name="" record_id="596" full_name="Lys-&gt;Glu substitution" code_name="Lys-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="597" full_name="Lys-&gt;Gln substitution" code_name="Lys-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="598" full_name="Lys-&gt;Met substitution" code_name="Lys-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="599" full_name="Lys-&gt;Arg substitution" code_name="Lys-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="600" full_name="Lys-&gt;Leu/Ile substitution" code_name="Lys-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="601" full_name="Leu/Ile-&gt;Ser substitution" code_name="Xle-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="602" full_name="Leu/Ile-&gt;Phe substitution" code_name="Xle-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="603" full_name="Leu/Ile-&gt;Trp substitution" code_name="Xle-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="604" full_name="Leu/Ile-&gt;Pro substitution" code_name="Xle-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="605" full_name="Leu/Ile-&gt;Val substitution" code_name="Xle-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="606" full_name="Leu/Ile-&gt;His substitution" code_name="Xle-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="607" full_name="Leu/Ile-&gt;Gln substitution" code_name="Xle-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="608" full_name="Leu/Ile-&gt;Met substitution" code_name="Xle-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="609" full_name="Leu/Ile-&gt;Arg substitution" code_name="Xle-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="610" full_name="Met-&gt;Thr substitution" code_name="Met-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="611" full_name="Met-&gt;Arg substitution" code_name="Met-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="613" full_name="Met-&gt;Lys substitution" code_name="Met-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="614" full_name="Met-&gt;Leu/Ile substitution" code_name="Met-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="615" full_name="Met-&gt;Val substitution" code_name="Met-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="616" full_name="Asn-&gt;Ser substitution" code_name="Asn-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="617" full_name="Asn-&gt;Thr substitution" code_name="Asn-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="618" full_name="Asn-&gt;Lys substitution" code_name="Asn-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="619" full_name="Asn-&gt;Tyr substitution" code_name="Asn-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="620" full_name="Asn-&gt;His substitution" code_name="Asn-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="621" full_name="Asn-&gt;Asp substitution" code_name="Asn-&gt;Asp"/>
+    <modifications_row ex_code_name="" record_id="622" full_name="Asn-&gt;Leu/Ile substitution" code_name="Asn-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="623" full_name="Pro-&gt;Ser substitution" code_name="Pro-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="624" full_name="Pro-&gt;Ala substitution" code_name="Pro-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="625" full_name="Pro-&gt;His substitution" code_name="Pro-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="626" full_name="Pro-&gt;Gln substitution" code_name="Pro-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="627" full_name="Pro-&gt;Thr substitution" code_name="Pro-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="628" full_name="Pro-&gt;Arg substitution" code_name="Pro-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="629" full_name="Pro-&gt;Leu/Ile substitution" code_name="Pro-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="630" full_name="Gln-&gt;Pro substitution" code_name="Gln-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="631" full_name="Gln-&gt;Lys substitution" code_name="Gln-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="632" full_name="Gln-&gt;Glu substitution" code_name="Gln-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="633" full_name="Gln-&gt;His substitution" code_name="Gln-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="634" full_name="Gln-&gt;Arg substitution" code_name="Gln-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="635" full_name="Gln-&gt;Leu/Ile substitution" code_name="Gln-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="636" full_name="Arg-&gt;Ser substitution" code_name="Arg-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="637" full_name="Arg-&gt;Trp substitution" code_name="Arg-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="638" full_name="Arg-&gt;Thr substitution" code_name="Arg-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="639" full_name="Arg-&gt;Pro substitution" code_name="Arg-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="640" full_name="Arg-&gt;Lys substitution" code_name="Arg-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="641" full_name="Arg-&gt;His substitution" code_name="Arg-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="642" full_name="Arg-&gt;Gln substitution" code_name="Arg-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="643" full_name="Arg-&gt;Met substitution" code_name="Arg-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="644" full_name="Arg-&gt;Cys substitution" code_name="Arg-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="645" full_name="Arg-&gt;Leu/Ile substitution" code_name="Arg-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="646" full_name="Arg-&gt;Gly substitution" code_name="Arg-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="647" full_name="Ser-&gt;Phe substitution" code_name="Ser-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="648" full_name="Ser-&gt;Ala substitution" code_name="Ser-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="649" full_name="Ser-&gt;Trp substitution" code_name="Ser-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="650" full_name="Ser-&gt;Thr substitution" code_name="Ser-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="651" full_name="Ser-&gt;Asn substitution" code_name="Ser-&gt;Asn"/>
+    <modifications_row ex_code_name="" record_id="652" full_name="Ser-&gt;Pro substitution" code_name="Ser-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="653" full_name="Ser-&gt;Tyr substitution" code_name="Ser-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="654" full_name="Ser-&gt;Cys substitution" code_name="Ser-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="655" full_name="Ser-&gt;Arg substitution" code_name="Ser-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="656" full_name="Ser-&gt;Leu/Ile substitution" code_name="Ser-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="657" full_name="Ser-&gt;Gly substitution" code_name="Ser-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="658" full_name="Thr-&gt;Ser substitution" code_name="Thr-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="659" full_name="Thr-&gt;Ala substitution" code_name="Thr-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="660" full_name="Thr-&gt;Asn substitution" code_name="Thr-&gt;Asn"/>
+    <modifications_row ex_code_name="" record_id="661" full_name="Thr-&gt;Lys substitution" code_name="Thr-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="662" full_name="Thr-&gt;Pro substitution" code_name="Thr-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="663" full_name="Thr-&gt;Met substitution" code_name="Thr-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="664" full_name="Thr-&gt;Leu/Ile substitution" code_name="Thr-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="665" full_name="Thr-&gt;Arg substitution" code_name="Thr-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="666" full_name="Val-&gt;Phe substitution" code_name="Val-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="667" full_name="Val-&gt;Ala substitution" code_name="Val-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="668" full_name="Val-&gt;Glu substitution" code_name="Val-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="669" full_name="Val-&gt;Met substitution" code_name="Val-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="670" full_name="Val-&gt;Asp substitution" code_name="Val-&gt;Asp"/>
+    <modifications_row ex_code_name="" record_id="671" full_name="Val-&gt;Leu/Ile substitution" code_name="Val-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="672" full_name="Val-&gt;Gly substitution" code_name="Val-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="673" full_name="Trp-&gt;Ser substitution" code_name="Trp-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="674" full_name="Trp-&gt;Cys substitution" code_name="Trp-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="675" full_name="Trp-&gt;Arg substitution" code_name="Trp-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="676" full_name="Trp-&gt;Gly substitution" code_name="Trp-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="677" full_name="Trp-&gt;Leu/Ile substitution" code_name="Trp-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="678" full_name="Tyr-&gt;Phe substitution" code_name="Tyr-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="679" full_name="Tyr-&gt;Ser substitution" code_name="Tyr-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="680" full_name="Tyr-&gt;Asn substitution" code_name="Tyr-&gt;Asn"/>
+    <modifications_row ex_code_name="" record_id="681" full_name="Tyr-&gt;His substitution" code_name="Tyr-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="682" full_name="Tyr-&gt;Asp substitution" code_name="Tyr-&gt;Asp"/>
+    <modifications_row ex_code_name="" record_id="683" full_name="Tyr-&gt;Cys substitution" code_name="Tyr-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="684" full_name="Mass Defect Tag on lysine e-amino" code_name="BDMAPP"/>
+    <modifications_row ex_code_name="" record_id="685" full_name="Nitroalkylation by Nitro Linoleic Acid" code_name="NA-LNO2"/>
+    <modifications_row ex_code_name="" record_id="686" full_name="Nitroalkylation by Nitro Oleic Acid" code_name="NA-OA-NO2"/>
+    <modifications_row ex_code_name="ICPL:2H(4)" record_id="687" full_name="Bruker Daltonics SERVA-ICPL(TM) quantification chemistry, medium form" code_name="ICPL_medium"/>
+    <modifications_row ex_code_name="" record_id="894" full_name="Carboxymethylated DTT modification of cysteine" code_name="CarboxymethylDTT"/>
+    <modifications_row ex_code_name="" record_id="730" full_name="Representative mass and accurate mass for 113, 114, 116 &amp; 117" code_name="iTRAQ8plex"/>
+    <modifications_row ex_code_name="Label:13C(6)15N(1)" record_id="695" full_name="13C(6) 15N(1) Silac label" code_name="Label:13C(6)15N(1)"/>
+    <modifications_row ex_code_name="Label:2H(9)13C(6)15N(2)" record_id="696" full_name="13C(6) 15N(2) (D)9 SILAC label" code_name="13C6-15N2-D9"/>
+    <modifications_row ex_code_name="" record_id="720" full_name="Dehydrated 4-hydroxynonenal" code_name="HNE-Delta:H(2)O"/>
+    <modifications_row ex_code_name="" record_id="721" full_name="4-Oxononenal (ONE)" code_name="4-ONE"/>
+    <modifications_row ex_code_name="" record_id="723" full_name="O-Dimethylphosphorylation" code_name="O-Dimethylphosphate"/>
+    <modifications_row ex_code_name="" record_id="724" full_name="O-Methylphosphorylation" code_name="O-Methylphosphate"/>
+    <modifications_row ex_code_name="" record_id="725" full_name="O-Diethylphosphorylation" code_name="Diethylphosphate"/>
+    <modifications_row ex_code_name="" record_id="726" full_name="O-Ethylphosphorylation" code_name="Ethylphosphate"/>
+    <modifications_row ex_code_name="" record_id="727" full_name="O-pinacolylmethylphosphonylation" code_name="O-pinacolylmethylphosphonate"/>
+    <modifications_row ex_code_name="" record_id="728" full_name="Methylphosphonylation" code_name="Methylphosphonate"/>
+    <modifications_row ex_code_name="" record_id="729" full_name="O-Isopropylmethylphosphonylation" code_name="O-Isopropylmethylphosphonate"/>
+    <modifications_row ex_code_name="" record_id="731" full_name="Accurate mass for 115, 118, 119 &amp; 121" code_name="iTRAQ8plex:13C(6)15N(2)"/>
+    <modifications_row ex_code_name="" record_id="735" full_name="Dithiothreitol (DTT)" code_name="DTT_ST"/>
+    <modifications_row ex_code_name="" record_id="734" full_name="Carboxyl modification with ethanolamine" code_name="Ethanolamine"/>
+    <modifications_row ex_code_name="" record_id="737" full_name="Sixplex Tandem Mass Tag®" code_name="TMT6plex"/>
+    <modifications_row ex_code_name="" record_id="736" full_name="Dithiothreitol (DTT) on Cys" code_name="DTT_C"/>
+    <modifications_row ex_code_name="" record_id="738" full_name="Duplex Tandem Mass Tag®" code_name="TMT2plex"/>
+    <modifications_row ex_code_name="" record_id="739" full_name="Native Tandem Mass Tag®" code_name="TMT"/>
+    <modifications_row ex_code_name="" record_id="740" full_name="ExacTag Thiol label mass for 2-4-7-10 plex" code_name="ExacTagThiol"/>
+    <modifications_row ex_code_name="" record_id="741" full_name="ExacTag Amine label mass for 2-4-7-10 plex" code_name="ExacTagAmine"/>
+    <modifications_row ex_code_name="" record_id="744" full_name="Nitroso Sulfamethoxazole Sulphenamide thiol adduct" code_name="NO_SMX_SEMD"/>
+    <modifications_row ex_code_name="" record_id="743" full_name="Dehydrated 4-Oxononenal Michael adduct" code_name="4-ONE+Delta:H(-2)O(-1)"/>
+    <modifications_row ex_code_name="" record_id="745" full_name="Nitroso Sulfamethoxazole semimercaptal thiol adduct" code_name="NO_SMX_SMCT"/>
+    <modifications_row ex_code_name="" record_id="746" full_name="Nitroso Sulfamethoxazole Sulfinamide thiol adduct" code_name="NO_SMX_SIMD"/>
+    <modifications_row ex_code_name="" record_id="747" full_name="Malonylation of C and S residues" code_name="Malonyl"/>
+    <modifications_row ex_code_name="" record_id="748" full_name="derivatization by N-term modification using 3-Sulfobenzoic succinimidyl ester" code_name="3sulfo"/>
+    <modifications_row ex_code_name="" record_id="750" full_name="trifluoroleucine replacement of leucine" code_name="trifluoro"/>
+    <modifications_row ex_code_name="" record_id="751" full_name="tri nitro benzene" code_name="TNBS"/>
+    <modifications_row ex_code_name="" record_id="774" full_name="Alkylation by biotinylated form of phenacyl bromide" code_name="Biotin-phenacyl"/>
+    <modifications_row ex_code_name="" record_id="764" full_name="Isotopically labeled Dithiothreitol (DTT) modification of cysteines" code_name="DTT_C:2H(6)"/>
+    <modifications_row ex_code_name="" record_id="771" full_name="lapachenole photochemically added to cysteine" code_name="lapachenole"/>
+    <modifications_row ex_code_name="Label:13C(5)" record_id="772" full_name="13C(5) Silac label" code_name="13C5"/>
+    <modifications_row ex_code_name="" record_id="773" full_name="maleimide" code_name="maleimide"/>
+    <modifications_row ex_code_name="" record_id="762" full_name="Isotope Distribution Encoded Tag" code_name="IDEnT"/>
+    <modifications_row ex_code_name="" record_id="763" full_name="Isotopically labeled Dithiothreitol (DTT) modification of serines or threonines" code_name="DTT_ST:2H(6)"/>
+    <modifications_row ex_code_name="" record_id="765" full_name="Removal of initiator methionine from protein N-terminus" code_name="Met-loss"/>
+    <modifications_row ex_code_name="" record_id="766" full_name="Removal of initiator methionine from protein N-terminus, then acetylation of the new N-terminus" code_name="Met-loss+Acetyl"/>
+    <modifications_row ex_code_name="" record_id="767" full_name="Menadione hydroquinone derivative" code_name="Menadione-HQ"/>
+    <modifications_row ex_code_name="" record_id="775" full_name="Iodoacetic acid derivative w/ 13C label" code_name="Carboxymethyl:13C(2)"/>
+    <modifications_row ex_code_name="" record_id="776" full_name="D5 N-ethylmaleimide on cysteines" code_name="NEM:2H(5)"/>
+    <modifications_row ex_code_name="" record_id="822" full_name="Enzymatic glycine removal leaving an amidated C-terminus" code_name="Gly-loss+Amide"/>
+    <modifications_row ex_code_name="" record_id="827" full_name="tris(2,4,6-trimethoxyphenyl)phosphonium acetic acid N-hydroxysuccinimide ester derivative" code_name="TMPP-Ac"/>
+    <modifications_row ex_code_name="" record_id="799" full_name="13C6 labeled ubiquitinylation residue" code_name="Label:13C(6)+GlyGly"/>
+    <modifications_row ex_code_name="" record_id="837" full_name="Arginine replacement by Nitropyrimidyl ornithine" code_name="Arg-&gt;Npo"/>
+    <modifications_row ex_code_name="" record_id="834" full_name="Acetyl 4,4,5,5-D4 Lysine" code_name="Label:2H(4)+Acetyl"/>
+    <modifications_row ex_code_name="" record_id="801" full_name="Labeling transglutaminase substrate on glutamine side chain" code_name="Pentylamine"/>
+    <modifications_row ex_code_name="" record_id="800" full_name="was PentylamineBiotin" code_name="Biotin:Thermo-21345"/>
+    <modifications_row ex_code_name="" record_id="830" full_name="Dihydroxy methylglyoxal adduct" code_name="Dihydroxyimidazolidine"/>
+    <modifications_row ex_code_name="" record_id="825" full_name="Addition of DFDNB crosslinker" code_name="DFDNB"/>
+    <modifications_row ex_code_name="" record_id="821" full_name="fluorescent dye that labels cysteines" code_name="Cy3b-maleimide"/>
+    <modifications_row ex_code_name="" record_id="793" full_name="Hex1HexNAc1" code_name="Hex1HexNAc1"/>
+    <modifications_row ex_code_name="" record_id="792" full_name="deuterium cysteamine modification to S or T" code_name="AEC-MAEC:2H(4)"/>
+    <modifications_row ex_code_name="" record_id="824" full_name="Addition of BMOE crosslinker" code_name="BMOE"/>
+    <modifications_row ex_code_name="" record_id="811" full_name="was Biotin-PEO4-hydrazide" code_name="Biotin:Thermo-21360"/>
+    <modifications_row ex_code_name="" record_id="835" full_name="Acetyl 13C(6) Silac label" code_name="Label:13C(6)+Acetyl"/>
+    <modifications_row ex_code_name="" record_id="836" full_name="Acetyl_13C(6) 15N(2) Silac label" code_name="Label:13C(6)15N(2)+Acetyl"/>
+    <modifications_row ex_code_name="" record_id="846" full_name="Sumo mutant Smt3-WT tail following trypsin digestion" code_name="EQIGG"/>
+    <modifications_row ex_code_name="" record_id="849" full_name="S-guanylation" code_name="cGMP"/>
+    <modifications_row ex_code_name="" record_id="851" full_name="S-guanylation-2" code_name="cGMP+RMP-loss"/>
+    <modifications_row ex_code_name="" record_id="888" full_name="mTRAQ light" code_name="mTRAQ"/>
+    <modifications_row ex_code_name="" record_id="848" full_name="Adduct of phenylglyoxal with Arg" code_name="Arg2PG"/>
+    <modifications_row ex_code_name="" record_id="853" full_name="Ubiquitination 2H4 lysine" code_name="Label:2H(4)+GlyGly"/>
+    <modifications_row ex_code_name="" record_id="854" full_name="13C(8) 15N(2) Silac label" code_name="Label:13C(8)15N(2)"/>
+    <modifications_row ex_code_name="" record_id="862" full_name="SILAC" code_name="Label:13C(1)2H(3)"/>
+    <modifications_row ex_code_name="" record_id="861" full_name="NHS ester linked Green Fluorescent Bodipy Dye" code_name="ZGB"/>
+    <modifications_row ex_code_name="" record_id="859" full_name="Methylglyoxal-derived hydroimidazolone" code_name="MG-H1"/>
+    <modifications_row ex_code_name="" record_id="860" full_name="Glyoxal-derived hydroimiadazolone" code_name="G-H1"/>
+    <modifications_row ex_code_name="" record_id="864" full_name="13C(6) 15N(2) Lysine glygly" code_name="Label:13C(6)15N(2)+GlyGly"/>
+    <modifications_row ex_code_name="" record_id="866" full_name="Bruker Daltonics SERVA-ICPL(TM) quantification chemistry, +10 Da form" code_name="ICPL:13C(6)2H(4)"/>
+    <modifications_row ex_code_name="" record_id="890" full_name="Thiol-reactive dye for fluorescence labelling of proteins" code_name="DyLight-maleimide"/>
+    <modifications_row ex_code_name="" record_id="889" full_name="mTRAQ medium" code_name="mTRAQ:13C(3)15N(1)"/>
+    <modifications_row ex_code_name="" record_id="891" full_name="Methyl-PEO12-Maleimide" code_name="Methyl-PEO12-Maleimide"/>
+    <modifications_row ex_code_name="" record_id="887" full_name="covalent linkage of maleimidyl coumarin probe (Molecular Probes D-10253)" code_name="MDCC"/>
+    <modifications_row ex_code_name="" record_id="877" full_name="SUMOylation by SUMO-2/3" code_name="QQQTGG"/>
+    <modifications_row ex_code_name="" record_id="876" full_name="SUMOylation by SUMO-1" code_name="QEQTGG"/>
+    <modifications_row ex_code_name="" record_id="886" full_name="2-ammonio-6-[4-(hydroxymethyl)-3-oxidopyridinium-1-yl]- hexanoate" code_name="HydroxymethylOP"/>
+    <modifications_row ex_code_name="" record_id="884" full_name="was ChromoBiotin" code_name="Biotin:Thermo-21325"/>
+    <modifications_row ex_code_name="" record_id="885" full_name="Oxidised methionine 13C(1)2H(3) SILAC label" code_name="Label:13C(1)2H(3)+Oxidation"/>
+    <modifications_row ex_code_name="" record_id="878" full_name="Bodipy modifications onto cysteine" code_name="Bodipy"/>
+    <modifications_row ex_code_name="" record_id="895" full_name="Biotin polyethyleneoxide (n=3) alkyne" code_name="Biotin-PEG-PRA"/>
+    <modifications_row ex_code_name="" record_id="896" full_name="Methionine replacement by azido homoalanine" code_name="Met-&gt;Aha"/>
+    <modifications_row ex_code_name="" record_id="897" full_name="SILAC 15N(4)" code_name="Label:15N(4)"/>
+    <modifications_row ex_code_name="" record_id="898" full_name="pyrophosphorylation of Ser/Thr" code_name="pyrophospho"/>
+    <modifications_row ex_code_name="" record_id="899" full_name="methionine replacement by homopropargylglycine" code_name="Met-&gt;Hpg"/>
+    <modifications_row ex_code_name="" record_id="901" full_name="2,3,4,6-tetra-O-Acetyl-1-allyl-α-D-galactopyranoside modification of cysteine" code_name="4AcAllylGal"/>
+    <modifications_row ex_code_name="" record_id="902" full_name="Reaction with dimethylarsinous (AsIII) acid" code_name="DimethylArsino"/>
+    <modifications_row ex_code_name="" record_id="903" full_name="Lys-&gt;Cys substitution and carbamidomethylation" code_name="Lys-&gt;CamCys"/>
+    <modifications_row ex_code_name="" record_id="904" full_name="Phe-&gt;Cys substitution and carbamidomethylation" code_name="Phe-&gt;CamCys"/>
+    <modifications_row ex_code_name="" record_id="905" full_name="Leu-&gt;Met substitution and sulfoxidation" code_name="Leu-&gt;MetOx"/>
+    <modifications_row ex_code_name="" record_id="906" full_name="Lys-&gt;Met substitution and sulfoxidation" code_name="Lys-&gt;MetOx"/>
+    <modifications_row ex_code_name="" record_id="907" full_name="Galactosyl hydroxylysine" code_name="Galactosyl"/>
+    <modifications_row ex_code_name="" record_id="908" full_name="Modified SMCC maleimide with 3-(dimethylamino)-1-propylamine" code_name="SMCC-maleimide"/>
+    <modifications_row ex_code_name="" record_id="910" full_name="2,4-diacetamido-2,4,6-trideoxyglucopyranose" code_name="Bacillosamine"/>
+    <modifications_row ex_code_name="" record_id="911" full_name="Cys modification by (1-oxyl-2,2,5,5-tetramethyl-3-pyrroline-3-methyl)methanesulfonate (MTSL)" code_name="MTSL"/>
+    <modifications_row ex_code_name="" record_id="912" full_name="4-hydroxy-2-nonenal and biotinamidohexanoic acid hydrazide, reduced" code_name="HNE-BAHAH"/>
+    <modifications_row ex_code_name="" record_id="915" full_name="Ethoxyformylation" code_name="Ethoxyformyl"/>
+    <modifications_row ex_code_name="" record_id="914" full_name="Methylmalonylation on Serine" code_name="Methylmalonylation"/>
+    <modifications_row ex_code_name="" record_id="938" full_name="Cysteine modifier" code_name="AROD"/>
+    <modifications_row ex_code_name="" record_id="939" full_name="carbamidomethylated Cys that undergoes beta-elimination and Michael addition of methylamine" code_name="Cys-&gt;methylaminoAla"/>
+    <modifications_row ex_code_name="" record_id="940" full_name="Carbamidomethylated Cys that undergoes beta-elimination and Michael addition of ethylamine" code_name="Cys-&gt;ethylaminoAla"/>
+    <modifications_row ex_code_name="" record_id="923" full_name="13C(4) 15N(2) Lysine glygly" code_name="Label:13C(4)15N(2)+GlyGly"/>
+    <modifications_row ex_code_name="" record_id="926" full_name="ethyl amino" code_name="ethylamino"/>
+    <modifications_row ex_code_name="" record_id="928" full_name="2-OH-ethyl thio-Ser" code_name="MercaptoEthanol"/>
+    <modifications_row ex_code_name="" record_id="935" full_name="High molecular absorption maleimide label for proteins" code_name="Atto495Maleimide"/>
+    <modifications_row ex_code_name="" record_id="934" full_name="Photocleavable Biotin + GalNAz on O-GlcNAc" code_name="AMTzHexNAc2"/>
+    <modifications_row ex_code_name="" record_id="931" full_name="deamidation followed by esterification with ethanol" code_name="Ethyl+Deamidated"/>
+    <modifications_row ex_code_name="" record_id="932" full_name="SUMOylation by SUMO-2/3 (formic acid cleavage)" code_name="VFQQQTGG"/>
+    <modifications_row ex_code_name="" record_id="933" full_name="SUMOylation by SUMO-1 (formic acid cleavage)" code_name="VIEVYQEQTGG"/>
+    <modifications_row ex_code_name="" record_id="936" full_name="Chlorination of tyrosine residues" code_name="Chlorination"/>
+    <modifications_row ex_code_name="" record_id="937" full_name="Dichlorination" code_name="dichlorination"/>
+    <modifications_row ex_code_name="" record_id="941" full_name="2,4-Dinitrobenzenesulfenyl" code_name="DNPS"/>
+    <modifications_row ex_code_name="" record_id="942" full_name="High molecular absorption label for proteins" code_name="SulfoGMBS"/>
+    <modifications_row ex_code_name="" record_id="943" full_name="Modified GMBS X linker for proteins" code_name="DimethylamineGMBS"/>
+    <modifications_row ex_code_name="" record_id="944" full_name="SILAC label" code_name="Label:15N(2)2H(9)"/>
+    <modifications_row ex_code_name="" record_id="946" full_name="Levuglandinyl-lysine anhydrolactam adduct" code_name="LG-anhydrolactam"/>
+    <modifications_row ex_code_name="" record_id="947" full_name="Levuglandinyl-lysine pyrrole adduct" code_name="LG-pyrrole"/>
+    <modifications_row ex_code_name="" record_id="948" full_name="Levuglandinyl-lysine anhyropyrrole adduct" code_name="LG-anhyropyrrole"/>
+    <modifications_row ex_code_name="" record_id="949" full_name="Condensation product of 3-deoxyglucosone" code_name="3-deoxyglucosone"/>
+    <modifications_row ex_code_name="" record_id="950" full_name="Replacement of proton by lithium" code_name="Cation:Li"/>
+    <modifications_row ex_code_name="" record_id="951" full_name="Replacement of 2 protons by calcium" code_name="Cation:Ca[II]"/>
+    <modifications_row ex_code_name="" record_id="952" full_name="Replacement of 2 protons by iron" code_name="Cation:Fe[II]"/>
+    <modifications_row ex_code_name="" record_id="953" full_name="Replacement of 2 protons by nickel" code_name="Cation:Ni[II]"/>
+    <modifications_row ex_code_name="" record_id="954" full_name="Replacement of 2 protons by zinc" code_name="Cation:Zn[II]"/>
+    <modifications_row ex_code_name="" record_id="955" full_name="Replacement of proton by silver" code_name="Cation:Ag"/>
+    <modifications_row ex_code_name="" record_id="956" full_name="Replacement of 2 protons by magnesium" code_name="Cation:Mg[II]"/>
+    <modifications_row ex_code_name="" record_id="957" full_name="S-(2-succinyl) cysteine" code_name="2-succinyl"/>
+    <modifications_row ex_code_name="" record_id="958" full_name="propargylamine" code_name="Propargylamine"/>
+    <modifications_row ex_code_name="" record_id="959" full_name="phospho-propargylamine" code_name="Phosphopropargyl"/>
+    <modifications_row ex_code_name="" record_id="960" full_name="SUMOylation by SUMO-1 after tryptic cleavage" code_name="SUMO2135"/>
+    <modifications_row ex_code_name="" record_id="961" full_name="SUMOylation by SUMO-2/3 after tryptic cleavage" code_name="SUMO3549"/>
+    <modifications_row ex_code_name="" record_id="975" full_name="O,O-diethyl o-3,5,6-trichloro-2-pyridyl phosphorothioate" code_name="Chlorpyrifos"/>
+    <modifications_row ex_code_name="" record_id="978" full_name="Benzyl isothiocyanate" code_name="BITC"/>
+    <modifications_row ex_code_name="" record_id="977" full_name="2,3-dihydro-2,2-dimethyl-7-benzofuranol N-methyl carbamate" code_name="Carbofuran"/>
+    <modifications_row ex_code_name="" record_id="979" full_name="Phenethyl isothiocyanate" code_name="PEITC"/>
+    <modifications_row ex_code_name="" record_id="967" full_name="membrane protein extraction" code_name="thioacylPA"/>
+    <modifications_row ex_code_name="" record_id="971" full_name="maleimide-3-saccharide" code_name="maleimide3"/>
+    <modifications_row ex_code_name="" record_id="972" full_name="maleimide-5-saccharide" code_name="maleimide5"/>
+    <modifications_row ex_code_name="" record_id="973" full_name="Puromycin" code_name="Puromycin"/>
+    <modifications_row ex_code_name="" record_id="981" full_name="Condensation product of glucosone" code_name="glucosone"/>
+    <modifications_row ex_code_name="" record_id="986" full_name="Dimethyl 13C(6) Silac label" code_name="Label:13C(6)+Dimethyl"/>
+    <modifications_row ex_code_name="" record_id="984" full_name="Native cysteine-reactive Tandem Mass Tag®" code_name="cysTMT"/>
+    <modifications_row ex_code_name="" record_id="985" full_name="cysteine-reactive Sixplex Tandem Mass Tag®" code_name="cysTMT6plex"/>
+    <modifications_row ex_code_name="" record_id="991" full_name="ISD (z+2)-series" code_name="ISD_z+2_ion"/>
+    <modifications_row ex_code_name="" record_id="989" full_name="replacement of proton with ammonium ion" code_name="Ammonium"/>
+    <modifications_row ex_code_name="" record_id="998" full_name="N-biotinyl-6-aminohexanoyl" code_name="BHAc"/>
+    <modifications_row ex_code_name="" record_id="993" full_name="was Biotin-maleimide" code_name="Biotin:Sigma-B1267"/>
+    <modifications_row ex_code_name="" record_id="994" full_name="15N(1)" code_name="Label:15N(1)"/>
+    <modifications_row ex_code_name="" record_id="995" full_name="15N(2)" code_name="Label:15N(2)"/>
+    <modifications_row ex_code_name="" record_id="996" full_name="15N(3)" code_name="Label:15N(3)"/>
+    <modifications_row ex_code_name="" record_id="997" full_name="aminotyrosine with sulfation" code_name="sulfo+amino"/>
+    <modifications_row ex_code_name="" record_id="1000" full_name="Azidohomoalanine (AHA) bound to propargylglycine-NH2 (alkyne)" code_name="AHA-Alkyne"/>
+    <modifications_row ex_code_name="" record_id="1001" full_name="Azidohomoalanine (AHA) bound to DDDDK-propargylglycine-NH2 (alkyne)" code_name="AHA-Alkyne-KDDDD"/>
+    <modifications_row ex_code_name="" record_id="1002" full_name="(-)-epigallocatechin-3-gallate" code_name="EGCG1"/>
+    <modifications_row ex_code_name="" record_id="1003" full_name="(-)-dehydroepigallocatechin" code_name="EGCG2"/>
+    <modifications_row ex_code_name="" record_id="1004" full_name="Monomethylated Arg13C(6) 15N(4)" code_name="Label:13C(6)15N(4)+Methyl"/>
+    <modifications_row ex_code_name="" record_id="1005" full_name="Dimethylated Arg13C(6) 15N(4)" code_name="Label:13C(6)15N(4)+Dimethyl"/>
+    <modifications_row ex_code_name="" record_id="1006" full_name="2H(3) 13C(1) monomethylated Arg13C(6) 15N(4)" code_name="Label:13C(6)15N(4)+Methyl:2H(3)13C(1)"/>
+    <modifications_row ex_code_name="" record_id="1007" full_name="2H(6) 13C(2) Dimethylated Arg13C(6) 15N(4)" code_name="Label:13C(6)15N(4)+Dimethyl:2H(6)13C(2)"/>
+    <modifications_row ex_code_name="" record_id="1008" full_name="Sec Iodoacetamide derivative" code_name="SecCarbamidomethyl"/>
+    <modifications_row ex_code_name="" record_id="1009" full_name="Addition of Carbon to cysteine" code_name="Thiazolidine"/>
+    <modifications_row ex_code_name="" record_id="1010" full_name="Addition of DEDGFLYMVYASQETFG" code_name="DEDGFLYMVYASQETFG"/>
+    <modifications_row ex_code_name="" record_id="1012" full_name="Nalpha-(3-maleimidylpropionyl)biocytin" code_name="Biotin:Invitrogen-M1602"/>
+    <modifications_row ex_code_name="" record_id="1020" full_name="Monolink of DSS/BS3 crosslinker to Lys or N-terminus" code_name="Xlink:DSS"/>
+    <modifications_row ex_code_name="" record_id="1017" full_name="DMPO spin-trap nitrone adduct" code_name="DMPO"/>
+    <modifications_row ex_code_name="" record_id="1014" full_name="glycidamide adduct" code_name="glycidamide"/>
+    <modifications_row ex_code_name="" record_id="1015" full_name="C-terminal homoserine lactone and two aminohexanoic acids" code_name="Ahx2+Hsl"/>
+    <modifications_row ex_code_name="" record_id="1018" full_name="Isotope-Coded Dimedone light form" code_name="ICDID"/>
+    <modifications_row ex_code_name="" record_id="1019" full_name="Isotope-Coded Dimedone heavy form" code_name="ICDID:2H(6)"/>
+    <modifications_row ex_code_name="" record_id="1021" full_name="Monolink of EGS crosslinker to Lys or N-terminus" code_name="Xlink:EGS"/>
+    <modifications_row ex_code_name="" record_id="1022" full_name="Monolink of DST crosslinker to Lys or N-terminus" code_name="Xlink:DST"/>
+    <modifications_row ex_code_name="" record_id="1023" full_name="Monolink of DSP/DTSSP crosslinker to Lys or N-terminus" code_name="Xlink:DTSSP"/>
+    <modifications_row ex_code_name="" record_id="1024" full_name="Monolink of sulfoSMCC/SMCC crosslinker to Cys" code_name="Xlink:SMCC"/>
+    <modifications_row ex_code_name="" record_id="1032" full_name="Tyrosine caged with 2-nitrobenzyl (ONB)" code_name="2-nitrobenzyl"/>
+    <modifications_row ex_code_name="" record_id="1027" full_name="Monolink of DMP crosslinker to Lys or N-terminus" code_name="Xlink:DMP-de"/>
+    <modifications_row ex_code_name="" record_id="1028" full_name="EGS crosslinker to Lys or N-terminus following hydroxylamine cleavage" code_name="Xlink:EGScleaved"/>
+    <modifications_row ex_code_name="" record_id="1033" full_name="N-ethylmaleimide on selenocysteines" code_name="SecNEM"/>
+    <modifications_row ex_code_name="" record_id="1034" full_name="D5 N-ethylmaleimide on selenocysteines" code_name="SecNEM:2H(5)"/>
+    <modifications_row ex_code_name="" record_id="1035" full_name="Thiadiazolydation of Cys" code_name="Thiadiazole"/>
+    <modifications_row ex_code_name="" record_id="1031" full_name="desthiobiotin modification of lysine" code_name="Biotin:Thermo-88310"/>
+    <modifications_row ex_code_name="" record_id="1038" full_name="TAMRA fluorophosphonate modification of serine" code_name="TAMRA-FP"/>
+    <modifications_row ex_code_name="" record_id="1039" full_name="Maleimide-Biotin + Water" code_name="Biotin:Thermo-21901+H2O"/>
+    <modifications_row ex_code_name="" record_id="1041" full_name="Deoxyhypusine" code_name="Deoxyhypusine"/>
+    <modifications_row ex_code_name="" record_id="1042" full_name="Acetyldeoxyhypusine" code_name="Acetyldeoxyhypusine"/>
+    <modifications_row ex_code_name="" record_id="1043" full_name="Acetylhypusine" code_name="Acetylhypusine"/>
+    <modifications_row ex_code_name="" record_id="1044" full_name="Ala-&gt;Cys substitution" code_name="Ala-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="1045" full_name="Ala-&gt;Phe substitution" code_name="Ala-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="1046" full_name="Ala-&gt;His substitution" code_name="Ala-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="1047" full_name="Ala-&gt;Leu/Ile substitution" code_name="Ala-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="1048" full_name="Ala-&gt;Lys substitution" code_name="Ala-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="1049" full_name="Ala-&gt;Met substitution" code_name="Ala-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="1050" full_name="Ala-&gt;Asn substitution" code_name="Ala-&gt;Asn"/>
+    <modifications_row ex_code_name="" record_id="1051" full_name="Ala-&gt;Gln substitution" code_name="Ala-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="1052" full_name="Ala-&gt;Arg substitution" code_name="Ala-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="1053" full_name="Ala-&gt;Trp substitution" code_name="Ala-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="1054" full_name="Ala-&gt;Tyr substitution" code_name="Ala-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="1055" full_name="Cys-&gt;Ala substitution" code_name="Cys-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="1056" full_name="Cys-&gt;Asp substitution" code_name="Cys-&gt;Asp"/>
+    <modifications_row ex_code_name="" record_id="1057" full_name="Cys-&gt;Glu substitution" code_name="Cys-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="1058" full_name="Cys-&gt;His substitution" code_name="Cys-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="1059" full_name="Cys-&gt;Leu/Ile substitution" code_name="Cys-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="1060" full_name="Cys-&gt;Lys substitution" code_name="Cys-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="1061" full_name="Cys-&gt;Met substitution" code_name="Cys-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="1062" full_name="Cys-&gt;Asn substitution" code_name="Cys-&gt;Asn"/>
+    <modifications_row ex_code_name="" record_id="1063" full_name="Cys-&gt;Pro substitution" code_name="Cys-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="1064" full_name="Cys-&gt;Gln substitution" code_name="Cys-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="1065" full_name="Cys-&gt;Thr substitution" code_name="Cys-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="1066" full_name="Cys-&gt;Val substitution" code_name="Cys-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="1067" full_name="Asp-&gt;Cys substitution" code_name="Asp-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="1068" full_name="Asp-&gt;Phe substitution" code_name="Asp-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="1069" full_name="Asp-&gt;Leu/Ile substitution" code_name="Asp-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="1070" full_name="Asp-&gt;Lys substitution" code_name="Asp-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="1071" full_name="Asp-&gt;Met substitution" code_name="Asp-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="1072" full_name="Asp-&gt;Pro substitution" code_name="Asp-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="1073" full_name="Asp-&gt;Gln substitution" code_name="Asp-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="1074" full_name="Asp-&gt;Arg substitution" code_name="Asp-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="1075" full_name="Asp-&gt;Ser substitution" code_name="Asp-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="1076" full_name="Asp-&gt;Thr substitution" code_name="Asp-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="1077" full_name="Asp-&gt;Trp substitution" code_name="Asp-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="1078" full_name="Glu-&gt;Cys substitution" code_name="Glu-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="1079" full_name="Glu-&gt;Phe substitution" code_name="Glu-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="1080" full_name="Glu-&gt;His substitution" code_name="Glu-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="1081" full_name="Glu-&gt;Leu/Ile substitution" code_name="Glu-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="1082" full_name="Glu-&gt;Met substitution" code_name="Glu-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="1083" full_name="Glu-&gt;Asn substitution" code_name="Glu-&gt;Asn"/>
+    <modifications_row ex_code_name="" record_id="1084" full_name="Glu-&gt;Pro substitution" code_name="Glu-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="1085" full_name="Glu-&gt;Arg substitution" code_name="Glu-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="1086" full_name="Glu-&gt;Ser substitution" code_name="Glu-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="1087" full_name="Glu-&gt;Thr substitution" code_name="Glu-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="1088" full_name="Glu-&gt;Trp substitution" code_name="Glu-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="1089" full_name="Glu-&gt;Tyr substitution" code_name="Glu-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="1090" full_name="Phe-&gt;Ala substitution" code_name="Phe-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="1091" full_name="Phe-&gt;Asp substitution" code_name="Phe-&gt;Asp"/>
+    <modifications_row ex_code_name="" record_id="1092" full_name="Phe-&gt;Glu substitution" code_name="Phe-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="1093" full_name="Phe-&gt;Gly substitution" code_name="Phe-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="1094" full_name="Phe-&gt;His substitution" code_name="Phe-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="1095" full_name="Phe-&gt;Lys substitution" code_name="Phe-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="1096" full_name="Phe-&gt;Met substitution" code_name="Phe-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="1097" full_name="Phe-&gt;Asn substitution" code_name="Phe-&gt;Asn"/>
+    <modifications_row ex_code_name="" record_id="1098" full_name="Phe-&gt;Pro substitution" code_name="Phe-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="1099" full_name="Phe-&gt;Gln substitution" code_name="Phe-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="1100" full_name="Phe-&gt;Arg substitution" code_name="Phe-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="1101" full_name="Phe-&gt;Thr substitution" code_name="Phe-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="1102" full_name="Phe-&gt;Trp substitution" code_name="Phe-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="1103" full_name="Gly-&gt;Phe substitution" code_name="Gly-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="1104" full_name="Gly-&gt;His substitution" code_name="Gly-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="1105" full_name="Gly-&gt;Leu/Ile substitution" code_name="Gly-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="1106" full_name="Gly-&gt;Lys substitution" code_name="Gly-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="1107" full_name="Gly-&gt;Met substitution" code_name="Gly-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="1108" full_name="Gly-&gt;Asn substitution" code_name="Gly-&gt;Asn"/>
+    <modifications_row ex_code_name="" record_id="1109" full_name="Gly-&gt;Pro substitution" code_name="Gly-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="1110" full_name="Gly-&gt;Gln substitution" code_name="Gly-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="1111" full_name="Gly-&gt;Thr substitution" code_name="Gly-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="1112" full_name="Gly-&gt;Tyr substitution" code_name="Gly-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="1113" full_name="His-&gt;Ala substitution" code_name="His-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="1114" full_name="His-&gt;Cys substitution" code_name="His-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="1115" full_name="His-&gt;Glu substitution" code_name="His-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="1116" full_name="His-&gt;Phe substitution" code_name="His-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="1117" full_name="His-&gt;Gly substitution" code_name="His-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="1119" full_name="His-&gt;Lys substitution" code_name="His-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="1120" full_name="His-&gt;Met substitution" code_name="His-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="1121" full_name="His-&gt;Ser substitution" code_name="His-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="1122" full_name="His-&gt;Thr substitution" code_name="His-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="1123" full_name="His-&gt;Val substitution" code_name="His-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="1124" full_name="His-&gt;Trp substitution" code_name="His-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="1126" full_name="Leu/Ile-&gt;Cys substitution" code_name="Xle-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="1127" full_name="Leu/Ile-&gt;Asp substitution" code_name="Xle-&gt;Asp"/>
+    <modifications_row ex_code_name="" record_id="1128" full_name="Leu/Ile-&gt;Glu substitution" code_name="Xle-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="1129" full_name="Leu/Ile-&gt;Gly substitution" code_name="Xle-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="1130" full_name="Leu/Ile-&gt;Tyr substitution" code_name="Xle-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="1131" full_name="Lys-&gt;Ala substitution" code_name="Lys-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="1132" full_name="Lys-&gt;Cys substitution" code_name="Lys-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="1133" full_name="Lys-&gt;Asp substitution" code_name="Lys-&gt;Asp"/>
+    <modifications_row ex_code_name="" record_id="1134" full_name="Lys-&gt;Phe substitution" code_name="Lys-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="1135" full_name="Lys-&gt;Gly substitution" code_name="Lys-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="1136" full_name="Lys-&gt;His substitution" code_name="Lys-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="1137" full_name="Lys-&gt;Pro substitution" code_name="Lys-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="1138" full_name="Lys-&gt;Ser substitution" code_name="Lys-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="1139" full_name="Lys-&gt;Val substitution" code_name="Lys-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="1140" full_name="Lys-&gt;Trp substitution" code_name="Lys-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="1141" full_name="Lys-&gt;Tyr substitution" code_name="Lys-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="1142" full_name="Met-&gt;Ala substitution" code_name="Met-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="1143" full_name="Met-&gt;Cys substitution" code_name="Met-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="1144" full_name="Met-&gt;Asp substitution" code_name="Met-&gt;Asp"/>
+    <modifications_row ex_code_name="" record_id="1145" full_name="Met-&gt;Glu substitution" code_name="Met-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="1146" full_name="Met-&gt;Phe substitution" code_name="Met-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="1147" full_name="Met-&gt;Gly substitution" code_name="Met-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="1148" full_name="Met-&gt;His substitution" code_name="Met-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="1149" full_name="Met-&gt;Asn substitution" code_name="Met-&gt;Asn"/>
+    <modifications_row ex_code_name="" record_id="1150" full_name="Met-&gt;Pro substitution" code_name="Met-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="1151" full_name="Met-&gt;Gln substitution" code_name="Met-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="1152" full_name="Met-&gt;Ser substitution" code_name="Met-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="1153" full_name="Met-&gt;Trp substitution" code_name="Met-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="1154" full_name="Met-&gt;Tyr substitution" code_name="Met-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="1155" full_name="Asn-&gt;Ala substitution" code_name="Asn-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="1156" full_name="Asn-&gt;Cys substitution" code_name="Asn-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="1157" full_name="Asn-&gt;Glu substitution" code_name="Asn-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="1158" full_name="Asn-&gt;Phe substitution" code_name="Asn-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="1159" full_name="Asn-&gt;Gly substitution" code_name="Asn-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="1160" full_name="Asn-&gt;Met substitution" code_name="Asn-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="1161" full_name="Asn-&gt;Pro substitution" code_name="Asn-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="1162" full_name="Asn-&gt;Gln substitution" code_name="Asn-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="1163" full_name="Asn-&gt;Arg substitution" code_name="Asn-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="1164" full_name="Asn-&gt;Val substitution" code_name="Asn-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="1165" full_name="Asn-&gt;Trp substitution" code_name="Asn-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="1166" full_name="Pro-&gt;Cys substitution" code_name="Pro-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="1167" full_name="Pro-&gt;Asp substitution" code_name="Pro-&gt;Asp"/>
+    <modifications_row ex_code_name="" record_id="1168" full_name="Pro-&gt;Glu substitution" code_name="Pro-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="1169" full_name="Pro-&gt;Phe substitution" code_name="Pro-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="1170" full_name="Pro-&gt;Gly substitution" code_name="Pro-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="1171" full_name="Pro-&gt;Lys substitution" code_name="Pro-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="1172" full_name="Pro-&gt;Met substitution" code_name="Pro-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="1173" full_name="Pro-&gt;Asn substitution" code_name="Pro-&gt;Asn"/>
+    <modifications_row ex_code_name="" record_id="1174" full_name="Pro-&gt;Val substitution" code_name="Pro-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="1175" full_name="Pro-&gt;Trp substitution" code_name="Pro-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="1176" full_name="Pro-&gt;Tyr substitution" code_name="Pro-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="1177" full_name="Gln-&gt;Ala substitution" code_name="Gln-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="1178" full_name="Gln-&gt;Cys substitution" code_name="Gln-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="1179" full_name="Gln-&gt;Asp substitution" code_name="Gln-&gt;Asp"/>
+    <modifications_row ex_code_name="" record_id="1180" full_name="Gln-&gt;Phe substitution" code_name="Gln-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="1181" full_name="Gln-&gt;Gly substitution" code_name="Gln-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="1182" full_name="Gln-&gt;Met substitution" code_name="Gln-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="1183" full_name="Gln-&gt;Asn substitution" code_name="Gln-&gt;Asn"/>
+    <modifications_row ex_code_name="" record_id="1184" full_name="Gln-&gt;Ser substitution" code_name="Gln-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="1185" full_name="Gln-&gt;Thr substitution" code_name="Gln-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="1186" full_name="Gln-&gt;Val substitution" code_name="Gln-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="1187" full_name="Gln-&gt;Trp substitution" code_name="Gln-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="1188" full_name="Gln-&gt;Tyr substitution" code_name="Gln-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="1189" full_name="Arg-&gt;Ala substitution" code_name="Arg-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="1190" full_name="Arg-&gt;Asp substitution" code_name="Arg-&gt;Asp"/>
+    <modifications_row ex_code_name="" record_id="1191" full_name="Arg-&gt;Glu substitution" code_name="Arg-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="1192" full_name="Arg-&gt;Asn substitution" code_name="Arg-&gt;Asn"/>
+    <modifications_row ex_code_name="" record_id="1193" full_name="Arg-&gt;Val substitution" code_name="Arg-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="1194" full_name="Arg-&gt;Tyr substitution" code_name="Arg-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="1195" full_name="Arg-&gt;Phe substitution" code_name="Arg-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="1196" full_name="Ser-&gt;Asp substitution" code_name="Ser-&gt;Asp"/>
+    <modifications_row ex_code_name="" record_id="1197" full_name="Ser-&gt;Glu substitution" code_name="Ser-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="1198" full_name="Ser-&gt;His substitution" code_name="Ser-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="1199" full_name="Ser-&gt;Lys substitution" code_name="Ser-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="1200" full_name="Ser-&gt;Met substitution" code_name="Ser-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="1201" full_name="Ser-&gt;Gln substitution" code_name="Ser-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="1202" full_name="Ser-&gt;Val substitution" code_name="Ser-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="1203" full_name="Thr-&gt;Cys substitution" code_name="Thr-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="1204" full_name="Thr-&gt;Asp substitution" code_name="Thr-&gt;Asp"/>
+    <modifications_row ex_code_name="" record_id="1205" full_name="Thr-&gt;Glu substitution" code_name="Thr-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="1206" full_name="Thr-&gt;Phe substitution" code_name="Thr-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="1207" full_name="Thr-&gt;Gly substitution" code_name="Thr-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="1208" full_name="Thr-&gt;His substitution" code_name="Thr-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="1209" full_name="Thr-&gt;Gln substitution" code_name="Thr-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="1210" full_name="Thr-&gt;Val substitution" code_name="Thr-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="1211" full_name="Thr-&gt;Trp substitution" code_name="Thr-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="1212" full_name="Thr-&gt;Tyr substitution" code_name="Thr-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="1213" full_name="Val-&gt;Cys substitution" code_name="Val-&gt;Cys"/>
+    <modifications_row ex_code_name="" record_id="1214" full_name="Val-&gt;His substitution" code_name="Val-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="1215" full_name="Val-&gt;Lys substitution" code_name="Val-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="1216" full_name="Val-&gt;Asn substitution" code_name="Val-&gt;Asn"/>
+    <modifications_row ex_code_name="" record_id="1217" full_name="Val-&gt;Pro substitution" code_name="Val-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="1218" full_name="Val-&gt;Gln substitution" code_name="Val-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="1219" full_name="Val-&gt;Arg substitution" code_name="Val-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="1220" full_name="Val-&gt;Ser substitution" code_name="Val-&gt;Ser"/>
+    <modifications_row ex_code_name="" record_id="1221" full_name="Val-&gt;Thr substitution" code_name="Val-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="1222" full_name="Val-&gt;Trp substitution" code_name="Val-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="1223" full_name="Val-&gt;Tyr substitution" code_name="Val-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="1224" full_name="Trp-&gt;Ala substitution" code_name="Trp-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="1225" full_name="Trp-&gt;Asp substitution" code_name="Trp-&gt;Asp"/>
+    <modifications_row ex_code_name="" record_id="1226" full_name="Trp-&gt;Glu substitution" code_name="Trp-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="1227" full_name="Trp-&gt;Phe substitution" code_name="Trp-&gt;Phe"/>
+    <modifications_row ex_code_name="" record_id="1228" full_name="Trp-&gt;His substitution" code_name="Trp-&gt;His"/>
+    <modifications_row ex_code_name="" record_id="1229" full_name="Trp-&gt;Lys substitution" code_name="Trp-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="1230" full_name="Trp-&gt;Met substitution" code_name="Trp-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="1231" full_name="Trp-&gt;Asn substitution" code_name="Trp-&gt;Asn"/>
+    <modifications_row ex_code_name="" record_id="1232" full_name="Trp-&gt;Pro substitution" code_name="Trp-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="1233" full_name="Trp-&gt;Gln substitution" code_name="Trp-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="1234" full_name="Trp-&gt;Thr substitution" code_name="Trp-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="1235" full_name="Trp-&gt;Val substitution" code_name="Trp-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="1236" full_name="Trp-&gt;Tyr substitution" code_name="Trp-&gt;Tyr"/>
+    <modifications_row ex_code_name="" record_id="1237" full_name="Tyr-&gt;Ala substitution" code_name="Tyr-&gt;Ala"/>
+    <modifications_row ex_code_name="" record_id="1238" full_name="Tyr-&gt;Glu substitution" code_name="Tyr-&gt;Glu"/>
+    <modifications_row ex_code_name="" record_id="1239" full_name="Tyr-&gt;Gly substitution" code_name="Tyr-&gt;Gly"/>
+    <modifications_row ex_code_name="" record_id="1240" full_name="Tyr-&gt;Lys substitution" code_name="Tyr-&gt;Lys"/>
+    <modifications_row ex_code_name="" record_id="1241" full_name="Tyr-&gt;Met substitution" code_name="Tyr-&gt;Met"/>
+    <modifications_row ex_code_name="" record_id="1242" full_name="Tyr-&gt;Pro substitution" code_name="Tyr-&gt;Pro"/>
+    <modifications_row ex_code_name="" record_id="1243" full_name="Tyr-&gt;Gln substitution" code_name="Tyr-&gt;Gln"/>
+    <modifications_row ex_code_name="" record_id="1244" full_name="Tyr-&gt;Arg substitution" code_name="Tyr-&gt;Arg"/>
+    <modifications_row ex_code_name="" record_id="1245" full_name="Tyr-&gt;Thr substitution" code_name="Tyr-&gt;Thr"/>
+    <modifications_row ex_code_name="" record_id="1246" full_name="Tyr-&gt;Val substitution" code_name="Tyr-&gt;Val"/>
+    <modifications_row ex_code_name="" record_id="1247" full_name="Tyr-&gt;Trp substitution" code_name="Tyr-&gt;Trp"/>
+    <modifications_row ex_code_name="" record_id="1248" full_name="Tyr-&gt;Leu/Ile substitution" code_name="Tyr-&gt;Xle"/>
+    <modifications_row ex_code_name="" record_id="1249" full_name="Azidohomoalanine coupled to reductively cleaved tag" code_name="AHA-SS"/>
+    <modifications_row ex_code_name="" record_id="1250" full_name="carbamidomethylated form of reductively cleaved tag coupled to azidohomoalanine" code_name="AHA-SS_CAM"/>
+    <modifications_row ex_code_name="" record_id="1251" full_name="Sulfo-SBED Label Photoreactive Biotin Crosslinker" code_name="Biotin:Thermo-33033"/>
+    <modifications_row ex_code_name="" record_id="1252" full_name="Sulfo-SBED Label Photoreactive Biotin Crosslinker minus Hydrogen" code_name="Biotin:Thermo-33033-H"/>
+    <modifications_row ex_code_name="" record_id="1253" full_name="S-(2-monomethylsuccinyl) cysteine" code_name="2-monomethylsuccinyl"/>
+    <modifications_row ex_code_name="" record_id="1254" full_name="o-toluene" code_name="Saligenin"/>
+    <modifications_row ex_code_name="" record_id="1255" full_name="o-toluyl-phosphorylation" code_name="Cresylphosphate"/>
+    <modifications_row ex_code_name="" record_id="1256" full_name="Cresyl-Saligenin-phosphorylation" code_name="CresylSaligeninPhosphate"/>
+    <modifications_row ex_code_name="" record_id="1257" full_name="Ub Bromide probe addition" code_name="Ub-Br2"/>
+    <modifications_row ex_code_name="" record_id="1258" full_name="Ubiquitin vinylmethylester" code_name="Ub-VME"/>
+    <modifications_row ex_code_name="" record_id="1260" full_name="Ub amide probe addition" code_name="Ub-amide"/>
+    <modifications_row ex_code_name="" record_id="1261" full_name="Ub Fluorescein probe addition" code_name="Ub-fluorescein"/>
+    <modifications_row ex_code_name="" record_id="1262" full_name="S-(2-dimethylsuccinyl) cysteine" code_name="2-dimethylsuccinyl"/>
+    <modifications_row ex_code_name="" record_id="1263" full_name="Addition of Glycine" code_name="Gly"/>
+    <modifications_row ex_code_name="" record_id="1264" full_name="addition of GGE" code_name="pupylation"/>
+    <modifications_row ex_code_name="" record_id="1266" full_name="13C4 Methionine label" code_name="Label:13C(4)"/>
+    <modifications_row ex_code_name="" record_id="1271" full_name="S-homocysteinylation" code_name="HCysteinyl"/>
+    <modifications_row ex_code_name="" record_id="1267" full_name="Oxidised 13C4 labelled Methionine" code_name="Label:13C(4)+Oxidation"/>
+    <modifications_row ex_code_name="" record_id="1276" full_name="Side reaction of HisTag" code_name="UgiJoullie"/>
+    <modifications_row ex_code_name="" record_id="1270" full_name="N-Homocysteine thiolactone" code_name="HCysThiolactone"/>
+    <modifications_row ex_code_name="" record_id="1282" full_name="Side reaction of PG with Side chain of aspartic or glutamic acid" code_name="UgiJoullieProGly"/>
+    <modifications_row ex_code_name="" record_id="1277" full_name="Cys modified with dipy ligand" code_name="Dipyridyl"/>
+    <modifications_row ex_code_name="" record_id="1278" full_name="Chemical modification of the iodinated sites of thyroglobulin by Suzuki reaction" code_name="Furan"/>
+    <modifications_row ex_code_name="" record_id="1279" full_name="Chemical modification of the diiodinated sites of thyroglobulin by Suzuki reaction" code_name="Difuran"/>
+    <modifications_row ex_code_name="" record_id="1281" full_name="1-methyl-3-benzoyl-4-hydroxy-4-phenylpiperidine" code_name="BMP-piperidinol"/>
+    <modifications_row ex_code_name="" record_id="1283" full_name="Side reaction of PGPG with Side chain of aspartic or glutamic acid" code_name="UgiJoullieProGlyProGly"/>
+    <modifications_row ex_code_name="" record_id="1287" full_name="Loss of arginine due to transpeptidation" code_name="Arg-loss"/>
+    <modifications_row ex_code_name="" record_id="1288" full_name="Addition of arginine due to transpeptidation" code_name="Arg"/>
+    <modifications_row ex_code_name="" record_id="1286" full_name="Glycosylation with IME linked Hex(2) NeuAc" code_name="IMEHex(2)NeuAc"/>
+    <modifications_row ex_code_name="" record_id="1289" full_name="Butyryl" code_name="Butyryl"/>
+    <modifications_row ex_code_name="" record_id="1290" full_name="Double Carbamidomethylation" code_name="Dicarbamidomethyl"/>
+    <modifications_row ex_code_name="" record_id="1291" full_name="Dimethyl-Medium" code_name="Dimethyl:2H(6)"/>
+    <modifications_row ex_code_name="" record_id="1292" full_name="SUMOylation leaving GlyGlyGln" code_name="GGQ"/>
+    <modifications_row ex_code_name="" record_id="1293" full_name="SUMOylation leaving GlnThrGlyGly" code_name="QTGG"/>
+    <modifications_row ex_code_name="" record_id="1297" full_name="13C3 15N1 label for SILAC" code_name="Label:13C(3)15N(1)"/>
+    <modifications_row ex_code_name="" record_id="1296" full_name="13C3 label for SILAC" code_name="Label:13C(3)"/>
+    <modifications_row ex_code_name="" record_id="1298" full_name="13C4 15N1 label for SILAC" code_name="Label:13C(4)15N(1)"/>
+    <modifications_row ex_code_name="" record_id="1299" full_name="2H(10) label" code_name="Label:2H(10)"/>
+    <modifications_row ex_code_name="" record_id="1300" full_name="Label:2H(4)13C(1)" code_name="Label:2H(4)13C(1)"/>
+    <modifications_row ex_code_name="" record_id="1301" full_name="Addition of lysine due to transpeptidation" code_name="Lys"/>
+    <modifications_row ex_code_name="" record_id="1302" full_name="mTRAQ heavy" code_name="mTRAQ:13C(6)15N(2)"/>
+    <modifications_row ex_code_name="" record_id="1303" full_name="N-acetyl neuraminic acid" code_name="NeuAc"/>
+    <modifications_row ex_code_name="" record_id="1304" full_name="N-glycoyl neuraminic acid" code_name="NeuGc"/>
+    <modifications_row ex_code_name="" record_id="1305" full_name="Propyl" code_name="Propyl"/>
+    <modifications_row ex_code_name="" record_id="1306" full_name="Propyl:2H(6)" code_name="Propyl:2H(6)"/>
+    <modifications_row ex_code_name="" record_id="1310" full_name="Propiophenone" code_name="Propiophenone"/>
+    <modifications_row ex_code_name="" record_id="1345" full_name="reaction with phenyl salicylate (PS)" code_name="PS_Hapten"/>
+    <modifications_row ex_code_name="" record_id="1348" full_name="Cy3 Maleimide mono-Reactive dye" code_name="Cy3-maleimide"/>
+    <modifications_row ex_code_name="" record_id="1312" full_name="Reduced acrolein addition +58" code_name="Delta:H(6)C(3)O(1)"/>
+    <modifications_row ex_code_name="" record_id="1313" full_name="Reduced acrolein addition +96" code_name="Delta:H(8)C(6)O(1)"/>
+    <modifications_row ex_code_name="" record_id="1314" full_name="biotin hydrazide labeled acrolein addition +298" code_name="biotinAcrolein298"/>
+    <modifications_row ex_code_name="" record_id="1315" full_name="3-methyl-5-(methylamino)-1,3-diphenylpentan-1-one" code_name="MM-diphenylpentanone"/>
+    <modifications_row ex_code_name="" record_id="1317" full_name="2-ethyl-3-hydroxy-1,3-diphenylpentan-1-one" code_name="EHD-diphenylpentanone"/>
+    <modifications_row ex_code_name="" record_id="1349" full_name="modification of the lysine side chain from NH2 to guanidine with a H removed in favor of a benzyl group" code_name="benzylguanidine"/>
+    <modifications_row ex_code_name="" record_id="1350" full_name="A fixed +1 charge tag attached to the N-terminus of peptides" code_name="CarboxymethylDMAP"/>
+    <modifications_row ex_code_name="" record_id="1320" full_name="Maleimide-Biotin + 2Water" code_name="Biotin:Thermo-21901+2H2O"/>
+    <modifications_row ex_code_name="" record_id="1321" full_name="Accurate mass for DiLeu 115 isobaric tag" code_name="DiLeu4plex115"/>
+    <modifications_row ex_code_name="" record_id="1322" full_name="Accurate mass for DiLeu 116 isobaric tag" code_name="DiLeu4plex"/>
+    <modifications_row ex_code_name="" record_id="1323" full_name="Accurate mass for DiLeu 117 isobaric tag" code_name="DiLeu4plex117"/>
+    <modifications_row ex_code_name="" record_id="1324" full_name="Accurate mass for DiLeu 118 isobaric tag" code_name="DiLeu4plex118"/>
+    <modifications_row ex_code_name="" record_id="1330" full_name="BisANS with loss of both sulfonates" code_name="bisANS-sulfonates"/>
+    <modifications_row ex_code_name="" record_id="1331" full_name="Chemical reaction with 2,4-dinitro-1-chloro benzene (DNCB)" code_name="DNCB_hapten"/>
+    <modifications_row ex_code_name="" record_id="1326" full_name="N-ethylmaleimideSulfur" code_name="NEMsulfur"/>
+    <modifications_row ex_code_name="" record_id="1327" full_name="SulfurDioxide" code_name="SulfurDioxide"/>
+    <modifications_row ex_code_name="" record_id="1328" full_name="N-ethylmaleimideSulfurWater" code_name="NEMsulfurWater"/>
+    <modifications_row ex_code_name="" record_id="1333" full_name="myristic acid analogue" code_name="Myristoyl+Delta:H(18)C(12)N(6)O(4)"/>
+    <modifications_row ex_code_name="" record_id="1358" full_name="D5 N-ethylmaleimide+water on cysteines" code_name="NEM:2H(5)+H2O"/>
+    <modifications_row ex_code_name="" record_id="1363" full_name="Crotonylation" code_name="Crotonyl"/>
+    <modifications_row ex_code_name="" record_id="1364" full_name="O-ethyl, N-dimethyl phosphate" code_name="O-Et-N-diMePhospho"/>
+    <modifications_row ex_code_name="" record_id="1365" full_name="N-dimethylphosphate" code_name="N-dimethylphosphate"/>
+    <modifications_row ex_code_name="" record_id="1356" full_name="phosphate-ribosylation" code_name="phosphoRibosyl"/>
+    <modifications_row ex_code_name="" record_id="1355" full_name="Formation of five membered aromatic heterocycle" code_name="azole"/>
+    <modifications_row ex_code_name="" record_id="1340" full_name="Biotin-PEG11-maleimide" code_name="Biotin:Thermo-21911"/>
+    <modifications_row ex_code_name="" record_id="1341" full_name="Native iodoacetyl Tandem Mass Tag®" code_name="iodoTMT"/>
+    <modifications_row ex_code_name="" record_id="1342" full_name="Sixplex iodoacetyl Tandem Mass Tag®" code_name="iodoTMT6plex"/>
+    <modifications_row ex_code_name="" record_id="1343" full_name="Gluconoylation" code_name="Gluconoylation"/>
+    <modifications_row ex_code_name="" record_id="1344" full_name="Phosphogluconoylation" code_name="Phosphogluconoylation"/>
+    <modifications_row ex_code_name="" record_id="1368" full_name="3-fold methylated lysine labelled with Acetyl_heavy" code_name="Methyl:2H(3)+Acetyl:2H(3)"/>
+    <modifications_row ex_code_name="" record_id="1367" full_name="Hex1dHex1" code_name="dHex(1)Hex(1)"/>
+    <modifications_row ex_code_name="" record_id="1380" full_name="reaction with methyl vinyl sulfone" code_name="methylsulfonylethyl"/>
+    <modifications_row ex_code_name="" record_id="1370" full_name="Oxidised 2H(3) labelled Methionine" code_name="Label:2H(3)+Oxidation"/>
+    <modifications_row ex_code_name="" record_id="1371" full_name="3-fold methylation with deuterated methyl groups" code_name="Trimethyl:2H(9)"/>
+    <modifications_row ex_code_name="" record_id="1372" full_name="heavy acetylation" code_name="Acetyl:13C(2)"/>
+    <modifications_row ex_code_name="" record_id="1375" full_name="Hex2dHex1" code_name="dHex(1)Hex(2)"/>
+    <modifications_row ex_code_name="" record_id="1376" full_name="Hex3dHex1" code_name="dHex(1)Hex(3)"/>
+    <modifications_row ex_code_name="" record_id="1377" full_name="Hex4dHex1" code_name="dHex(1)Hex(4)"/>
+    <modifications_row ex_code_name="" record_id="1378" full_name="Hex5dHex1" code_name="dHex(1)Hex(5)"/>
+    <modifications_row ex_code_name="" record_id="1379" full_name="Hex6dHex1" code_name="dHex(1)Hex(6)"/>
+    <modifications_row ex_code_name="" record_id="1381" full_name="reaction with ethyl vinyl sulfone" code_name="ethylsulfonylethyl"/>
+    <modifications_row ex_code_name="" record_id="1382" full_name="reaction with phenyl vinyl sulfone" code_name="phenylsulfonylethyl">
+      
+    </modifications_row>
+  </modifications>
+</unimod>
