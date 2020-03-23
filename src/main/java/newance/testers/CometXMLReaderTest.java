@@ -103,6 +103,8 @@ public class CometXMLReaderTest extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("maxP").required(false).hasArg().longOpt("maxDisplayedPsms").desc("Maximal number of psms written to standard output").build());
         cmdLineOpts.addOption(Option.builder("mod").required(false).hasArg().longOpt("modifications").desc("Comma separated list of peptide modifications used in search (e.g. Cysteinyl:C3H5NO2S,Oxidation:O)").build());
         cmdLineOpts.addOption(Option.builder("spRE").required(false).hasArg().longOpt("spectrumFilter").desc("If this option is set, only spectrum ids that match this regexp are used.  If not set no filtering is performed.").build());
+        cmdLineOpts.addOption(Option.builder("nrTh").required(false).hasArg().longOpt("nrThreads").desc("Number of threads used by NewAnce (default value: nr of available processors - 2)").build());
+        cmdLineOpts.addOption(Option.builder("d").required(false).hasArg(false).longOpt("debug").desc("Debug option").build());
         cmdLineOpts.addOption(Option.builder("h").required(false).hasArg(false).longOpt("help").desc("Help option for command line help").build());
         cmdLineOpts.addOption(Option.builder("v").required(false).hasArg(false).longOpt("version").desc("Version of NewAnce software").build());
     }
@@ -122,6 +124,8 @@ public class CometXMLReaderTest extends ExecutableOptions {
         params.add("maxPeptideLength", getOptionString(line,"maxL"));
         params.add("spectrumRegExp", getOptionString(line,"spRE"));
         params.add("modifications", getOptionString(line,"mod"));
+        params.add("nrThreads", getOptionString(line, "nrTh"));
+        params.add("debug", getOptionString(line, "d"));
 
         String maxPStr = getOptionString(line,"maxP");
         maxNrDisplayedPSMs = (maxPStr.isEmpty())?-1:Integer.parseInt(maxPStr);
