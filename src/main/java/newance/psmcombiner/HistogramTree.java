@@ -291,9 +291,14 @@ public class HistogramTree {
     private HistogramTree getNextValidParent() {
 
         HistogramTree p = parent;
-        while (!p.scoreHistogram.canCalculateFDR()) p = p.getParent();
+        HistogramTree validP = parent;
 
-        return p;
+        while (p!=null && !p.scoreHistogram.canCalculateFDR()) {
+            validP = p;
+            p = p.getParent();
+        }
+
+        return validP;
     }
 
 }
