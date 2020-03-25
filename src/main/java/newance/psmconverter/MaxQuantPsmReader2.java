@@ -78,6 +78,12 @@ public class MaxQuantPsmReader2 {
 
             // Select the ID and NAME columns from sample.csv
             ResultSet results = stmt.executeQuery("SELECT * FROM " + FilenameUtils.removeExtension(peptidesFile.getName()));
+            boolean hasMutations = true;
+            try {
+                hasMutations = results.findColumn("Mutated")>0;
+            } catch (SQLException e) {
+                System.out.println("No mutations were used in this MaxQuant search.");
+            }
 
             while (results.next()) {
                 String proteinStr = results.getString("Leading razor protein");
@@ -88,7 +94,8 @@ public class MaxQuantPsmReader2 {
                 String peptideSeq = results.getString("Sequence");
                 peptidesProteinMap.put(peptideSeq,proteinStr);
 
-                if (results.findColumn("Mutated")>0) {
+
+                if (hasMutations) {
                     String isVariant = results.getString("Mutated");
 
                     if (isVariant.equals("Yes")) {
