@@ -267,14 +267,13 @@ public class HistogramTree {
             float pi0 = (float)scoreHistogram.getPi_0();
 
             HistogramTree validParent = getNextValidParent();
+            float ratio = (pi0==0)?10000:pi1/pi0;
+            scoreHistogram.calcLocalFDR(ratio, parent.getScoreHistogram());
 
-            if (validParent!=null) {
-                float ratio = (pi0==0)?10000:pi1/pi0;
-                scoreHistogram.calcLocalFDR(ratio, parent.getScoreHistogram());
-                System.out.println("Not enough PSMs in group "+id+" to calculate local FDR. Parent histograms "+parent.getId()+" used instead.");
+            if (validParent.getScoreHistogram().canCalculateFDR()) {
+                System.out.println("Not enough PSMs in group "+id+" to calculate local FDR. Parent histogram "+parent.getId()+" used instead.");
             } else {
-                System.out.println("Cannot calculate local FDR of group: "+id+". No valid parent found. Make sure that you import prior histos. Abort.");
-                System.exit(1);
+                System.out.println("Not enough PSMs to calculate local FDR in parent histogram: "+validParent.getId()+". Results may not be reliable. Try importing prior histos.");
             }
         }
 
@@ -291,7 +290,7 @@ public class HistogramTree {
     private HistogramTree getNextValidParent() {
 
         HistogramTree p = parent;
-        HistogramTree validP = parent;
+        HistogramTree validP = (parent==null)?this:parent;
 
         while (p!=null && !p.scoreHistogram.canCalculateFDR()) {
             validP = p;
