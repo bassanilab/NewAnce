@@ -78,7 +78,7 @@ public class MaxQuantPsmReader2 {
 
             // Select the ID and NAME columns from sample.csv
             ResultSet results = stmt.executeQuery("SELECT * FROM " + FilenameUtils.removeExtension(peptidesFile.getName()));
-            boolean hasMutations = true;
+            boolean hasMutations = false;
             try {
                 hasMutations = results.findColumn("Mutated")>0;
             } catch (SQLException e) {
