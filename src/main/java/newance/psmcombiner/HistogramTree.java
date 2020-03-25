@@ -268,7 +268,7 @@ public class HistogramTree {
 
             HistogramTree validParent = getNextValidParent();
             float ratio = (pi0==0)?10000:pi1/pi0;
-            scoreHistogram.calcLocalFDR(ratio, parent.getScoreHistogram());
+            scoreHistogram.calcLocalFDR(ratio, validParent.getScoreHistogram());
 
             if (validParent.getScoreHistogram().canCalculateFDR()) {
                 System.out.println("Not enough PSMs in group "+id+" to calculate local FDR. Parent histogram "+parent.getId()+" used instead.");
