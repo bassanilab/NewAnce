@@ -335,7 +335,11 @@ public class PeptideMatchDataWrapper  {
 
     public int getModificationCount() {
 
-        return sideChainMatchMap.size() + termMatchMap.size();
+        int cnt = 0;
+        if (sideChainMatchMap!=null) cnt = sideChainMatchMap.size();
+        if (termMatchMap!=null) cnt += termMatchMap.size();
+
+        return cnt;
     }
 
     /**

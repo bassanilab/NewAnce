@@ -597,7 +597,10 @@ public class NewAnceParams implements Serializable {
         while (value.charAt(i)=='[' && i<value.length()) i++;
         int j = value.length()-1;
         while (value.charAt(j)==']' && j>=0) j--;
-        j++;
+
+        int l = (i<value.length()-1-j)?i:value.length()-1-j;
+        i = l;
+        j = value.length()-l;
 
         String listStr = value.substring(i,j);
 

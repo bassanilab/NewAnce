@@ -38,7 +38,7 @@ public class MaxQuantMSMSConverter extends SinglePsmFileConverter {
 
         PeptideSpectrumMatchList peptideSpectrumMatchList = new PeptideSpectrumMatchList(new SpectrumKeyFunctionImpl(), psmPredicate, psmMap);
 
-        MaxQuantPsmReader2 psmReader = new MaxQuantPsmReader2();
+        MaxQuantPsmReader psmReader = new MaxQuantPsmReader();
         psmReader.parse(psmFile, peptideSpectrumMatchList);
 
         addPsms(psmMap);

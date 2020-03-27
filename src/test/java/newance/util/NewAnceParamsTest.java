@@ -46,6 +46,30 @@ public class NewAnceParamsTest {
         Assert.assertTrue(set.contains("e"));
 
 
+        setStr = "[a,b,c,d,e[1]]";
+
+        set = NewAnceParams.getSetValue("bla",setStr);
+
+        Assert.assertEquals(5,set.size());
+        Assert.assertTrue(set.contains("a"));
+        Assert.assertTrue(set.contains("b"));
+        Assert.assertTrue(set.contains("c"));
+        Assert.assertTrue(set.contains("d"));
+        Assert.assertTrue(set.contains("e[1]"));
+
+
+        setStr = "[[1]a,b,c,d,e]";
+
+        set = NewAnceParams.getSetValue("bla",setStr);
+
+        Assert.assertEquals(5,set.size());
+        Assert.assertTrue(set.contains("[1]a"));
+        Assert.assertTrue(set.contains("b"));
+        Assert.assertTrue(set.contains("c"));
+        Assert.assertTrue(set.contains("d"));
+        Assert.assertTrue(set.contains("e"));
+
+
         setStr = "a,b,c,d,e";
 
         set = NewAnceParams.getSetValue("bla",setStr);
