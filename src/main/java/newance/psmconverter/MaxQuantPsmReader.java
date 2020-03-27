@@ -270,7 +270,7 @@ public class MaxQuantPsmReader {
             }
 
             if (chars[i]=='(') {
-                i = parseModification(i, pos, chars, modMatchMap);
+                i = parseModification(i, pos-1, chars, modMatchMap);
             } else {
                 sequence.add(AminoAcid.valueOf(chars[i]));
                 pos += 1;

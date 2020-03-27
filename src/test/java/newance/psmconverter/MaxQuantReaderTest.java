@@ -22,41 +22,41 @@ public class MaxQuantReaderTest {
 
         ListMultimap<Object, Modification> modMatchMap = ArrayListMultimap.create();
 
-        int endIdx = maxQuantPsmReader.parseModification(7,6, modif.toCharArray(), modMatchMap);
+        int endIdx = maxQuantPsmReader.parseModification(7,5, modif.toCharArray(), modMatchMap);
 
         Assert.assertEquals(11,endIdx);
 
-        Assert.assertTrue(modMatchMap.containsKey(6));
-        Assert.assertEquals("Phospho:HO3P",modMatchMap.get(6).get(0).toString());
+        Assert.assertTrue(modMatchMap.containsKey(5));
+        Assert.assertEquals("Phospho:HO3P",modMatchMap.get(5).get(0).toString());
 
-        endIdx = maxQuantPsmReader.parseModification(16,11, modif.toCharArray(), modMatchMap);
+        endIdx = maxQuantPsmReader.parseModification(16,10, modif.toCharArray(), modMatchMap);
 
         Assert.assertEquals(20,endIdx);
 
-        Assert.assertTrue(modMatchMap.containsKey(11));
-        Assert.assertEquals("Oxidation:O",modMatchMap.get(11).get(0).toString());
+        Assert.assertTrue(modMatchMap.containsKey(10));
+        Assert.assertEquals("Oxidation:O",modMatchMap.get(10).get(0).toString());
 
         modif = "_LGALM(Oxidation (M))Y_";
 
         modMatchMap = ArrayListMultimap.create();
 
-        endIdx = maxQuantPsmReader.parseModification(6,5, modif.toCharArray(), modMatchMap);
+        endIdx = maxQuantPsmReader.parseModification(6,4, modif.toCharArray(), modMatchMap);
 
         Assert.assertEquals(21,endIdx);
 
-        Assert.assertTrue(modMatchMap.containsKey(5));
-        Assert.assertEquals("Oxidation:O",modMatchMap.get(5).get(0).toString());
+        Assert.assertTrue(modMatchMap.containsKey(4));
+        Assert.assertEquals("Oxidation:O",modMatchMap.get(4).get(0).toString());
 
         modif = "_LGALS(Phospho (STY))Y_";
 
         modMatchMap = ArrayListMultimap.create();
 
-        endIdx = maxQuantPsmReader.parseModification(6,5, modif.toCharArray(), modMatchMap);
+        endIdx = maxQuantPsmReader.parseModification(6,4, modif.toCharArray(), modMatchMap);
 
         Assert.assertEquals(21,endIdx);
 
-        Assert.assertTrue(modMatchMap.containsKey(5));
-        Assert.assertEquals("Phospho:HO3P",modMatchMap.get(5).get(0).toString());
+        Assert.assertTrue(modMatchMap.containsKey(4));
+        Assert.assertEquals("Phospho:HO3P",modMatchMap.get(4).get(0).toString());
     }
 
     @Test
@@ -69,13 +69,13 @@ public class MaxQuantReaderTest {
         PeptideMatchDataWrapper peptideMatchDataWrapper = maxQuantPsmReader.makeModifiedPeptideMatch(modif);
 
         Assert.assertEquals(2,peptideMatchDataWrapper.getModificationCount());
-        Assert.assertEquals("AVDWWSL(Phospho)GALMY(Oxidation)",peptideMatchDataWrapper.toPeptide().toString());
+        Assert.assertEquals("AVDWWS(Phospho)LGALM(Oxidation)Y",peptideMatchDataWrapper.toPeptide().toString());
 
         modif = "_AVDWWS(Phospho (STY))LGALM(Oxidation (M))Y_";
 
         peptideMatchDataWrapper = maxQuantPsmReader.makeModifiedPeptideMatch(modif);
 
         Assert.assertEquals(2,peptideMatchDataWrapper.getModificationCount());
-        Assert.assertEquals("AVDWWSL(Phospho)GALMY(Oxidation)",peptideMatchDataWrapper.toPeptide().toString());
+        Assert.assertEquals("AVDWWS(Phospho)LGALM(Oxidation)Y",peptideMatchDataWrapper.toPeptide().toString());
     }
 }
