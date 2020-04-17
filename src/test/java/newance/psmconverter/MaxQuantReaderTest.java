@@ -2,6 +2,7 @@ package newance.psmconverter;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import newance.mzjava.mol.modification.ModAttachment;
 import newance.mzjava.mol.modification.Modification;
 import org.junit.Assert;
 import org.junit.Test;
@@ -57,6 +58,17 @@ public class MaxQuantReaderTest {
 
         Assert.assertTrue(modMatchMap.containsKey(4));
         Assert.assertEquals("Phospho:HO3P",modMatchMap.get(4).get(0).toString());
+
+        modif = "_(Acetyl (Protein N-term))ADISLDELIRKRGAAA_";
+
+        modMatchMap = ArrayListMultimap.create();
+
+        endIdx = maxQuantPsmReader.parseModification(1,-1, modif.toCharArray(), modMatchMap);
+
+        Assert.assertEquals(26,endIdx);
+
+        Assert.assertTrue(modMatchMap.containsKey(ModAttachment.N_TERM));
+        Assert.assertEquals("Acetyl:C2H2O",modMatchMap.get(ModAttachment.N_TERM).get(0).toString());
     }
 
     @Test

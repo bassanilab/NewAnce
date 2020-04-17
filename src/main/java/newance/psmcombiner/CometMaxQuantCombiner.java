@@ -339,6 +339,9 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("repH").required(false).hasArg(false).longOpt("reportHistogram").desc("Report histograms to text files").build());
         cmdLineOpts.addOption(Option.builder("readH").required(false).hasArg().longOpt("readHistograms").desc("Directory where histograms files are placed.").build());
         cmdLineOpts.addOption(Option.builder("fH").required(false).hasArg(false).longOpt("forceHistograms").desc("Histograms are imported even if enough PSMs are available.").build());
+        cmdLineOpts.addOption(Option.builder("groupM").required(false).hasArg().longOpt("groupingMethod").desc("Method for PSM grouping: fasta or modif or none (default none).").build());
+        cmdLineOpts.addOption(Option.builder("groupN").required(false).hasArg().longOpt("groupNames").desc("Comma separated list of names of sequence groups in fasta file (e.g. prot,lncRNA,TE ). Will be used as prefixes for output files.").build());
+        cmdLineOpts.addOption(Option.builder("groupRE").required(false).hasArg().longOpt("groupRegEx").desc("Comma separated list of regular expression defining sequence groups of fasta headers (e.g. \"sp\\||tr\\|ENSP00\",\"ENST00\",\"SINE_|LINE_|LTR_|DNA_|Retroposon_\" ). Will be used as prefixes for output files.").build());
         cmdLineOpts.addOption(Option.builder("protG").required(false).hasArg().longOpt("proteinGroup").desc("Name of group with protein coding or canonical sequences (default \"prot\"). Will be used as prefix for output files.").build());
         cmdLineOpts.addOption(Option.builder("noncG").required(false).hasArg().longOpt("noncanonicalGroup").desc("Name of group with non-canonical or cryptic sequences (default \"nonc\"). Will be used as prefix for output files.").build());
         cmdLineOpts.addOption(Option.builder("protRE").required(false).hasArg().longOpt("protRegExp").desc("Regular expression to match fasta name of coding proteins (e.g. sp\\||tr\\| ).").build());
@@ -426,6 +429,8 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         params.add("nrThreads", getOptionString(line, "nrTh"));
         params.add("smoothDegree", getOptionString(line, "smD"));
         params.add("fdrControlMethod", getOptionString(line, "fdrM"));
+        params.add("groupNames", getOptionString(line, "groupN"));
+        params.add("groupRegExs", getOptionString(line, "groupRE"));
 
         params.finalize();
 

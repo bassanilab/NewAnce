@@ -18,6 +18,7 @@ import java.io.*;
 import java.nio.file.InvalidPathException;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * @author Markus Müller
@@ -58,6 +59,8 @@ public class NewAnceParams implements Serializable {
 
     private double fdrCometThreshold = 0.03;
 
+    private List<String> groupNames = new ArrayList<>();
+    private List<String> groupRegExs = new ArrayList<>();
     private String protCodingGroup = "prot";
     private String noncanonicalGroup = "nonc";
     private Pattern spectrumRegExp = null;
@@ -276,6 +279,14 @@ public class NewAnceParams implements Serializable {
             fdrCometThreshold = getDoubleValue("fdrCometThreshold",variableValueMap.get("fdrCometThreshold"));
         }
 
+        if (variableValueMap.containsKey("groupNames")) {
+            groupNames = getListValue("groupNames",variableValueMap.get("groupNames"));
+        }
+
+        if (variableValueMap.containsKey("groupRegExs")) {
+            groupNames = getListValue("groupRegExs",variableValueMap.get("groupRegExs"));
+        }
+
         if (variableValueMap.containsKey("codingProtRegExp")) {
             codingProtRegExp = getPatternValue("codingProtRegExp",variableValueMap.get("codingProtRegExp"));
         }
@@ -455,6 +466,26 @@ public class NewAnceParams implements Serializable {
         if (maxRank<=0) throw new RuntimeException("Error in maxRank value: "+maxRank+". Abort.");
 
         if (doPeptideProteinGrouping && !(new File(searchFastaFile)).exists()) throw new RuntimeException("Error in doPeptideProteinGrouping value: "+doPeptideProteinGrouping+". Abort.");
+        if (groupNames.size()!=groupRegExs.size()) throw new RuntimeException("Error in groupNames and groupRegExs value (different size): "+groupRegExs+" - "+groupRegExs+". Abort.");
+        Set<String> uniqueGN = new HashSet<>();
+        for (String gn : groupNames) {
+            if (gn.isEmpty()) throw new RuntimeException("Error in groupNames value (empty item): "+groupNames+". Abort.");
+            if (uniqueGN.contains(gn)) throw new RuntimeException("Error in groupNames value (duplicate item): "+groupNames+". Abort.");
+            uniqueGN.add(gn);
+        }
+
+        Set<String> uniqueRE = new HashSet<>();
+        for (String re : groupRegExs) {
+            if (re.isEmpty()) throw new RuntimeException("Error in groupRegExs value (empty item): "+groupRegExs+". Abort.");
+            if (uniqueRE.contains(re)) throw new RuntimeException("Error in groupRegExs value (duplicate item): "+groupRegExs+". Abort.");
+            uniqueRE.add(re);
+
+            try {
+                Pattern.compile(re);
+            } catch(PatternSyntaxException e) {
+                throw new RuntimeException("Error in groupRegExs value (item not valid RegEx): "+re+". Abort.");
+            }
+        }
 
         return true;
     }
@@ -521,7 +552,7 @@ public class NewAnceParams implements Serializable {
 
         try {
             return Pattern.compile(value);
-        } catch (NumberFormatException e) {
+        } catch (PatternSyntaxException e) {
             throw new RuntimeException("Invalid value "+value+" for variable "+variable+". Not a valid regular expression.");
         }
     }
@@ -608,6 +639,26 @@ public class NewAnceParams implements Serializable {
             return new HashSet<>();
         } else {
             return new HashSet<>(Arrays.asList(listStr.split(",")));
+        }
+    }
+
+    public static List<String> getListValue(String variable, String value) {
+
+        int i = 0;
+        while (value.charAt(i)=='[' && i<value.length()) i++;
+        int j = value.length()-1;
+        while (value.charAt(j)==']' && j>=0) j--;
+
+        int l = (i<value.length()-1-j)?i:value.length()-1-j;
+        i = l;
+        j = value.length()-l;
+
+        String listStr = value.substring(i,j);
+
+        if (listStr.isEmpty()) {
+            return new ArrayList<>();
+        } else {
+            return new ArrayList<>(Arrays.asList(listStr.split(",")));
         }
     }
 

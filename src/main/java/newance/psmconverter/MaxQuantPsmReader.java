@@ -166,62 +166,6 @@ public class MaxQuantPsmReader {
         }
     }
 
-/*    public PeptideMatchDataWrapper makeModifiedPeptideMatch2(String modifiedSequence) throws SQLException
-        Matcher matcher = aaPattern.matcher(modifiedSequence);
-
-        List<AminoAcid> sequence = new ArrayList<>();
-        ListMultimap<Object, Modification> modMatchMap = ArrayListMultimap.create();
-
-        int size = 0;
-        while (matcher.find()) {
-
-            String modAA = matcher.group(1);
-            String mod = matcher.group(2);
-            String unModAA = matcher.group(3);
-
-            if (modAA != null) {
-
-                Optional<Modification> modOpt = modResolver.resolve(mod);
-                if ("_".equals(modAA)) {
-
-                    if (modOpt.isPresent()) {
-                        modMatchMap.put(size == 0 ? ModAttachment.N_TERM : ModAttachment.C_TERM, modOpt.get());
-                    }
-                } else {
-
-                    sequence.add(AminoAcid.valueOf(modAA));
-                    if (modOpt.isPresent()) {
-                        modMatchMap.put(size, modOpt.get());
-                    }
-                    size += 1;
-                }
-            } else {
-
-                sequence.add(AminoAcid.valueOf(unModAA));
-                size += 1;
-            }
-        }
-
-        PeptideMatchDataWrapper peptideMatch = new PeptideMatchDataWrapper(sequence);
-        for (Object key : modMatchMap.keySet()) {
-
-            for (Modification mod : modMatchMap.get(key)) {
-
-                if (key instanceof Integer) {
-
-                    int position = (Integer) key;
-                    peptideMatch.addModificationMatch(position, mod);
-                } else if (key instanceof ModAttachment) {
-
-                    ModAttachment modAttachment = (ModAttachment) key;
-                    peptideMatch.addModificationMatch(modAttachment, mod);
-                }
-            }
-        }
-
-        return peptideMatch;
-    }
-*/
 
     protected int parseModification(int idx, int pos, char[] chars, ListMultimap<Object, Modification> modMatchMap) {
 
@@ -240,7 +184,7 @@ public class MaxQuantPsmReader {
         }
 
         Optional<Modification> modOpt = modResolver.resolve(new String(chars,idx+1,modifNameEndIdx-idx-1));
-        if ("_".equals(chars[idx-1])) {
+        if ('_'==chars[idx-1]) {
 
             if (modOpt.isPresent()) {
                 modMatchMap.put(idx == 1 ? ModAttachment.N_TERM : ModAttachment.C_TERM, modOpt.get());
