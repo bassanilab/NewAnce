@@ -133,25 +133,56 @@ Regular expression that defines the Comet pep.xml files used in the analysis.
 ```
 -exclP,--excludeProts <arg>        Regular expression of proteins excluded from analysis. If not set no proteins are excluded.
 
-This option can be used to exclude proteins (e.g. contaminant proteins) from the analysis. A UniProt protein is defined by a
-string like sp|Q15800|MSMO1_HUMAN] or tr|G3V568|G3V568_HUMAN. A non-UniProt protein is defined by a string like 
-ENSP00000452373.1 (string in fasta header up to the first space or end of line). If the regular expression matches a protein 
-string, the protein is excluded.
+This option can be used to exclude proteins (e.g. contaminant proteins) from the analysis. If the regular expression matches a 
+protein string, the protein is excluded.
 ```
 
 ```
 -fdrM,--fdrControlMethod <arg>     Method to control pFDR: global or groupwise (default global).
 
-The FDR can be controlled in two ways: global and groupwise. In both cases, the local lFDR is calculated in the same way. The 
+The FDR can be controlled in two ways: separate and combined. In both cases, the local lFDR is calculated in the same way. The 
 lFDR threshold is then adjusted to yield the target FDR, which is estimated for both groups together (combined) or for each 
-group seperately (separate). Estimating the FDR seperately for each group usually yields less PSMs.
+group seperately (separate). Estimating the FDR seperately for each group usually yields less but more accurate PSMs.
 ```
 
 ```
 -fH,--forceHistograms              Histograms are imported even if enough PSMs are available.
 
 This option is only used if the -readH option is set. If both the -fH and -readH options are set, the histograms are imported 
-even if there are enough PSMs for a specific histogram are available (as defined by the -minPH option).
+even if enough PSMs for a specific histogram are available to calculate lFDR (as defined by the -minPH option).
+```
+
+```
+-groupF,--groupProteinFile <arg>  Tab file with protein group assignments which will override assignment by groupRE
+ 
+If -groupRE cannot capture all protein-group assignments, then the protein group assignments can be explicitely stated in the tab file provided in this option. A line in the file has the format 'protein\tgroup', whereas protein is a string that uniquely identifies a protein fasta header (can be a substring) and groups is one of the groups defined in the -groupN option.
+```
+ 
+```
+-groupM,--groupingMethod <arg>    Method for PSM grouping: fasta or modif or none (default none).
+ 
+Protein grouping can be omitted ('none') or based on the fasta headers ('fasta') or PTMs of the peptides ('modif'). -groupRE 
+and -groupN options are only considered if -groupM is set to 'fasta' 
+```
+
+```
+-groupN,--groupNames <arg>        Comma separated list of names of sequence groups in fasta file (e.g. prot,lncRNA,TE ). 
+                                  Will be used as prefixes for output files.
+ 
+If -groupM is set to 'fasta', then this option defines the names assigned to the groups defined by the -groupRE option. The 
+comma separated list of names must contain n+1 names if the -groupRE list contains n regular expressions. Proteins matching 
+the first regular expression will be assigned to the first group, all remaining proteins matching the second regular 
+expression will be assigned to the second group and so on. All remaining proteins will be assigned to the last group. 
+```
+
+```
+-groupRE,--groupRegEx <arg>       Comma separated list of regular expression defining sequence groups of fasta headers (e.g.
+                                  "sp\||tr\|ENSP00","ENST00","SINE_|LINE_|LTR_|DNA_|Retroposon_" ). Will be used as prefixes
+                                  for output files.
+                                  
+If -groupM is set to 'fasta', then this option defines the regular expressions to assign proteins to groups. Proteins matching 
+the first regular expression will be assigned to the first group, all remaining proteins matching the second regular 
+expression will be assigned to the second group and so on. All remaining proteins will be assigned to the last group. 
 ```
 
 ```
@@ -381,6 +412,12 @@ Show NewAnce version.
 ```
 
 ```
+-wCo,--writeCometExport            If flag is set, all Comet PSMs are written to a tab file.
+
+All PSMs identified by Comet without any filtering are added to a tab file ending with _CometPSMs.txt. The local FDR values and whether the PSM passes the FDR thresholf defined in the -coFDR options are added to each PSM.
+```
+
+```
 -wP,--write2ParamFile <arg>        Filename where parameters should be written to.
 
 Write NewAnce parameters to specified parameter file.
@@ -404,7 +441,7 @@ java -jar NewAnce-1.4.0-SNAPSHOT.jar -v
 Running NewAnce with 12GB memory
 
 ```
-java -Xmx12G -jar NewAnce-1.4.0-SNAPSHOT.jar -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -mqD 0D5P/lncRNA/MaxQuant -coFDR 0.03 -outD 0D5P/lncRNA/NewAnce -outT 0D5P -protRE "sp\||tr\|" -protG prot -noncG lncRNA -upFa SeqDBs/human_proteome.fasta -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15
+java -Xmx12G -jar NewAnce-1.4.0-SNAPSHOT.jar -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -mqD 0D5P/lncRNA/MaxQuant -coFDR 0.03 -outD 0D5P/lncRNA/NewAnce -outT 0D5P -groupM fasta -groupRE "sp\||tr\||ENSP00,ENST00" -groupN prot,lncRNA,ere -upFa SeqDBs/human_proteome.fasta -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15
 ```
 
 
