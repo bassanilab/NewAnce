@@ -87,9 +87,13 @@ public class CometMaxQuantPsmMerger implements BiConsumer<String, List<PeptideSp
         scoreMap.put("Intensity coverage",maxQuantPsm.getScore("Intensity coverage"));
         scoreMap.put("Localization prob",maxQuantPsm.getScore("Localization prob"));
 
-        return new PeptideSpectrumMatch(cometPsm.getSpectrumFile(), cometPsm.getPeptide(), cometPsm.getProteinAcc(),
+        PeptideSpectrumMatch psm = new PeptideSpectrumMatch(cometPsm.getSpectrumFile(), cometPsm.getPeptide(), cometPsm.getProteinAcc(),
                 scoreMap,cometPsm.getCharge(),cometPsm.getRank(), cometPsm.getRetentionTime(), cometPsm.getScanNr(), cometPsm.getNeutralPrecMass(),
                 cometPsm.isDecoy(), cometPsm.isVariant(), cometPsm.getVariantPositions(), cometPsm.getVariantWTAAs());
+
+        psm.setGroup(cometPsm.getGroup());
+
+        return psm;
 
     }
 }

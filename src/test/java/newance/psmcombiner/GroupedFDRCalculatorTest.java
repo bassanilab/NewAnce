@@ -18,6 +18,7 @@ import newance.util.NewAnceParams;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,7 +32,13 @@ public class GroupedFDRCalculatorTest {
     @Test
     public void test_print() {
 
-        RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(Pattern.compile("^sp"),"canonical","cryptic");
+        List<Pattern> regex = new ArrayList<>();
+        regex.add(Pattern.compile("^sp"));
+        List<String> groups = new ArrayList<>();
+        groups.add("canonical");
+        groups.add("cryptic");
+
+        RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(regex,groups);
         GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper);
 
         System.out.print(groupedFDRCalculator.printTree(1));
@@ -40,7 +47,13 @@ public class GroupedFDRCalculatorTest {
     @Test
     public void test_add() {
 
-        RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(Pattern.compile("^sp"),"canonical","cryptic");
+        List<Pattern> regex = new ArrayList<>();
+        regex.add(Pattern.compile("^sp"));
+        List<String> groups = new ArrayList<>();
+        groups.add("canonical");
+        groups.add("cryptic");
+
+        RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(regex,groups);
         GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper);
 
         TObjectDoubleMap<String> scoreMap = new TObjectDoubleHashMap<>();
@@ -68,7 +81,13 @@ public class GroupedFDRCalculatorTest {
     @Test
     public void test_add2() {
 
-        RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(Pattern.compile("^sp"),"canonical","cryptic");
+        List<Pattern> regex = new ArrayList<>();
+        regex.add(Pattern.compile("^sp"));
+        List<String> groups = new ArrayList<>();
+        groups.add("canonical");
+        groups.add("cryptic");
+
+        RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(regex,groups);
         GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper);
 
         NewAnceParams params = NewAnceParams.getInstance();
@@ -126,7 +145,13 @@ public class GroupedFDRCalculatorTest {
     @Test
     public void test_calcLocalFDR() {
 
-        RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(Pattern.compile("^sp"),"canonical","cryptic");
+        List<Pattern> regex = new ArrayList<>();
+        regex.add(Pattern.compile("^sp"));
+        List<String> groups = new ArrayList<>();
+        groups.add("canonical");
+        groups.add("cryptic");
+
+        RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(regex,groups);
         GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper);
 
         NewAnceParams params = NewAnceParams.getInstance();
@@ -246,7 +271,13 @@ public class GroupedFDRCalculatorTest {
     @Test
     public void test_calcGlobalFDR() {
 
-        RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(Pattern.compile("^sp"),"canonical","cryptic");
+        List<Pattern> regex = new ArrayList<>();
+        regex.add(Pattern.compile("^sp"));
+        List<String> groups = new ArrayList<>();
+        groups.add("canonical");
+        groups.add("cryptic");
+
+        RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(regex,groups);
         GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper);
 
         groupedFDRCalculator.setCanCalculateFDR(1);

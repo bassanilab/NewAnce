@@ -16,6 +16,7 @@ import newance.mzjava.mol.modification.Modification;
 import newance.psmconverter.PeptideSpectrumMatch;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 
 /**
@@ -28,16 +29,25 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
 
     protected final TabStringMode tabStringMode;
     protected final GroupedFDRCalculator groupedFDRCalculator;
+    protected final Map<String, Float> grpThresholdMap;
 
+
+    public Psm2StringFunction(TabStringMode tabStringMode, GroupedFDRCalculator groupedFDRCalculator, Map<String, Float> grpThresholdMap) {
+        this.tabStringMode = tabStringMode;
+        this.groupedFDRCalculator = groupedFDRCalculator;
+        this.grpThresholdMap = grpThresholdMap;
+    }
 
     public Psm2StringFunction(TabStringMode tabStringMode, GroupedFDRCalculator groupedFDRCalculator) {
         this.tabStringMode = tabStringMode;
         this.groupedFDRCalculator = groupedFDRCalculator;
+        this.grpThresholdMap = null;
     }
 
     public Psm2StringFunction(TabStringMode tabStringMode) {
         this.tabStringMode = tabStringMode;
         this.groupedFDRCalculator = null;
+        this.grpThresholdMap = null;
     }
 
     @Override
@@ -57,7 +67,7 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
         if (tabStringMode == TabStringMode.COMET) {
             if (groupedFDRCalculator != null)
                 return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
-                        "IsVariant\tVariantPosition\tWTAA\tIsDecoy\tRank\tXCorr\tDeltaCn\tSpScore\tExpect\tmassdiff\ttot_num_ions\tnum_matched_ions\tlFDR";
+                        "IsVariant\tVariantPosition\tWTAA\tIsDecoy\tRank\tXCorr\tDeltaCn\tSpScore\tExpect\tmassdiff\ttot_num_ions\tnum_matched_ions\tlFDR\tGroup\tpassFDR";
             else
                 return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
                         "IsVariant\tVariantPosition\tWTAA\tIsDecoy\tRank\tXCorr\tDeltaCn\tSpScore\tExpect\tmassdiff\ttot_num_ions\tnum_matched_ions";
@@ -121,16 +131,20 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
 
         String protACs = psm.getProteinAcc().toString();
         int rank = (int) psm.getScore("rank");
-        String lfdrStr = (groupedFDRCalculator==null)?"":String.format("\t%.5f",groupedFDRCalculator.getLocalFDR(psm));
+        float lfdr = groupedFDRCalculator.getLocalFDR(psm);
+        String lfdrStr = (groupedFDRCalculator==null)?"":String.format("\t%.5f",lfdr);
         String expectStr = String.format("%.5f",psm.getScore("expect"));
         Peptide peptide = psm.getPeptide();
         String pepMass = String.format("%.5f",peptide.getMolecularMass());
         String modifString = getModifString(peptide);
         String variantString = getVariantString(psm);
+        String pass = "NA";
+        if (grpThresholdMap!=null) pass = (lfdr<=grpThresholdMap.get(psm.getGroup()))?"true":"false";
 
         return  psm.getPeptide().toString()+"\t"+psm.getPeptide().toSymbolString()+"\t"+pepMass+"\t"+modifString+"\t"+protACs+"\t"+variantString+"\t"+psm.isDecoy()+"\t"+
-                rank+"\t"+psm.getScore("xcorr")+"\t"+psm.getScore("deltacn")+"\t"+psm.getScore("spscore")+"\t"+expectStr+"\t+" +
-                psm.getScore("mass_diff")+"\t"+(int)psm.getScore("tot_num_ions")+"\t"+(int)psm.getScore("matched_num_ions")+lfdrStr; // no tab before lfdrStr
+                rank+"\t"+psm.getScore("xcorr")+"\t"+psm.getScore("deltacn")+"\t"+psm.getScore("spscore")+"\t"+expectStr+"\t+" + // no tab before lfdrStr
+                psm.getScore("mass_diff")+"\t"+(int)psm.getScore("tot_num_ions")+"\t"+(int)psm.getScore("matched_num_ions")+lfdrStr+"\t"+psm.getGroup()+"\t"+pass;
+
     }
 
     protected String getMaxQuantString(PeptideSpectrumMatch psm) {
@@ -158,11 +172,11 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
 
         if (peptide.hasModificationAt(ModAttachment.N_TERM)) {
             for (Modification modif : peptide.getModifications(ModAttachment.nTermSet)) {
-                modifNames = (modifNames.isEmpty())?modif.getLabel():","+modif.getLabel();
-                modifPos = (modifPos.isEmpty())?"0":",0";
+                modifNames += (modifNames.isEmpty())?modif.getLabel():","+modif.getLabel();
+                modifPos += (modifPos.isEmpty())?"0":",0";
                 String massStr = String.format("%.5f",modif.getMolecularMass());
-                modifMass = (modifMass.isEmpty())?massStr:","+massStr;
-                modifAA = (modifAA.isEmpty())?"NT":",NT";
+                modifMass += (modifMass.isEmpty())?massStr:","+massStr;
+                modifAA += (modifAA.isEmpty())?"NT":",NT";
             }
         }
 
@@ -170,24 +184,24 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
             for (int i : peptide.getModificationIndexes(ModAttachment.sideChainSet)) {
 
                 for (Modification modif : peptide.getModificationsAt(i, ModAttachment.sideChainSet)) {
-                    modifNames = (modifNames.isEmpty())?modif.getLabel():","+modif.getLabel();
+                    modifNames += (modifNames.isEmpty())?modif.getLabel():","+modif.getLabel();
                     String posStr = String.format("%d",i+1);
-                    modifPos = (modifPos.isEmpty())?posStr:","+posStr;
+                    modifPos += (modifPos.isEmpty())?posStr:","+posStr;
                     String massStr = String.format("%.5f",modif.getMolecularMass());
-                    modifMass = (modifMass.isEmpty())?massStr:","+massStr;
-                    modifAA = (modifAA.isEmpty())?peptide.getSymbol(i).getSymbol():","+peptide.getSymbol(i).getSymbol();
+                    modifMass += (modifMass.isEmpty())?massStr:","+massStr;
+                    modifAA += (modifAA.isEmpty())?peptide.getSymbol(i).getSymbol():","+peptide.getSymbol(i).getSymbol();
                 }
             }
         }
 
         if (peptide.hasModificationAt(ModAttachment.C_TERM)) {
             for (Modification modif : peptide.getModifications(ModAttachment.cTermSet)) {
-                modifNames = (modifNames.isEmpty())?modif.getLabel():","+modif.getLabel();
+                modifNames += (modifNames.isEmpty())?modif.getLabel():","+modif.getLabel();
                 String posStr = String.format("%d",peptide.size()+1);
-                modifPos = (modifPos.isEmpty())?posStr:","+posStr;
+                modifPos += (modifPos.isEmpty())?posStr:","+posStr;
                 String massStr = String.format("%.5f",modif.getMolecularMass());
-                modifMass = (modifMass.isEmpty())?massStr:","+massStr;
-                modifAA = (modifAA.isEmpty())?"CT":",CT";
+                modifMass += (modifMass.isEmpty())?massStr:","+massStr;
+                modifAA += (modifAA.isEmpty())?"CT":",CT";
             }
         }
 

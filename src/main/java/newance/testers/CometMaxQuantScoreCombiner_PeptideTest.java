@@ -98,13 +98,15 @@ public class CometMaxQuantScoreCombiner_PeptideTest extends ExecutableOptions {
 
     protected GroupedFDRCalculator buildGroupedFDRCalculator(ConcurrentHashMap<String, List<PeptideSpectrumMatch>> allPsms ) {
 
-        if (params.getCodingProtRegExp()!=null) {
-            if (params.getForcedNoncanonicalProts().isEmpty())
-                psmGrouper = new RegExpProteinGrouper(params.getCodingProtRegExp(), params.getProtCodingGroup(), params.getNoncanonicalGroup());
+        if (params.getGroupingMethod().equals("fasta")) {
+            if (params.getProteinGroupMap().isEmpty())
+                psmGrouper = new RegExpProteinGrouper(params.getGroupRegExs(), params.getGroupNames());
             else
-                psmGrouper = new RegExpProteinGrouper(params.getCodingProtRegExp(), params.getForcedNoncanonicalProts(), params.getProtCodingGroup(), params.getNoncanonicalGroup());
-        } else {
+                psmGrouper = new RegExpProteinGrouper(params.getGroupRegExs(), params.getGroupNames(), params.getProteinGroupMap());
+        } else if (params.getGroupingMethod().equals("modif")) {
             psmGrouper = new ModificationPSMGrouper();
+        } else {
+            psmGrouper = null;
         }
 
         GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper);

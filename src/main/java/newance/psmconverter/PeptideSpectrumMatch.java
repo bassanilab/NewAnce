@@ -36,6 +36,7 @@ public class PeptideSpectrumMatch {
     private final boolean isVariant;
     private final List<Integer> variantPositions;
     private final List<Character> variantWTAAs;
+    private String group;
 
     public PeptideSpectrumMatch(String spectrumFile, Peptide peptide, Set<String> proteinAccs, TObjectDoubleMap<String> scoreMap, int charge, int rank, float retentionTime,
                                 int scanNr, double neutralPrecMass, boolean isDecoy, boolean isVariant, List<Integer> variantPositions, List<Character> variantWTAAs) {
@@ -53,6 +54,7 @@ public class PeptideSpectrumMatch {
         this.isVariant = isVariant;
         this.variantPositions = variantPositions;
         this.variantWTAAs = variantWTAAs;
+        this.group = "";
     }
 
     public Peptide getPeptide() {
@@ -126,4 +128,11 @@ public class PeptideSpectrumMatch {
         return variantWTAAs;
     }
 
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
 }

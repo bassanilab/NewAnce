@@ -14,6 +14,8 @@ import newance.psmconverter.PeptideSpectrumMatch;
 import newance.util.PsmGrouper;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,60 +25,66 @@ import java.util.regex.Pattern;
  */
 
 public class RegExpProteinGrouper extends PsmGrouper {
-    private final Pattern regExp;
-    private final Set<String> exclude;
-    private final String masterGroup;
-    private final String otherGroup;
+    private final Map<String,Set<String>> exclude;
+    private final List<Pattern> regExps;
+    private final List<String> groups;
 
-    public RegExpProteinGrouper(Pattern regExp, String masterGroup, String otherGroup) {
-        this.regExp = regExp;
-        this.masterGroup = masterGroup;
-        this.otherGroup = otherGroup;
+    public RegExpProteinGrouper(List<Pattern> regExps, List<String> groups) {
+        this.regExps = regExps;
+        this.groups = groups;
         this.exclude = null;
     }
 
-    public RegExpProteinGrouper(Pattern regExp, Set<String> exclude, String masterGroup, String otherGroup) {
-        this.regExp = regExp;
-        this.masterGroup = masterGroup;
-        this.otherGroup = otherGroup;
+    public RegExpProteinGrouper(List<Pattern> regExps, List<String> groups, Map<String,Set<String>> exclude) {
+        this.regExps = regExps;
+        this.groups = groups;
         this.exclude = exclude;
     }
 
     @Override
     public String apply(String specID, PeptideSpectrumMatch psm) {
 
+        if (!psm.getGroup().isEmpty()) return psm.getGroup();
+
         Set<String> proteins = psm.getProteinAcc();
 
-        for (String protein : proteins) {
-
-            if (exclude!=null) {
-                for (String excludedProt : exclude) {
-                    if (protein.contains(excludedProt))
-                        return otherGroup;
+        if (exclude!=null) {
+            for (String protein : proteins) {
+                for (String excludedProtGrp : exclude.keySet()) {
+                    for (String excludedProt : exclude.get(excludedProtGrp)) {
+                        if (protein.contains(excludedProt)) {
+                            psm.setGroup(excludedProtGrp);
+                            return excludedProtGrp;
+                        }
+                    }
                 }
             }
-
-            Matcher m = regExp.matcher(protein);
-            if (m.find( ))
-                return masterGroup;
         }
 
-        return otherGroup;
+        for (int i=0;i<regExps.size();i++) {
+
+            for (String protein : proteins) {
+
+                 if (regExps.get(i).matcher(protein).find()) {
+                    psm.setGroup(groups.get(i));
+                    return groups.get(i);
+                }
+            }
+        }
+
+        psm.setGroup(groups.get(groups.size()-1));
+        return psm.getGroup();
     }
 
     @Override
     public String getMasterGroup() {
-        return masterGroup;
+        return groups.get(0);
     }
 
     @Override
     public Set<String> getGroups() {
 
-        Set<String> groups = new HashSet<>();
-        groups.add(masterGroup);
-        groups.add(otherGroup);
-
-        return groups;
+        return new HashSet<>(groups);
     }
 
 }

@@ -389,7 +389,8 @@ public class GroupedFDRCalculator {
     }
 
     public Set<String> getGroups() {
-        return psmGrouper.getGroups();
+        if (psmGrouper!=null) return psmGrouper.getGroups();
+        else return new HashSet<>();
     }
 
     public Map<String,Float> calcGroupLocalFDRThreshold(float pFDR) {

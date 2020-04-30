@@ -15,6 +15,7 @@ package newance.util;
 import newance.mzjava.mol.modification.Modification;
 
 import java.io.*;
+import java.nio.BufferUnderflowException;
 import java.nio.file.InvalidPathException;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -59,13 +60,16 @@ public class NewAnceParams implements Serializable {
 
     private double fdrCometThreshold = 0.03;
 
+    private String groupingMethod = "none";
     private List<String> groupNames = new ArrayList<>();
-    private List<String> groupRegExs = new ArrayList<>();
+    private List<Pattern> groupRegExs = new ArrayList<>();
     private String protCodingGroup = "prot";
     private String noncanonicalGroup = "nonc";
     private Pattern spectrumRegExp = null;
     private Pattern codingProtRegExp = null;
-    private Set<String> forcedNoncanonicalProts = new HashSet<>();
+    private String proteinGroupMapFile = "";
+    private Map<String,Set<String>> proteinGroupMap = new HashMap<>();
+    private boolean writeCometTabFile = false;
 
     private int minNrPsmsPerHisto = 100000;
 
@@ -86,7 +90,7 @@ public class NewAnceParams implements Serializable {
 
     private String fdrControlMethod = "combined";
 
-    private String version = "version 1.5.0";
+    private String version = "version 1.6.0";
 
     private String cometPsmDir = "";
     private String maxquantPsmDir = "";
@@ -148,7 +152,7 @@ public class NewAnceParams implements Serializable {
         res +=  "noncanonicalGroup="+ noncanonicalGroup +"\n";
         res +=  "spectrumRegExp="+spectrumRegExp+"\n";
         res +=  "codingProtRegExp="+ codingProtRegExp +"\n";
-        res +=  "forcedNoncanonicalProts="+ forcedNoncanonicalProts +"\n";
+        res +=  "proteinGroupMapFile="+ proteinGroupMapFile +"\n";
         res +=  "minNrPsmsPerHisto="+minNrPsmsPerHisto+"\n";
         res +=  "outputTag="+ outputTag +"\n";
         res +=  "minXCorr="+minXCorr+"\n";
@@ -178,6 +182,10 @@ public class NewAnceParams implements Serializable {
         res +=  "cometMainScore="+cometMainScore+"\n";
         res +=  "maxQuantMainScoreMinValue="+maxQuantMainScoreMinValue+"\n";
         res +=  "cometMainScoreMinValue="+cometMainScoreMinValue+"\n";
+        res +=  "groupingMethod="+groupingMethod+"\n";
+        res +=  "groupNames="+groupNames+"\n";
+        res +=  "groupRegExs="+groupRegExs+"\n";
+        res +=  "writeCometTabFile="+writeCometTabFile+"\n";
 
         res +=  "writeParamsFile="+writeParamsFile+"\n";
 
@@ -231,7 +239,7 @@ public class NewAnceParams implements Serializable {
         }
 
         if (variableValueMap.containsKey("modifMatchMassTol")) {
-            modifMatchMassTol = getDoubleValue("modifMatchMassTol", variableValueMap.get("modifMatchMassTol"));
+            modifMatchMassTol = getDoubleValue("modifMatchMassTol", variableValueMap.get("modifMatchMassTol"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("cometDecoyProtPrefix")) {
@@ -243,28 +251,27 @@ public class NewAnceParams implements Serializable {
         }
 
         if (variableValueMap.containsKey("minCharge")) {
-            minCharge = getIntegerValue("minCharge",variableValueMap.get("minCharge"));
+            minCharge = getIntegerValue("minCharge",variableValueMap.get("minCharge"), 1, 10);
         }
 
         if (variableValueMap.containsKey("maxCharge")) {
-            maxCharge = getIntegerValue("maxCharge",variableValueMap.get("maxCharge"));
+            maxCharge = getIntegerValue("maxCharge",variableValueMap.get("maxCharge"), 1, 10);
         }
 
         if (variableValueMap.containsKey("minPeptideLength")) {
-            minPeptideLength = getIntegerValue("minPeptideLength",variableValueMap.get("minPeptideLength"));
+            minPeptideLength = getIntegerValue("minPeptideLength",variableValueMap.get("minPeptideLength"), 4, 1000);
         }
 
         if (variableValueMap.containsKey("maxPeptideLength")) {
-            maxPeptideLength = getIntegerValue("maxPeptideLength",variableValueMap.get("maxPeptideLength"));
+            maxPeptideLength = getIntegerValue("maxPeptideLength",variableValueMap.get("maxPeptideLength"), 4, 1000);
         }
 
         if (variableValueMap.containsKey("maxRank")) {
-            maxRank = getIntegerValue("maxRank",variableValueMap.get("maxRank"));
+            maxRank = getIntegerValue("maxRank",variableValueMap.get("maxRank"), 1, 100);
         }
 
         if (variableValueMap.containsKey("nrThreads")) {
-            nrThreads = getIntegerValue("nrThreads",variableValueMap.get("nrThreads"));
-            nrThreads = (nrThreads>256)?256:nrThreads;
+            nrThreads = getIntegerValue("nrThreads",variableValueMap.get("nrThreads"), 1, 256);
         } else {
             int nrProc = Runtime.getRuntime().availableProcessors();
             nrThreads = (nrProc>2)?nrProc-2:1;
@@ -272,34 +279,62 @@ public class NewAnceParams implements Serializable {
         }
 
         if (variableValueMap.containsKey("smoothDegree")) {
-            smoothDegree = getIntegerValue("smoothDegree",variableValueMap.get("smoothDegree"));
+            smoothDegree = getIntegerValue("smoothDegree",variableValueMap.get("smoothDegree"), 0, 100);
         }
 
         if (variableValueMap.containsKey("fdrCometThreshold")) {
-            fdrCometThreshold = getDoubleValue("fdrCometThreshold",variableValueMap.get("fdrCometThreshold"));
+            fdrCometThreshold = getDoubleValue("fdrCometThreshold",variableValueMap.get("fdrCometThreshold"), 0.0, Double.MAX_VALUE);
+        }
+
+        if (variableValueMap.containsKey("groupingMethod")) {
+            groupingMethod = getStringValue("groupingMethod",variableValueMap.get("groupingMethod"),new HashSet<>(Arrays.asList(new String[]{"fasta","modif","none"})));
         }
 
         if (variableValueMap.containsKey("groupNames")) {
             groupNames = getListValue("groupNames",variableValueMap.get("groupNames"));
+
+            if (hasDuplicates(groupNames)) throw new RuntimeException("Duplicates in groupNames: "+groupNames+". Abort.");
+            if (hasNA(groupNames)) throw new RuntimeException("Empty items in groupNames: "+groupNames+". Abort.");
         }
 
         if (variableValueMap.containsKey("groupRegExs")) {
-            groupNames = getListValue("groupRegExs",variableValueMap.get("groupRegExs"));
+            List<String> groupRegExStr = getListValue("groupRegExs",variableValueMap.get("groupRegExs"));
+            if (hasDuplicates(groupRegExStr)) throw new RuntimeException("Duplicates in groupRegExs: "+groupRegExStr+". Abort.");
+            if (hasNA(groupRegExStr)) throw new RuntimeException("Empty items in groupRegExs: "+groupRegExStr+". Abort.");
+
+            groupRegExs = new ArrayList<>();
+            for (String re : groupRegExStr) {
+                try {
+                    groupRegExs.add(Pattern.compile(re));
+                } catch(PatternSyntaxException e) {
+                    throw new RuntimeException("Item in groupRegExs not valid RegExp: "+re+". Abort.");
+                }
+            }
+
+        }
+
+        if (variableValueMap.containsKey("writeCometTabFile")) {
+            writeCometTabFile = getBooleanValue("writeCometTabFile",variableValueMap.get("writeCometTabFile"));
         }
 
         if (variableValueMap.containsKey("codingProtRegExp")) {
             codingProtRegExp = getPatternValue("codingProtRegExp",variableValueMap.get("codingProtRegExp"));
+            groupRegExs.add(codingProtRegExp);
+            groupingMethod = "fasta";
         }
 
+        // leave this for back compatibility
         if (codingProtRegExp !=null) {
             if (variableValueMap.containsKey("protCodingGroup")) {
                 protCodingGroup = getStringValue("protCodingGroup",variableValueMap.get("protCodingGroup"));
+                groupNames.add(protCodingGroup);
             } else {
                 throw new RuntimeException("No name for protein coding group provided. Abort");
             }
 
             if (variableValueMap.containsKey("noncanonicalGroup")) {
                 noncanonicalGroup = getStringValue("noncanonicalGroup",variableValueMap.get("noncanonicalGroup"));
+                groupNames.add(noncanonicalGroup);
             } else {
                 throw new RuntimeException("No name for non-canonical group provided. Abort");
             }
@@ -309,12 +344,13 @@ public class NewAnceParams implements Serializable {
             spectrumRegExp = getPatternValue("spectrumRegExp",variableValueMap.get("spectrumRegExp"));
         }
 
-        if (variableValueMap.containsKey("forcedNoncanonicalProts")) {
-            forcedNoncanonicalProts = getSetValue("forcedNoncanonicalProts", variableValueMap.get("forcedNoncanonicalProts"));
+        if (variableValueMap.containsKey("proteinGroupMapFile")) {
+            proteinGroupMapFile = getFileValue("proteinGroupMapFile", variableValueMap.get("proteinGroupMapFile"));
+            proteinGroupMap = readProteinGroupMapFile(proteinGroupMapFile);
         }
 
         if (variableValueMap.containsKey("minNrPsmsPerHisto")) {
-            minNrPsmsPerHisto = getIntegerValue("minNrPsmsPerHisto",variableValueMap.get("minNrPsmsPerHisto"));
+            minNrPsmsPerHisto = getIntegerValue("minNrPsmsPerHisto",variableValueMap.get("minNrPsmsPerHisto"), 0, Integer.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("outputTag")) {
@@ -322,39 +358,39 @@ public class NewAnceParams implements Serializable {
         }
 
         if (variableValueMap.containsKey("minXCorr")) {
-            minXCorr = getDoubleValue("minXCorr",variableValueMap.get("minXCorr"));
+            minXCorr = getDoubleValue("minXCorr",variableValueMap.get("minXCorr"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("maxXCorr")) {
-            maxXCorr = getDoubleValue("maxXCorr",variableValueMap.get("maxXCorr"));
+            maxXCorr = getDoubleValue("maxXCorr",variableValueMap.get("maxXCorr"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("nrXCorrBins")) {
-            nrXCorrBins = getIntegerValue("nrXCorrBins",variableValueMap.get("nrXCorrBins"));
+            nrXCorrBins = getIntegerValue("nrXCorrBins",variableValueMap.get("nrXCorrBins"), 1, 100000);
         }
 
         if (variableValueMap.containsKey("minDeltaCn")) {
-            minDeltaCn = getDoubleValue("minDeltaCn",variableValueMap.get("minDeltaCn"));
+            minDeltaCn = getDoubleValue("minDeltaCn",variableValueMap.get("minDeltaCn"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("maxDeltaCn")) {
-            maxDeltaCn = getDoubleValue("maxDeltaCn",variableValueMap.get("maxDeltaCn"));
+            maxDeltaCn = getDoubleValue("maxDeltaCn",variableValueMap.get("maxDeltaCn"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("nrDeltaCnBins")) {
-            nrDeltaCnBins = getIntegerValue("nrDeltaCnBins",variableValueMap.get("nrDeltaCnBins"));
+            nrDeltaCnBins = getIntegerValue("nrDeltaCnBins",variableValueMap.get("nrDeltaCnBins"), 1, 100000);
         }
 
         if (variableValueMap.containsKey("minSpScore")) {
-            minSpScore = getDoubleValue("minSpScore",variableValueMap.get("minSpScore"));
+            minSpScore = getDoubleValue("minSpScore",variableValueMap.get("minSpScore"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("maxSpScore")) {
-            maxSpScore = getDoubleValue("maxSpScore",variableValueMap.get("maxSpScore"));
+            maxSpScore = getDoubleValue("maxSpScore",variableValueMap.get("maxSpScore"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("nrSpScoreBins")) {
-            nrSpScoreBins = getIntegerValue("nrSpScoreBins",variableValueMap.get("nrSpScoreBins"));
+            nrSpScoreBins = getIntegerValue("nrSpScoreBins",variableValueMap.get("nrSpScoreBins"), 1, 100000);
         }
 
         if (variableValueMap.containsKey("fdrControlMethod")) {
@@ -428,19 +464,19 @@ public class NewAnceParams implements Serializable {
         }
 
         if (variableValueMap.containsKey("maxQuantMainScoreMinValue")) {
-            maxQuantMainScoreMinValue = getDoubleValue("maxQuantMainScoreMinValue",variableValueMap.get("maxQuantMainScoreMinValue"));
+            maxQuantMainScoreMinValue = getDoubleValue("maxQuantMainScoreMinValue",variableValueMap.get("maxQuantMainScoreMinValue"), Double.MIN_VALUE, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("cometMainScoreMinValue")) {
-            cometMainScoreMinValue = getDoubleValue("cometMainScoreMinValue",variableValueMap.get("cometMainScoreMinValue"));
+            cometMainScoreMinValue = getDoubleValue("cometMainScoreMinValue",variableValueMap.get("cometMainScoreMinValue"), Double.MIN_VALUE, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("maxQuantMainScore")) {
-            maxQuantMainScore = variableValueMap.get("maxQuantMainScore");
+            maxQuantMainScore = getStringValue("maxQuantMainScore",variableValueMap.get("maxQuantMainScore"),new HashSet<>(Arrays.asList(new String[]{"Score","Delta score","Localization prob","PEP"})));
         }
 
         if (variableValueMap.containsKey("cometMainScore")) {
-            cometMainScore = variableValueMap.get("cometMainScore");
+            cometMainScore = getStringValue("cometMainScore",variableValueMap.get("cometMainScore"),new HashSet<>(Arrays.asList(new String[]{"xcorr","spscore","deltacn","expect"})));
         }
 
         checkVariableValues();
@@ -448,43 +484,16 @@ public class NewAnceParams implements Serializable {
 
     private boolean checkVariableValues() {
 
-        if (minCharge<0 || minCharge>maxCharge) throw new RuntimeException("Error in minCharge value: "+minCharge+". Abort.");
-        if (minPeptideLength<0 || minPeptideLength>maxPeptideLength) throw new RuntimeException("Error in maxPeptideLength value: "+minPeptideLength+". Abort.");
-        if (modifMatchMassTol<0.0) throw new RuntimeException("Error in modifMatchMassTol value: "+modifMatchMassTol+". Abort.");
-        if (maxRank<=0) throw new RuntimeException("Error in maxRank value: "+maxRank+". Abort.");
-        if (nrThreads<=0) throw new RuntimeException("Error in nrThreads value: "+nrThreads+". Abort.");
-        if (fdrCometThreshold<0.0 || fdrCometThreshold>1.0) throw new RuntimeException("Error in fdrCometThreshold value: "+fdrCometThreshold+". Abort.");
-        if (maxRank<=0) throw new RuntimeException("Error in maxRank value: "+maxRank+". Abort.");
-
-        if (minNrPsmsPerHisto<=0) throw new RuntimeException("Error in minNrPsmsPerHisto value: "+minNrPsmsPerHisto+". Abort.");
         if (minXCorr>=maxXCorr) throw new RuntimeException("Error in minXCorr value: "+minXCorr+". Abort.");
         if (minDeltaCn>=maxDeltaCn) throw new RuntimeException("Error in minDeltaCn value: "+minDeltaCn+". Abort.");
         if (minSpScore>=maxSpScore) throw new RuntimeException("Error in minSpScore value: "+minSpScore+". Abort.");
-        if (nrXCorrBins<=0) throw new RuntimeException("Error in nrXCorrBins value: "+nrXCorrBins+". Abort.");
-        if (nrDeltaCnBins<=0) throw new RuntimeException("Error in nrDeltaCnBins value: "+nrDeltaCnBins+". Abort.");
-        if (nrSpScoreBins<=0) throw new RuntimeException("Error in nrSpScoreBins value: "+nrSpScoreBins+". Abort.");
-        if (maxRank<=0) throw new RuntimeException("Error in maxRank value: "+maxRank+". Abort.");
 
         if (doPeptideProteinGrouping && !(new File(searchFastaFile)).exists()) throw new RuntimeException("Error in doPeptideProteinGrouping value: "+doPeptideProteinGrouping+". Abort.");
-        if (groupNames.size()!=groupRegExs.size()) throw new RuntimeException("Error in groupNames and groupRegExs value (different size): "+groupRegExs+" - "+groupRegExs+". Abort.");
-        Set<String> uniqueGN = new HashSet<>();
-        for (String gn : groupNames) {
-            if (gn.isEmpty()) throw new RuntimeException("Error in groupNames value (empty item): "+groupNames+". Abort.");
-            if (uniqueGN.contains(gn)) throw new RuntimeException("Error in groupNames value (duplicate item): "+groupNames+". Abort.");
-            uniqueGN.add(gn);
-        }
 
-        Set<String> uniqueRE = new HashSet<>();
-        for (String re : groupRegExs) {
-            if (re.isEmpty()) throw new RuntimeException("Error in groupRegExs value (empty item): "+groupRegExs+". Abort.");
-            if (uniqueRE.contains(re)) throw new RuntimeException("Error in groupRegExs value (duplicate item): "+groupRegExs+". Abort.");
-            uniqueRE.add(re);
+        if (groupingMethod.equals("fasta")) {
 
-            try {
-                Pattern.compile(re);
-            } catch(PatternSyntaxException e) {
-                throw new RuntimeException("Error in groupRegExs value (item not valid RegEx): "+re+". Abort.");
-            }
+            if (groupNames.size()!=groupRegExs.size()+1) throw new RuntimeException("Incompatible size of groupNames and groupRegExs : "+groupNames+" - "+groupRegExs+". Abort.");
+
         }
 
         return true;
@@ -603,20 +612,34 @@ public class NewAnceParams implements Serializable {
         return value;
     }
 
-    public static Double getDoubleValue(String variable, String value) {
+    public static Double getDoubleValue(String variable, String value, double min, double max) {
 
+        Double d;
         try {
-            return Double.valueOf(value);
+            d = Double.valueOf(value);
+
+            if (d<min || d>max) {
+                throw new RuntimeException("Invalid value "+value+" for variable "+variable+". Value out of range.");
+            }
+
+            return d;
         } catch (NumberFormatException e) {
             throw new RuntimeException("Invalid value "+value+" for variable "+variable+". Not a double value.");
 
         }
     }
 
-    public static Integer getIntegerValue(String variable, String value) {
+    public static Integer getIntegerValue(String variable, String value, int min, int max) {
 
+        Integer i;
         try {
-            return Integer.valueOf(value);
+            i = Integer.valueOf(value);
+
+            if (i<min || i>max) {
+                throw new RuntimeException("Invalid value "+value+" for variable "+variable+". Value out of range.");
+            }
+
+            return i;
         } catch (NumberFormatException e) {
             throw new RuntimeException("Invalid value "+value+" for variable "+variable+". Not an integer value.");
         }
@@ -660,6 +683,56 @@ public class NewAnceParams implements Serializable {
         } else {
             return new ArrayList<>(Arrays.asList(listStr.split(",")));
         }
+    }
+
+    protected static boolean hasDuplicates(List<String> list) {
+
+
+        for (int i=0;i<list.size()-1;i++) {
+
+            String first = list.get(i);
+            for (int j=i+1;i<list.size();i++) {
+                if (first.equals(list.get(j))) return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    protected static boolean hasNA(List<String> list) {
+
+        for (int i=0;i<list.size();i++) {
+            if (list.get(i).isEmpty()) return true;
+        }
+
+        return false;
+    }
+
+    protected static Map<String,Set<String>> readProteinGroupMapFile(String fileName) {
+
+        Map<String,Set<String>> proteinGroupMap = new HashMap<>();
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)));
+
+            String line = "";
+
+            while ((line = reader.readLine())!=null) {
+                String[] fields = line.split("\t");
+
+                proteinGroupMap.putIfAbsent(fields[1],new HashSet<>());
+                proteinGroupMap.get(fields[1]).add(fields[0]);
+            }
+
+
+        } catch (FileNotFoundException e) {
+
+        } catch (IOException e) {
+
+        }
+
+        return proteinGroupMap;
     }
 
     public String getModificationStr() {
@@ -726,8 +799,8 @@ public class NewAnceParams implements Serializable {
         return codingProtRegExp;
     }
 
-    public Set<String> getForcedNoncanonicalProts() {
-        return forcedNoncanonicalProts;
+    public Map<String,Set<String>> getProteinGroupMap() {
+        return proteinGroupMap;
     }
 
     public int getMinNrPsmsPerHisto() {
@@ -864,5 +937,21 @@ public class NewAnceParams implements Serializable {
 
     public boolean isDebug() {
         return debug;
+    }
+
+    public String getGroupingMethod() {
+        return groupingMethod;
+    }
+
+    public List<String> getGroupNames() {
+        return groupNames;
+    }
+
+    public List<Pattern> getGroupRegExs() {
+        return groupRegExs;
+    }
+
+    public boolean isWriteCometTabFile() {
+        return writeCometTabFile;
     }
 }
