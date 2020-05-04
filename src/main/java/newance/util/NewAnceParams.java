@@ -205,8 +205,7 @@ public class NewAnceParams implements Serializable {
                 if (!line.startsWith("#") && !line.contains("=")) continue;
 
                 String[] fields = line.split("=");
-                if (fields.length==2) variableValueMap.put(fields[0].trim(),fields[1].trim());
-                else variableValueMap.put(fields[0].trim(),"");
+                if (fields.length==2 && !fields[1].trim().equals("null") && !fields[1].trim().isEmpty()) variableValueMap.put(fields[0].trim(),fields[1].trim());
             }
 
             reader.close();
