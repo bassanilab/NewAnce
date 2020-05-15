@@ -234,8 +234,8 @@ public class OccamRazorSpectrumCounter {
             String lenStr = "NA";
             String gn = "NA";
             String lgn = "";
-            if (uniProtDB!=null && uniProtDB.containsUniProtAC(ac)) {
-                UniProtProtein p = uniProtDB.getProtein(ac);
+            if (uniProtDB!=null && uniProtDB.containsProteinID(ac)) {
+                UniProtProtein p = (UniProtProtein) uniProtDB.getProtein(ac);
                 lenStr = ""+p.getSequence().length();
                 gn = p.getGeneName();
 
@@ -243,7 +243,7 @@ public class OccamRazorSpectrumCounter {
                 if (leadingProt.startsWith("sp|") || leadingProt.startsWith("tr|")) {
                     ac = leadingProt.split("\\|")[1];
 
-                    p = uniProtDB.getProtein(ac);
+                    p = (UniProtProtein) uniProtDB.getProtein(ac);
                     lenStr = ""+p.getSequence().length();
                     lgn = p.getGeneName();
                 }

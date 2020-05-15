@@ -10,6 +10,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.testers;
 
+import newance.proteinmatch.FastaProtein;
 import newance.proteinmatch.UniProtDB;
 import newance.proteinmatch.UniProtProtein;
 import newance.util.ExecutableOptions;
@@ -66,11 +67,13 @@ public class FastaReaderTest extends ExecutableOptions {
 
         System.out.println("NewAnceID\tProteinID\tProtName\tGeneName\tDescription\tDB\tSequence\n");
 
-        for (UniProtProtein prot : uniProtDB.getProteins()) {
+        for (FastaProtein prot : uniProtDB.getProteins()) {
             if(maxNrDisplayedPSMs>=0 && cnt>=maxNrDisplayedPSMs) break;
 
-            System.out.print(prot.getFastaUniProtName()+"\t"+prot.getUniProtAC()+"\t"+prot.getUniProtName()+"\t"+prot.getGeneName()+"\t"+prot.getDescription()+"\t");
-            System.out.println(prot.getDbFlag()+"\t"+prot.getSequence());
+            UniProtProtein protein = (UniProtProtein) prot;
+            System.out.print(protein.toString()+"\t"+prot.getProteinID()+"\t"+protein.getUniProtName()+"\t"+
+                    protein.getGeneName()+"\t"+protein.getDescription()+"\t");
+            System.out.println(protein.getDbFlag()+"\t"+prot.getSequence());
             cnt++;
         }
 

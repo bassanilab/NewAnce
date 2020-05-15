@@ -65,22 +65,23 @@ public class UniProtDBTest {
     @Test
     public void parseHeaderTest() {
         String header = ">tr|A0A024R3B9|A0A024R3B9_HUMAN Alpha-crystallin B chain OS=Homo sapiens GN=CRYAB PE=3 SV=1";
-        Map<String,String> headerFieldMap = UniProtDB.parseHeader(header);
+        UniProtDB uniProtDB = new UniProtDB();
+        UniProtProtein protein = (UniProtProtein) uniProtDB.parseHeader(header);
 
-        Assert.assertEquals("A0A024R3B9",headerFieldMap.get("uniProtAC"));
-        Assert.assertEquals("A0A024R3B9_HUMAN",headerFieldMap.get("standardName"));
-        Assert.assertEquals("CRYAB",headerFieldMap.get("geneName"));
-        Assert.assertEquals("Alpha-crystallin B chain OS=Homo sapiens GN=CRYAB PE=3 SV=1",headerFieldMap.get("description"));
-        Assert.assertEquals("tr",headerFieldMap.get("dbFlag"));
+        Assert.assertEquals("A0A024R3B9",protein.getProteinID());
+        Assert.assertEquals("A0A024R3B9_HUMAN",protein.getUniProtName());
+        Assert.assertEquals("CRYAB",protein.getGeneName());
+        Assert.assertEquals("Alpha-crystallin B chain OS=Homo sapiens GN=CRYAB PE=3 SV=1",protein.getDescription());
+        Assert.assertEquals("tr",protein.getDbFlag());
 
         header = ">sp|A0A183|LCE6A_HUMAN Late cornified envelope protein 6A OS=Homo sapiens GN=LCE6A PE=2 SV=1";
-        headerFieldMap = UniProtDB.parseHeader(header);
+        protein = (UniProtProtein)uniProtDB.parseHeader(header);
 
-        Assert.assertEquals("A0A183",headerFieldMap.get("uniProtAC"));
-        Assert.assertEquals("LCE6A_HUMAN",headerFieldMap.get("standardName"));
-        Assert.assertEquals("LCE6A",headerFieldMap.get("geneName"));
-        Assert.assertEquals("Late cornified envelope protein 6A OS=Homo sapiens GN=LCE6A PE=2 SV=1",headerFieldMap.get("description"));
-        Assert.assertEquals("sp",headerFieldMap.get("dbFlag"));
+        Assert.assertEquals("A0A183",protein.getProteinID());
+        Assert.assertEquals("LCE6A_HUMAN",protein.getUniProtName());
+        Assert.assertEquals("LCE6A",protein.getGeneName());
+        Assert.assertEquals("Late cornified envelope protein 6A OS=Homo sapiens GN=LCE6A PE=2 SV=1",protein.getDescription());
+        Assert.assertEquals("sp",protein.getDbFlag());
     }
 
     @Test

@@ -15,13 +15,14 @@ package newance.proteinmatch;
  */
 
 public class PeptideUniProtSequenceMatch {
+
     protected final int start;
     protected final int end;
-    protected final UniProtProtein protein;
+    protected final FastaProtein protein;
     protected final char[] peptide;
 
 
-    public PeptideUniProtSequenceMatch(int start, int end, char[] peptide, UniProtProtein protein) {
+    public PeptideUniProtSequenceMatch(int start, int end, char[] peptide, FastaProtein protein) {
         this.start = start;
         this.end = end;
 
@@ -30,7 +31,7 @@ public class PeptideUniProtSequenceMatch {
     }
 
     public String toString() {
-        return peptide+"\t"+protein.getUniProtAC()+"\t"+start+"\t"+end;
+        return peptide+"\t"+protein.getProteinID()+"\t"+start+"\t"+end;
     }
 
     public int getStart() {
@@ -41,7 +42,7 @@ public class PeptideUniProtSequenceMatch {
         return end;
     }
 
-    public UniProtProtein getProtein() {
+    public FastaProtein getProtein() {
         return protein;
     }
 

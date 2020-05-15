@@ -10,6 +10,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.psmcombiner;
 
+import newance.proteinmatch.VariantProtDB;
 import newance.psmconverter.PeptideSpectrumMatch;
 import newance.util.*;
 import org.apache.commons.cli.*;
@@ -63,16 +64,28 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
 
         long start;
 
+        writeNewAnceInfo();
+        if (params.isWriteParamsFile()) writeParams();
+
         UniProtDB uniProtDB = null;
         if (!params.getUniprotFastaFile().isEmpty()) {
             start = System.currentTimeMillis();
-            System.out.println("Load UniProt sequences from "+params.getUniprotFastaFile()+" ...");
+            System.out.println("Load fasta sequences from "+params.getUniprotFastaFile()+" ...");
             uniProtDB = new UniProtDB(params.getUniprotFastaFile());
-            System.out.println("Loading UniProt sequences ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
+            System.out.println("Loading fasta sequences ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
         }
 
+        VariantProtDB variantProtDB = null;
+        if (!params.getSearchFastaFile().isEmpty()) {
+            start = System.currentTimeMillis();
+            System.out.println("Load fasta sequences from "+params.getSearchFastaFile()+" ...");
+            variantProtDB = new VariantProtDB(params.getSearchFastaFile());
+            System.out.println("Loading fasta sequences ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
+        }
+
+
         System.out.println("Parsing Comet pep.xml files ...");
-        GroupedFDRCalculator groupedFDRCalculator = buildGroupedFDRCalculator(uniProtDB);
+        GroupedFDRCalculator groupedFDRCalculator = buildGroupedFDRCalculator(uniProtDB, variantProtDB);
 
         CometMultiplePepXMLFileConverter cometMultiplePepXMLConverter = new CometMultiplePepXMLFileConverter(params.getCometPsmDir(), params.getCometPsmRegExp(), groupedFDRCalculator, false);
         cometMultiplePepXMLConverter.run();
@@ -99,8 +112,6 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         }
         System.out.println("Grouped global FDR calculation ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
 
-        if (params.isWriteParamsFile()) writeParams();
-
         start = System.currentTimeMillis();
         writePeptideProteinGroupReport(uniProtDB);
         System.out.println("Protein grouping ran in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
@@ -108,7 +119,7 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         return 0;
     }
 
-    protected GroupedFDRCalculator buildGroupedFDRCalculator(UniProtDB uniProtDB) {
+    protected GroupedFDRCalculator buildGroupedFDRCalculator(UniProtDB uniProtDB, VariantProtDB variantProtDB) {
 
         if (params.getGroupingMethod().equals("fasta")) {
             if (params.getProteinGroupMap().isEmpty())
@@ -121,7 +132,7 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
             psmGrouper = new OneGroupGrouper();
         }
 
-        GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper, uniProtDB);
+        GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper, uniProtDB, variantProtDB);
 
         return groupedFDRCalculator;
     }
@@ -348,6 +359,26 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         }
     }
 
+    protected void writeNewAnceInfo() {
+
+        String sepLine = "*************************************************************************************************************************";
+        String newanceInfo = "Running NewAnce Version "+params.getVersion();
+        int gap = (sepLine.length()-4-newanceInfo.length())/2;
+        String gapStr = "**";
+        for (int i=0;i<gap;i++) gapStr += " ";
+        newanceInfo = gapStr + newanceInfo;
+        for (int i=newanceInfo.length();i<sepLine.length()-2;i++) newanceInfo += " ";
+        newanceInfo += "**";
+        System.out.println("");
+        System.out.println(sepLine);
+        System.out.println(newanceInfo);
+        System.out.println(sepLine);
+        System.out.println("");
+        System.out.println("Parameters:");
+        System.out.println(params.toString());
+        System.out.println("");
+    }
+
     protected void createOptions() {
 
         this.cmdLineOpts = new Options();
@@ -368,7 +399,7 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("exclP").required(false).hasArg().longOpt("excludeProts").desc("Regular expression of proteins excluded from analysis. If not set no proteins are excluded.").build());
         cmdLineOpts.addOption(Option.builder("groupF").required(false).hasArg().longOpt("groupProteinFile").desc("Tab file with protein group assignments which will override assignment by groupRE").build());
         cmdLineOpts.addOption(Option.builder("mod").required(false).hasArg().longOpt("modifications").desc("Comma separated list of peptide modifications used in search (e.g. Cysteinyl:C3H5NO2S,Oxidation:O)").build());
-        cmdLineOpts.addOption(Option.builder("seFa").required(false).hasArg().longOpt("searchFastaFile").desc("Fasta file that was used for the search (required for protein grouping export)").build());
+        cmdLineOpts.addOption(Option.builder("seFa").required(false).hasArg().longOpt("searchFastaFile").desc("Fasta file that was used for the search (required for protein grouping export and annotation of variants in the Comet results)").build());
         cmdLineOpts.addOption(Option.builder("upFa").required(false).hasArg().longOpt("uniProtFastaFile").desc("Fasta file with coding or canonical proteins (e.g. UniProt fasta file)").build());
         cmdLineOpts.addOption(Option.builder("ppG").required(false).hasArg(false).longOpt("peptideProteinGrouping").desc("Perform peptide protein grouping export.").build());
         cmdLineOpts.addOption(Option.builder("maxR").required(false).hasArg().longOpt("maxRank").desc("Maximal rank of peptide in list of spectrum matches (rank 1 = best) (default value: 1)").build());
@@ -410,7 +441,6 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         String mqDir = getOptionString(line, "mqD");
         params.add("includeMaxQuant", mqDir.isEmpty()?"false":"true");
         params.add("maxquantPsmDir", getOptionString(line, "mqD"));
-
         params.add("debug", getOptionString(line, "d"));
         params.add("forceHistos", getOptionString(line, "fH"));
         params.add("reportHistos", getOptionString(line, "repH"));

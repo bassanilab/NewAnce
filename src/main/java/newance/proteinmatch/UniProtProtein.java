@@ -11,32 +11,34 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.proteinmatch;
 
-import java.io.Serializable;
 
 /**
  * @author Markus Müller
  */
 
-public class UniProtProtein implements Serializable{
-    final protected String uniProtAC;
+public class UniProtProtein extends FastaProtein {
     final protected String uniProtName;
     final protected String description;
-    final protected char[] sequence;
     final protected String geneName;
     final protected String dbFlag;
 
 
     public UniProtProtein(String uniProtAC, String uniProtName, String description, String geneName, String dbFlag, String sequence) {
-        this.uniProtAC = uniProtAC;
+        super(uniProtAC, sequence);
+
         this.uniProtName = uniProtName;
         this.description = description;
         this.geneName = geneName;
         this.dbFlag = dbFlag;
-        this.sequence = sequence.toCharArray();
     }
 
-    public String getUniProtAC() {
-        return uniProtAC;
+    public UniProtProtein(String uniProtAC, String uniProtName, String description, String geneName, String dbFlag) {
+        super(uniProtAC);
+
+        this.uniProtName = uniProtName;
+        this.description = description;
+        this.geneName = geneName;
+        this.dbFlag = dbFlag;
     }
 
     public String getUniProtName() {
@@ -47,12 +49,6 @@ public class UniProtProtein implements Serializable{
         return description;
     }
 
-    public String getSequence() {
-        return new String(sequence);
-    }
-
-    public char[] getCharArray() { return sequence; }
-
     public String getGeneName() {
         return geneName;
     }
@@ -61,10 +57,10 @@ public class UniProtProtein implements Serializable{
         return dbFlag;
     }
 
-    public String getFastaUniProtName() {
+    public String toString() {
         if (dbFlag.equals("sp") || dbFlag.equals("tr"))
-            return dbFlag+"|"+uniProtAC+"|"+uniProtName;
+            return dbFlag+"|"+proteinID+"|"+uniProtName;
         else
-            return uniProtAC;
+            return proteinID;
     }
 }

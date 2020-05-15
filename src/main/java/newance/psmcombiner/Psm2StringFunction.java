@@ -67,10 +67,10 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
         if (tabStringMode == TabStringMode.COMET) {
             if (groupedFDRCalculator != null)
                 return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
-                        "IsVariant\tVariantPosition\tWTAA\tIsDecoy\tRank\tXCorr\tDeltaCn\tSpScore\tExpect\tmassdiff\ttot_num_ions\tnum_matched_ions\tlFDR\tGroup\tpassFDR";
+                        "IsVariant\tVariantPosition\tWTAA\tVariantID\tIsDecoy\tRank\tXCorr\tDeltaCn\tSpScore\tExpect\tmassdiff\ttot_num_ions\tnum_matched_ions\tlFDR\tGroup\tpassFDR";
             else
                 return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
-                        "IsVariant\tVariantPosition\tWTAA\tIsDecoy\tRank\tXCorr\tDeltaCn\tSpScore\tExpect\tmassdiff\ttot_num_ions\tnum_matched_ions";
+                        "IsVariant\tVariantPosition\tWTAA\tVariantID\tIsDecoy\tRank\tXCorr\tDeltaCn\tSpScore\tExpect\tmassdiff\ttot_num_ions\tnum_matched_ions";
         }
         else if (tabStringMode == TabStringMode.MAXQUANT)
             return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
@@ -78,11 +78,11 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
         else {
             if (groupedFDRCalculator != null)
                 return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
-                        "IsVariant\tVariantPosition\tWTAA\tIsDecoy\tComet.Rank\tComet.XCorr\tComet.DeltaCn\tComet.SpScore\tComet.Expect\tComet.massdiff\tComet.tot_num_ions\t" +
+                        "IsVariant\tVariantPosition\tWTAA\tVariantID\tIsDecoy\tComet.Rank\tComet.XCorr\tComet.DeltaCn\tComet.SpScore\tComet.Expect\tComet.massdiff\tComet.tot_num_ions\t" +
                         "Comet.num_matched_ions\tComet.lFDR\tMaxQuant.Mass.Error[ppm]\tMaxQuant.Score\tMaxQuant.Delta.score\tMaxQuant.Localization.prob";
             else
                 return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
-                        "IsVariant\tVariantPosition\tWTAA\tIsDecoy\tComet.Rank\tComet.XCorr\tComet.DeltaCn\tComet.SpScore\tComet.Expect\tComet.massdiff\tComet.tot_num_ions\t" +
+                        "IsVariant\tVariantPosition\tWTAA\tVariantID\tIsDecoy\tComet.Rank\tComet.XCorr\tComet.DeltaCn\tComet.SpScore\tComet.Expect\tComet.massdiff\tComet.tot_num_ions\t" +
                         "Comet.num_matched_ions\tMaxQuant.Mass.Error[ppm]\tMaxQuant.Score\tMaxQuant.Delta.score\tMaxQuant.Localization.prob";
         }
     }
@@ -209,13 +209,14 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
     }
 
     private String getVariantString(PeptideSpectrumMatch psm) {
-        if (!psm.isVariant()) return "false\tNA\tNA";
+        if (!psm.isVariant()) return "false\tNA\tNA\tNA";
 
         String variantStr = "true";
 
         String posStr = "";
         for (Integer pos : psm.getVariantPositions()) {
-            posStr += (posStr.isEmpty())?(pos+1):","+(pos+1);
+
+            posStr += (posStr.isEmpty())?(pos.intValue()+1):","+(pos.intValue()+1);
         }
 
         String wtaaStr = "";
@@ -223,7 +224,7 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
             wtaaStr += (wtaaStr.isEmpty())?aa:","+aa;
         }
 
-        return variantStr+"\t"+posStr+"\t"+wtaaStr;
+        return variantStr+"\t"+posStr+"\t"+wtaaStr+"\t"+psm.getVariantAnnots();
     }
 
 }

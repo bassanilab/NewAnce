@@ -11,11 +11,11 @@ You should have received a copy of the GNU General Public License along with thi
 package newance.psmconverter;
 
 import gnu.trove.map.TObjectDoubleMap;
+import newance.mzjava.mol.AminoAcid;
 import newance.mzjava.mol.Peptide;
+import newance.proteinmatch.VariantInfo;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Markus Müller
@@ -36,6 +36,7 @@ public class PeptideSpectrumMatch {
     private final boolean isVariant;
     private final List<Integer> variantPositions;
     private final List<Character> variantWTAAs;
+    private Set<String> variantAnnots;
     private String group;
 
     public PeptideSpectrumMatch(String spectrumFile, Peptide peptide, Set<String> proteinAccs, TObjectDoubleMap<String> scoreMap, int charge, int rank, float retentionTime,
@@ -54,6 +55,7 @@ public class PeptideSpectrumMatch {
         this.isVariant = isVariant;
         this.variantPositions = variantPositions;
         this.variantWTAAs = variantWTAAs;
+        this.variantAnnots = null;
         this.group = "";
     }
 
@@ -85,6 +87,18 @@ public class PeptideSpectrumMatch {
     public String toSymbolString() {
 
         return peptide.toSymbolString();
+    }
+
+    public String getWTSequence() {
+        if (!isVariant) return peptide.toSymbolString();
+
+        char[] aas = peptide.toSymbolString().toCharArray();
+
+        for (int i=0;i<variantPositions.size();i++) {
+            aas[variantPositions.get(i)] = variantWTAAs.get(i);
+        }
+
+        return new String(aas);
     }
 
     public boolean isDecoy() {
@@ -128,11 +142,28 @@ public class PeptideSpectrumMatch {
         return variantWTAAs;
     }
 
+    public Set<String> getVariantAnnots() { return variantAnnots; }
+
+    public void setVariantAnnots(Set<String> variantAnnots) {
+        this.variantAnnots = variantAnnots;
+    }
+
     public String getGroup() {
         return group;
     }
 
     public void setGroup(String group) {
         this.group = group;
+    }
+
+    public void addVariantAnnot(int start, VariantInfo variantInfo) {
+        if (!isVariant) return;
+
+        if (variantAnnots==null) variantAnnots = new HashSet<>();
+
+        for (int i=0; i<variantPositions.size();i++) {
+            String annot = variantInfo.getVariantInfo(start, peptide.getSymbol(variantPositions.get(i)).getSymbol().charAt(0),variantPositions.get(i));
+            if (!annot.isEmpty()) variantAnnots.add(annot);
+        }
     }
 }

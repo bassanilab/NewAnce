@@ -41,7 +41,7 @@ public abstract class MultiplePsmFileConverter {
 
         if (uniProtDB==null) return;
 
-        psms.forEach(100000,new AddUniProtIds2Psm(uniProtDB));
+        psms.forEach(100000,new AddUniProtIDs2Psm(uniProtDB));
     }
 
     public void reportDBProteins() {

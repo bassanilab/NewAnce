@@ -11,7 +11,9 @@ You should have received a copy of the GNU General Public License along with thi
 package newance.psmconverter;
 
 import newance.proteinmatch.PeptideUniProtSequenceMatch;
-import newance.proteinmatch.UniProtDB;
+import newance.proteinmatch.VariantInfo;
+import newance.proteinmatch.VariantProtDB;
+import newance.proteinmatch.VariantProtein;
 
 import java.util.HashSet;
 import java.util.List;
@@ -23,48 +25,26 @@ import java.util.function.BiConsumer;
  * @author Markus Müller
  */
 
-public class AddUniProtIds2Psm implements BiConsumer<String,List<PeptideSpectrumMatch>> {
+public class AddVariantIDs2Psm implements BiConsumer<String,List<PeptideSpectrumMatch>> {
 
-    private final UniProtDB uniProtDB;
+    private final VariantProtDB variantProtDB;
 
-    public AddUniProtIds2Psm(UniProtDB uniProtDB) {
-        this.uniProtDB = uniProtDB;
+    public AddVariantIDs2Psm(VariantProtDB variantProtDB) {
+        this.variantProtDB = variantProtDB;
     }
 
     public void add(PeptideSpectrumMatch psm) {
 
-        String peptideStr = psm.toSymbolString();
+        if (!psm.isVariant() || psm.isDecoy()) return;
 
-        if (psm.isDecoy()) {
-            peptideStr = reverse(peptideStr);
-        }
-
-        Map<String, List<PeptideUniProtSequenceMatch>> matches = uniProtDB.findPeptide(peptideStr);
-
-
-        Set<String> protNames = new HashSet<>();
+        Map<String, List<PeptideUniProtSequenceMatch>> matches = variantProtDB.findPeptide(psm.getWTSequence());
 
         for (String ac : matches.keySet()) {
             for (PeptideUniProtSequenceMatch peptideMatch : matches.get(ac)) {
-                String proteinStr = peptideMatch.getProtein().getFastaUniProtName();
-                if (psm.isDecoy()) proteinStr = "DECOY_"+proteinStr;
-                protNames.add(proteinStr);
+                VariantInfo variantInfo = ((VariantProtein)peptideMatch.getProtein()).getVariantInfo();
+                psm.addVariantAnnot(peptideMatch.getStart(), variantInfo);
             }
         }
-
-        psm.addProteinAcc(protNames);
-    }
-
-    protected static String reverse(String seq) {
-
-        char[] array = seq.toCharArray();
-        for (int i = 0; i<array.length/2; i++) {
-            char tmp = array[i];
-            array[i] = array[array.length-1-i];
-            array[array.length-1-i] = tmp;
-        }
-
-        return new String(array);
     }
 
     @Override

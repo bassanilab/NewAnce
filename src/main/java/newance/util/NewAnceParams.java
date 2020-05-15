@@ -63,8 +63,6 @@ public class NewAnceParams implements Serializable {
     private String groupingMethod = "none";
     private List<String> groupNames = new ArrayList<>();
     private List<Pattern> groupRegExs = new ArrayList<>();
-    private String protCodingGroup = "prot";
-    private String noncanonicalGroup = "nonc";
     private Pattern spectrumRegExp = null;
     private Pattern codingProtRegExp = null;
     private String proteinGroupMapFile = "";
@@ -90,7 +88,7 @@ public class NewAnceParams implements Serializable {
 
     private String fdrControlMethod = "combined";
 
-    private String version = "version 1.6.0";
+    private String version = "1.6.1";
 
     private String cometPsmDir = "";
     private String maxquantPsmDir = "";
@@ -135,7 +133,7 @@ public class NewAnceParams implements Serializable {
     public String toString() {
         String res = "";
 
-        res +=  "modifications="+Arrays.asList(modifications).toString()+"\n";
+        res +=  "modifications="+iterableModifToString(modifications)+"\n";
         res +=  "modifMatchMassTol="+modifMatchMassTol+"\n";
         res +=  "cometDecoyProtPrefix="+ cometDecoyProtPrefix +"\n";
         res +=  "excludedProtPattern="+((excludedProtPattern==null)?"":excludedProtPattern.toString())+"\n";
@@ -148,8 +146,6 @@ public class NewAnceParams implements Serializable {
         res +=  "smoothDegree="+smoothDegree+"\n";
         res +=  "nrThreads="+nrThreads+"\n";
         res +=  "fdrCometThreshold="+fdrCometThreshold+"\n";
-        res +=  "protCodingGroup="+ protCodingGroup +"\n";
-        res +=  "noncanonicalGroup="+ noncanonicalGroup +"\n";
         res +=  "spectrumRegExp="+spectrumRegExp+"\n";
         res +=  "codingProtRegExp="+ codingProtRegExp +"\n";
         res +=  "proteinGroupMapFile="+ proteinGroupMapFile +"\n";
@@ -183,10 +179,9 @@ public class NewAnceParams implements Serializable {
         res +=  "maxQuantMainScoreMinValue="+maxQuantMainScoreMinValue+"\n";
         res +=  "cometMainScoreMinValue="+cometMainScoreMinValue+"\n";
         res +=  "groupingMethod="+groupingMethod+"\n";
-        res +=  "groupNames="+groupNames+"\n";
-        res +=  "groupRegExs="+groupRegExs+"\n";
+        res +=  "groupNames="+iterableStringToString(groupNames)+"\n";
+        res +=  "groupRegExs="+iterablePatternToString(groupRegExs)+"\n";
         res +=  "writeCometTabFile="+writeCometTabFile+"\n";
-
         res +=  "writeParamsFile="+writeParamsFile+"\n";
 
         return res;
@@ -320,23 +315,6 @@ public class NewAnceParams implements Serializable {
             codingProtRegExp = getPatternValue("codingProtRegExp",variableValueMap.get("codingProtRegExp"));
             groupRegExs.add(codingProtRegExp);
             groupingMethod = "fasta";
-        }
-
-        // leave this for back compatibility
-        if (codingProtRegExp !=null) {
-            if (variableValueMap.containsKey("protCodingGroup")) {
-                protCodingGroup = getStringValue("protCodingGroup",variableValueMap.get("protCodingGroup"));
-                groupNames.add(protCodingGroup);
-            } else {
-                throw new RuntimeException("No name for protein coding group provided. Abort");
-            }
-
-            if (variableValueMap.containsKey("noncanonicalGroup")) {
-                noncanonicalGroup = getStringValue("noncanonicalGroup",variableValueMap.get("noncanonicalGroup"));
-                groupNames.add(noncanonicalGroup);
-            } else {
-                throw new RuntimeException("No name for non-canonical group provided. Abort");
-            }
         }
 
         if (variableValueMap.containsKey("spectrumRegExp")) {
@@ -708,6 +686,39 @@ public class NewAnceParams implements Serializable {
         return false;
     }
 
+    protected String iterableStringToString(Iterable<String> iterable) {
+        String outStr = "[";
+
+        for (String s : iterable) {
+            outStr += (outStr.equals("["))?s:","+s;
+        }
+        outStr += "]";
+
+        return outStr;
+    }
+
+    protected String iterablePatternToString(Iterable<Pattern> iterable) {
+        String outStr = "[";
+
+        for (Pattern p : iterable) {
+            outStr += (outStr.equals("["))?p.toString():","+p.toString();
+        }
+        outStr += "]";
+
+        return outStr;
+    }
+
+    protected String iterableModifToString(Iterable<Modification> iterable) {
+        String outStr = "[";
+
+        for (Modification m : iterable) {
+            outStr += (outStr.equals("["))?m.toString():","+m.toString();
+        }
+        outStr += "]";
+
+        return outStr;
+    }
+
     protected static Map<String,Set<String>> readProteinGroupMapFile(String fileName) {
 
         Map<String,Set<String>> proteinGroupMap = new HashMap<>();
@@ -780,14 +791,6 @@ public class NewAnceParams implements Serializable {
 
     public double getFdrCometThreshold() {
         return fdrCometThreshold;
-    }
-
-    public String getProtCodingGroup() {
-        return protCodingGroup;
-    }
-
-    public String getNoncanonicalGroup() {
-        return noncanonicalGroup;
     }
 
     public Pattern getSpectrumRegExp() {

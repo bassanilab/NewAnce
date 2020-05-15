@@ -91,6 +91,7 @@ public class CometMaxQuantPsmMerger implements BiConsumer<String, List<PeptideSp
                 scoreMap,cometPsm.getCharge(),cometPsm.getRank(), cometPsm.getRetentionTime(), cometPsm.getScanNr(), cometPsm.getNeutralPrecMass(),
                 cometPsm.isDecoy(), cometPsm.isVariant(), cometPsm.getVariantPositions(), cometPsm.getVariantWTAAs());
 
+        psm.setVariantAnnots(cometPsm.getVariantAnnots());
         psm.setGroup(cometPsm.getGroup());
 
         return psm;

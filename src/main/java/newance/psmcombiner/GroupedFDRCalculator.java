@@ -11,7 +11,9 @@ You should have received a copy of the GNU General Public License along with thi
 package newance.psmcombiner;
 
 import newance.proteinmatch.UniProtDB;
-import newance.psmconverter.AddUniProtIds2Psm;
+import newance.proteinmatch.VariantProtDB;
+import newance.psmconverter.AddVariantIDs2Psm;
+import newance.psmconverter.AddUniProtIDs2Psm;
 import newance.psmconverter.PeptideSpectrumMatch;
 import newance.util.NewAnceParams;
 import newance.util.PsmGrouper;
@@ -30,7 +32,8 @@ public class GroupedFDRCalculator {
     protected final Map<String, HistogramTree> histogramMap;
     protected final PsmGrouper psmGrouper;
     protected final int[] nrBins;
-    protected final AddUniProtIds2Psm addUniProtIds2Psm;
+    protected final AddUniProtIDs2Psm addUniProtIDs2Psm;
+    protected final AddVariantIDs2Psm addVariantIDs2Psm;
 
     public GroupedFDRCalculator(PsmGrouper psmGrouper) {
 
@@ -46,7 +49,8 @@ public class GroupedFDRCalculator {
         this.histogramMap = new HashMap<>();
         this.histogramMap.put("root",this.histogramTreeRoot);
         this.psmGrouper = psmGrouper;
-        this.addUniProtIds2Psm = null;
+        this.addUniProtIDs2Psm = null;
+        this.addVariantIDs2Psm = null;
 
         buildTree();
     }
@@ -66,9 +70,38 @@ public class GroupedFDRCalculator {
         this.histogramMap.put("root",this.histogramTreeRoot);
         this.psmGrouper = psmGrouper;
         if (uniProtDB!=null)
-            this.addUniProtIds2Psm = new AddUniProtIds2Psm(uniProtDB);
+            this.addUniProtIDs2Psm = new AddUniProtIDs2Psm(uniProtDB);
         else
-            this.addUniProtIds2Psm = null;
+            this.addUniProtIDs2Psm = null;
+
+        this.addVariantIDs2Psm = null;
+
+        buildTree();
+    }
+
+    public GroupedFDRCalculator(PsmGrouper psmGrouper, UniProtDB uniProtDB, VariantProtDB variantProtDB) {
+
+        this.nrBins = new int[3];
+        nrBins[0] = NewAnceParams.getInstance().getNrXCorrBins();
+        nrBins[1] = NewAnceParams.getInstance().getNrDeltaCnBins();
+        nrBins[2] = NewAnceParams.getInstance().getNrSpScoreBins();
+
+        CometScoreHistogram cometScoreHistogram = new CometScoreHistogram(nrBins);
+
+        this.histogramTreeRoot = new HistogramTree(cometScoreHistogram, "root","");
+
+        this.histogramMap = new HashMap<>();
+        this.histogramMap.put("root",this.histogramTreeRoot);
+        this.psmGrouper = psmGrouper;
+        if (uniProtDB!=null)
+            this.addUniProtIDs2Psm = new AddUniProtIDs2Psm(uniProtDB);
+        else
+            this.addUniProtIDs2Psm = null;
+
+        if (variantProtDB!=null)
+            this.addVariantIDs2Psm = new AddVariantIDs2Psm(variantProtDB);
+        else
+            this.addVariantIDs2Psm = null;
 
         buildTree();
     }
@@ -87,7 +120,8 @@ public class GroupedFDRCalculator {
         this.histogramMap = new HashMap<>();
         this.histogramMap.put("root",this.histogramTreeRoot);
         this.psmGrouper = null;
-        this.addUniProtIds2Psm = null;
+        this.addUniProtIDs2Psm = null;
+        this.addVariantIDs2Psm = null;
 
         buildTree();
     }
@@ -136,7 +170,8 @@ public class GroupedFDRCalculator {
     public void addAll(ConcurrentHashMap<String,List<PeptideSpectrumMatch>> psms) {
 
         for (String specID : psms.keySet()) {
-            if (addUniProtIds2Psm!=null) addUniProtIds2Psm.accept(specID, psms.get(specID));
+            if (addUniProtIDs2Psm !=null) addUniProtIDs2Psm.accept(specID, psms.get(specID));
+            if (addVariantIDs2Psm !=null) addVariantIDs2Psm.accept(specID, psms.get(specID));
 
             for (PeptideSpectrumMatch psm : psms.get(specID)) {
                 add(psm);
