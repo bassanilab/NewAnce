@@ -355,9 +355,13 @@ NewAnce parameters are read from the specified parameter file.
 ```
 
 ```
--seFa,--searchFastaFile <arg>      Fasta file that was used for the search (required for protein grouping export)
+-seFa,--searchFastaFile <arg>      Fasta file that was used for the search (required for protein grouping export and 
+                                   annotation of variants in the Comet results)
 
-Fasta file that was used for Comet search. This is required if the protein grouping option -ppG is set.
+Fasta file that was used for Comet search. This is required if the protein grouping option -ppG is set. Also, for variants 
+defined in the PEFF format in the fasta header (e.g \VariantSimple=(141|A|rs75062661_0) ) Comet does not report the comment 
+field (rs75062661_0) in the pepxml file. If the -seFa option is provided, NewAnce parses the search fasta file and retrieves 
+the variant annotation and adds it to the results files.
 ```
 
 ```
