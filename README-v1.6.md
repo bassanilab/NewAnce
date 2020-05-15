@@ -72,7 +72,8 @@ usage: newance.psmcombiner.CometMaxQuantCombiner
  -readH,--readHistograms <arg>      Directory where histograms files are placed.
  -repH,--reportHistogram            Report histograms to text files
  -rP,--readParamFile <arg>          Name of file from which parameters should to read.
- -seFa,--searchFastaFile <arg>      Fasta file that was used for the search (required for protein grouping export)
+ -seFa,--searchFastaFile <arg>      Fasta file that was used for the search (required for protein grouping export and 
+                                    annotation of variants in the Comet results)
  -smD,--smoothDegree <arg>          Degree of smoothing (0: no smoothing, n: n x smoothing) (default value 1)
  -spRE,--spectrumFilter <arg>       If this option is set, only spectrum ids that match this regexp are used.  If not set no
                                     filtering is performed.
