@@ -72,7 +72,8 @@ usage: newance.psmcombiner.CometMaxQuantCombiner
  -readH,--readHistograms <arg>      Directory where histograms files are placed.
  -repH,--reportHistogram            Report histograms to text files
  -rP,--readParamFile <arg>          Name of file from which parameters should to read.
- -seFa,--searchFastaFile <arg>      Fasta file that was used for the search (required for protein grouping export)
+ -seFa,--searchFastaFile <arg>      Fasta file that was used for the search (required for protein grouping export and 
+                                    annotation of variants in the Comet results)
  -smD,--smoothDegree <arg>          Degree of smoothing (0: no smoothing, n: n x smoothing) (default value 1)
  -spRE,--spectrumFilter <arg>       If this option is set, only spectrum ids that match this regexp are used.  If not set no
                                     filtering is performed.
@@ -354,9 +355,13 @@ NewAnce parameters are read from the specified parameter file.
 ```
 
 ```
--seFa,--searchFastaFile <arg>      Fasta file that was used for the search (required for protein grouping export)
+-seFa,--searchFastaFile <arg>      Fasta file that was used for the search (required for protein grouping export and 
+                                   annotation of variants in the Comet results)
 
-Fasta file that was used for Comet search. This is required if the protein grouping option -ppG is set.
+Fasta file that was used for Comet search. This is required if the protein grouping option -ppG is set. Also, for variants 
+defined in the PEFF format in the fasta header (e.g \VariantSimple=(141|A|rs75062661_0) ) Comet does not report the comment 
+field (rs75062661_0) in the pepxml file. If the -seFa option is provided, NewAnce parses the search fasta file and retrieves 
+the variant annotation and adds it to the results files.
 ```
 
 ```
