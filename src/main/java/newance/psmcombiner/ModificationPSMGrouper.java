@@ -33,23 +33,25 @@ public class ModificationPSMGrouper extends PsmGrouper {
 
         ModificationList mods = psm.getPeptide().getModifications(ModAttachment.sideChainSet);
 
+        String modifGrp = "None";
         for (Modification mod : mods) {
 
             if (mod.getLabel().equalsIgnoreCase("phospho"))
-                return "Phospho_STY";
+                modifGrp = "Phospho_STY";
             else if (mod.getLabel().equalsIgnoreCase("cysteinyl"))
-                return "Cysteinyl_C";
+                modifGrp = "Cysteinyl_C";
             else if (mod.getLabel().equalsIgnoreCase("oxidation"))
-                return "Oxidation_M";
+                modifGrp = "Oxidation_M";
             else if (mod.getLabel().equalsIgnoreCase("carbamidomethyl"))
-                return "CAM_C";
+                modifGrp = "CAM_C";
             else if (mod.getLabel().equalsIgnoreCase("deamidated"))
-                return "Deamid_NQ";
+                modifGrp = "Deamid_NQ";
             else if (mod.getLabel().equalsIgnoreCase("acetyl"))
-                return "Acetyl_Nt";
+                modifGrp = "Acetyl_Nt";
         }
 
-        return "None";
+        psm.setGroup(modifGrp);
+        return modifGrp;
     }
 
     @Override

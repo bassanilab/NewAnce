@@ -31,7 +31,9 @@ public class OneGroupGrouper extends PsmGrouper {
     @Override
     public String apply(String specID, PeptideSpectrumMatch psm) {
 
-        return groups.get(0);
+        String grp = groups.get(0);
+        psm.setGroup(grp);
+        return grp;
     }
 
     @Override
