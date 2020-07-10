@@ -13,152 +13,68 @@ package newance.psmcombiner;
 import newance.mzjava.mol.Peptide;
 import newance.mzjava.mol.modification.ModAttachment;
 import newance.mzjava.mol.modification.Modification;
+import newance.proteinmatch.SequenceVariant;
 import newance.psmconverter.PeptideSpectrumMatch;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiFunction;
 
 /**
  * @author Markus Müller
  */
 
-public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectrumMatch>, String> {
+public abstract class Psm2StringFunction implements BiFunction<String, List<PeptideSpectrumMatch>, String> {
 
-    public enum TabStringMode {COMBINED, COMET, MAXQUANT};
-
-    protected final TabStringMode tabStringMode;
-    protected final GroupedFDRCalculator groupedFDRCalculator;
-    protected final Map<String, Float> grpThresholdMap;
-
-
-    public Psm2StringFunction(TabStringMode tabStringMode, GroupedFDRCalculator groupedFDRCalculator, Map<String, Float> grpThresholdMap) {
-        this.tabStringMode = tabStringMode;
-        this.groupedFDRCalculator = groupedFDRCalculator;
-        this.grpThresholdMap = grpThresholdMap;
-    }
-
-    public Psm2StringFunction(TabStringMode tabStringMode, GroupedFDRCalculator groupedFDRCalculator) {
-        this.tabStringMode = tabStringMode;
-        this.groupedFDRCalculator = groupedFDRCalculator;
-        this.grpThresholdMap = null;
-    }
-
-    public Psm2StringFunction(TabStringMode tabStringMode) {
-        this.tabStringMode = tabStringMode;
-        this.groupedFDRCalculator = null;
-        this.grpThresholdMap = null;
-    }
+    protected abstract String getScoreString(PeptideSpectrumMatch psm);
+    protected abstract String getScoreHeader();
 
     @Override
     public String apply(String specID, List<PeptideSpectrumMatch> peptideSpectrumMatchData) {
 
         String txt = "";
         for (PeptideSpectrumMatch psm : peptideSpectrumMatchData) {
-            txt += getTabString(specID, psm);
+            if (!txt.isEmpty()) txt += "\n";
+            txt += getSpecIDString(specID, psm) + "\t" + getPSMString(psm) + "\t" + getScoreString(psm);
         }
 
         return txt;
     }
 
-
     public String getHeader() {
-
-        if (tabStringMode == TabStringMode.COMET) {
-            if (groupedFDRCalculator != null)
-                return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
-                        "IsVariant\tVariantPosition\tWTAA\tVariantID\tIsDecoy\tRank\tXCorr\tDeltaCn\tSpScore\tExpect\tmassdiff\ttot_num_ions\tnum_matched_ions\tlFDR\tGroup\tpassFDR";
-            else
-                return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
-                        "IsVariant\tVariantPosition\tWTAA\tVariantID\tIsDecoy\tRank\tXCorr\tDeltaCn\tSpScore\tExpect\tmassdiff\ttot_num_ions\tnum_matched_ions";
-        }
-        else if (tabStringMode == TabStringMode.MAXQUANT)
-            return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
-                    "IsVariant\tIsDecoy\tRank\tMass.Error[ppm]\tScore\tDelta.score\tLocalization.prob";
-        else {
-            if (groupedFDRCalculator != null)
-                return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
-                        "IsVariant\tVariantPosition\tWTAA\tVariantID\tIsDecoy\tComet.Rank\tComet.XCorr\tComet.DeltaCn\tComet.SpScore\tComet.Expect\tComet.massdiff\tComet.tot_num_ions\t" +
-                        "Comet.num_matched_ions\tComet.lFDR\tMaxQuant.Mass.Error[ppm]\tMaxQuant.Score\tMaxQuant.Delta.score\tMaxQuant.Localization.prob";
-            else
-                return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass\tPeptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\t" +
-                        "IsVariant\tVariantPosition\tWTAA\tVariantID\tIsDecoy\tComet.Rank\tComet.XCorr\tComet.DeltaCn\tComet.SpScore\tComet.Expect\tComet.massdiff\tComet.tot_num_ions\t" +
-                        "Comet.num_matched_ions\tMaxQuant.Mass.Error[ppm]\tMaxQuant.Score\tMaxQuant.Delta.score\tMaxQuant.Localization.prob";
-        }
+        return getSpecIDHeader()+"\t"+getPSMHeader()+"\t"+getScoreHeader();
     }
 
-    public String getTabString(String specID, PeptideSpectrumMatch psm) {
+    protected String getSpecIDHeader() {
+
+        return "Spectrum\tScanNr\tCharge\tRT\tNeutralMass";
+    }
+
+    protected String getPSMHeader() {
+        return "Peptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\tIsVariant\t" +
+                "VariantStart\tVariantEnd\tVariantSeq\tVariantID\tWTSeq\tIsDecoy\tRank";
+    }
+
+    protected String getSpecIDString(String specID, PeptideSpectrumMatch psm) {
 
         String rt = String.format("%.5f",psm.getRetentionTime());
         String mass = String.format("%.5f",psm.getNeutralPrecMass());
 
-        if (tabStringMode == TabStringMode.COMET)
-            return specID+"\t"+psm.getScanNr()+"\t"+psm.getCharge()+"\t"+rt+"\t"+mass+"\t"+
-                    getCometString(psm);
-        if (tabStringMode == TabStringMode.MAXQUANT)
-            return specID+"\t"+psm.getScanNr()+"\t"+psm.getCharge()+"\t"+rt+"\t"+mass+"\t"+
-                    getMaxQuantString(psm);
-        else
-            return specID+"\t"+psm.getScanNr()+"\t"+psm.getCharge()+"\t"+rt+"\t"+mass+"\t"+
-                    getCometCombString(psm)+"\t"+getMaxQuantCombString(psm);
+        return specID+"\t"+psm.getScanNr()+"\t"+psm.getCharge()+"\t"+rt+"\t"+mass;
 
     }
 
-    protected String getCometCombString(PeptideSpectrumMatch psm) {
+    protected String getPSMString(PeptideSpectrumMatch psm) {
 
-        String protACs = psm.getProteinAcc().toString();
-        int rank = (int) psm.getScore("rank");
-        String lfdrStr = (groupedFDRCalculator==null)?"":String.format("\t%.5f",groupedFDRCalculator.getLocalFDR(psm));
-        String expectStr = String.format("%.5f",psm.getScore("expect"));
         Peptide peptide = psm.getPeptide();
+        String protACs = psm.getProteinIDs().toString();
+        int rank = (int) psm.getScore("rank");
         String pepMass = String.format("%.5f",peptide.getMolecularMass());
         String modifString = getModifString(peptide);
         String variantString = getVariantString(psm);
 
-        return  psm.getPeptide().toString()+"\t"+psm.getPeptide().toSymbolString()+"\t"+pepMass+"\t"+modifString+"\t"+protACs+"\t"+
-                variantString+"\t"+ psm.isDecoy()+"\t"+rank+"\t"+ psm.getScore("xcorr")+"\t"+psm.getScore("deltacn")+"\t"+
-                psm.getScore("spscore")+"\t"+expectStr+"\t+"+ psm.getScore("mass_diff")+"\t"+(int)psm.getScore("tot_num_ions")+"\t"+
-                (int)psm.getScore("matched_num_ions") + lfdrStr; // no tab before lfdrStr
-    }
+        return  peptide.toString()+"\t"+peptide.toSymbolString()+"\t"+pepMass+"\t"+modifString+"\t"+protACs+"\t"+
+                variantString+"\t"+psm.isDecoy()+"\t"+ rank;
 
-    protected String getMaxQuantCombString(PeptideSpectrumMatch psm) {
-
-        return psm.getScore("Mass Error [ppm]")+"\t"+psm.getScore("Score")+"\t"+psm.getScore("Delta score")+"\t"+
-                psm.getScore("Localization prob");
-    }
-
-    protected String getCometString(PeptideSpectrumMatch psm) {
-
-        String protACs = psm.getProteinAcc().toString();
-        int rank = (int) psm.getScore("rank");
-        float lfdr = groupedFDRCalculator.getLocalFDR(psm);
-        String lfdrStr = (groupedFDRCalculator==null)?"":String.format("\t%.5f",lfdr);
-        String expectStr = String.format("%.5f",psm.getScore("expect"));
-        Peptide peptide = psm.getPeptide();
-        String pepMass = String.format("%.5f",peptide.getMolecularMass());
-        String modifString = getModifString(peptide);
-        String variantString = getVariantString(psm);
-        String pass = "NA";
-        if (grpThresholdMap!=null) pass = (lfdr<=grpThresholdMap.get(psm.getGroup()))?"true":"false";
-
-        return  psm.getPeptide().toString()+"\t"+psm.getPeptide().toSymbolString()+"\t"+pepMass+"\t"+modifString+"\t"+protACs+"\t"+variantString+"\t"+psm.isDecoy()+"\t"+
-                rank+"\t"+psm.getScore("xcorr")+"\t"+psm.getScore("deltacn")+"\t"+psm.getScore("spscore")+"\t"+expectStr+"\t+" + // no tab before lfdrStr
-                psm.getScore("mass_diff")+"\t"+(int)psm.getScore("tot_num_ions")+"\t"+(int)psm.getScore("matched_num_ions")+lfdrStr+"\t"+psm.getGroup()+"\t"+pass;
-
-    }
-
-    protected String getMaxQuantString(PeptideSpectrumMatch psm) {
-
-        String protACs = psm.getProteinAcc().toString();
-        boolean isVariant = (protACs.contains("variant__"));
-        int rank = (int) psm.getScore("rank");
-        Peptide peptide = psm.getPeptide();
-        String pepMass = String.format("%.5f",peptide.getMolecularMass());
-        String modifString = getModifString(peptide);
-
-        return  psm.getPeptide().toString()+"\t"+psm.getPeptide().toSymbolString()+"\t"+pepMass+"\t"+modifString+"\t"+protACs+"\t"+isVariant+"\t"+psm.isDecoy()+"\t"+
-                rank+"\t"+psm.getScore("Mass Error [ppm]")+"\t"+psm.getScore("Score")+"\t"+psm.getScore("Delta score")+"\t"+
-                psm.getScore("Localization prob");
     }
 
     private String getModifString(Peptide peptide)  {
@@ -209,22 +125,24 @@ public class Psm2StringFunction implements BiFunction<String, List<PeptideSpectr
     }
 
     private String getVariantString(PeptideSpectrumMatch psm) {
-        if (!psm.isVariant()) return "false\tNA\tNA\tNA";
 
-        String variantStr = "true";
+        String wtSeqStr = psm.getWtSequence();
+        if (!psm.isVariant()) return "false\tNA\tNA\tNA\tNA\t"+wtSeqStr;
 
-        String posStr = "";
-        for (Integer pos : psm.getVariantPositions()) {
+        String posStartStr = "";
+        String posEndStr = "";
+        String mutSeqStr = "";
+        String annotStr = "";
 
-            posStr += (posStr.isEmpty())?(pos.intValue()+1):","+(pos.intValue()+1);
+        for (SequenceVariant variant : psm.getVariants()) {
+
+            posStartStr += (posStartStr.isEmpty())?(variant.getStartWT()+1):","+(variant.getStartWT()+1);
+            posEndStr += (posEndStr.isEmpty())?(variant.getEndWT()+1):","+(variant.getEndWT()+1);
+            mutSeqStr += (mutSeqStr.isEmpty())?variant.getMutatedSequence():","+variant.getMutatedSequence();
+            annotStr += (annotStr.isEmpty())?variant.getInfo():","+variant.getInfo();
         }
 
-        String wtaaStr = "";
-        for (Character aa : psm.getVariantWTAAs()) {
-            wtaaStr += (wtaaStr.isEmpty())?aa:","+aa;
-        }
-
-        return variantStr+"\t"+posStr+"\t"+wtaaStr+"\t"+psm.getVariantAnnots();
+        return "true\t"+posStartStr+"\t"+posEndStr+"\t"+mutSeqStr+"\t"+annotStr+"\t"+wtSeqStr;
     }
 
 }

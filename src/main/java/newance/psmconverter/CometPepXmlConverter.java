@@ -14,6 +14,7 @@ package newance.psmconverter;
 import newance.mzjava.mol.modification.AbsoluteTolerance;
 import newance.mzjava.mol.modification.ModListModMatchResolver;
 import newance.mzjava.mol.modification.Modification;
+import newance.psmcombiner.GroupedFDRCalculator;
 import newance.util.PsmPredicate;
 
 import java.io.File;
@@ -26,10 +27,16 @@ import java.util.concurrent.CountDownLatch;
 
 public class CometPepXmlConverter extends SinglePsmFileConverter {
 
-    public CometPepXmlConverter(File msmsFile, Map<String,List<PeptideSpectrumMatch>> psms, CountDownLatch latch) {
+    private final GroupedFDRCalculator groupedFDRCalculator;
+
+    public CometPepXmlConverter(File msmsFile, Map<String,List<PeptideSpectrumMatch>> psms,
+                                GroupedFDRCalculator groupedFDRCalculator, CountDownLatch latch) {
 
         super(msmsFile, psms, latch);
+
+        this.groupedFDRCalculator = groupedFDRCalculator;
     }
+
     @Override
     public void run() {
 
@@ -45,7 +52,8 @@ public class CometPepXmlConverter extends SinglePsmFileConverter {
         Collection<Modification> modifications = params.getModifications();
         ModListModMatchResolver modMatchResolver = new ModListModMatchResolver(new AbsoluteTolerance(params.getModifMatchMassTol()), modifications);
 
-        CometPEFFPepXmlReader psmReader = new CometPEFFPepXmlReader( true, modMatchResolver);
+        CometPEFFPepXmlReader psmReader =
+                new CometPEFFPepXmlReader( groupedFDRCalculator, true, modMatchResolver);
         psmReader.parse(psmFile, peptideSpectrumMatchList);
 
         addPsms(psmMap);

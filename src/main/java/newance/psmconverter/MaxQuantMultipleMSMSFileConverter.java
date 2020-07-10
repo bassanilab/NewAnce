@@ -10,6 +10,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.psmconverter;
 
+import newance.psmcombiner.GroupedFDRCalculator;
 import newance.util.NewAnceParams;
 
 import java.io.File;
@@ -18,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,11 +33,26 @@ import static com.google.common.base.Preconditions.checkState;
 
 public class MaxQuantMultipleMSMSFileConverter extends MultiplePsmFileConverter {
 
+    private final GroupedFDRCalculator groupedFDRCalculator;
+    private final boolean reportHistosOnly;
 
     public MaxQuantMultipleMSMSFileConverter(String psmRootDirName, Pattern regex) {
 
-        super(psmRootDirName, regex);    }
+        super(psmRootDirName, regex);
 
+        this.groupedFDRCalculator = null;
+        this.reportHistosOnly = false;
+    }
+
+
+    public MaxQuantMultipleMSMSFileConverter(String psmRootDirName, Pattern regex,
+                                             GroupedFDRCalculator groupedFDRCalculator, boolean reportHistosOnly) {
+
+        super(psmRootDirName, regex);
+
+        this.groupedFDRCalculator = groupedFDRCalculator;
+        this.reportHistosOnly = reportHistosOnly;
+    }
 
     public void run() throws IOException{
 
@@ -58,6 +75,7 @@ public class MaxQuantMultipleMSMSFileConverter extends MultiplePsmFileConverter 
         int threadCnt = 0;
         for (int i=0;i<=nrIter;i++) {
 
+            final ConcurrentHashMap<String,List<PeptideSpectrumMatch>> psmBuffer = new ConcurrentHashMap<>();
             int nrThreads = (nrTasks-threadCnt>maxNrThreads)?maxNrThreads:nrTasks-threadCnt;
             if (nrThreads<=0) break;
 
@@ -65,12 +83,15 @@ public class MaxQuantMultipleMSMSFileConverter extends MultiplePsmFileConverter 
 
             CountDownLatch latch = new CountDownLatch(nrThreads);
             for (int j =0;j<nrThreads;j++) {
-                exe.submit(new MaxQuantMSMSConverter(psmFileList.get(threadCnt), psms, latch));
+                exe.submit(new MaxQuantMSMSConverter(psmFileList.get(threadCnt), psmBuffer, groupedFDRCalculator, latch));
                 threadCnt++;
             }
 
             try {
                 latch.await();
+
+                if (groupedFDRCalculator!=null) groupedFDRCalculator.addAll(psmBuffer);
+                if (!reportHistosOnly) psms.putAll(psmBuffer);
 
             } catch (InterruptedException e) {
                 e.printStackTrace();

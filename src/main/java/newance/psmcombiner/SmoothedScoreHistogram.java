@@ -69,22 +69,8 @@ public abstract class SmoothedScoreHistogram extends ScoreHistogram {
     }
 
 
-    public void removeSpikeNoiseHistogram(boolean adjustTotalCounts) {
-        if (smoothedHistogram==null) {
-            smoothedHistogram = new CometScoreHistogram(this);
-        }
-
-        smoothedHistogram.removeSpikeNoise(adjustTotalCounts);
-    }
-
-
-    public void smoothHistogram(boolean adjustTotalCounts) {
-        if (smoothedHistogram==null) {
-            smoothedHistogram = new CometScoreHistogram(this);
-        }
-
-        smoothedHistogram.smooth(adjustTotalCounts);
-    }
+    public abstract void removeSpikeNoiseHistogram(boolean adjustTotalCounts);
+    public abstract void smoothHistogram(boolean adjustTotalCounts);
 
     public void calcLocalFDR() {
         if (smoothedHistogram!=null)
@@ -149,7 +135,7 @@ public abstract class SmoothedScoreHistogram extends ScoreHistogram {
 
 
     // remove cells that have no target counts within a neigborhood
-    private void removeSpikeNoise(boolean adjustTotalCounts) {
+    protected void removeSpikeNoise(boolean adjustTotalCounts) {
 
         List<Float> newTargetCnts = new ArrayList<>();
         List<Float> newDecoyCnts = new ArrayList<>();
@@ -209,7 +195,7 @@ public abstract class SmoothedScoreHistogram extends ScoreHistogram {
         }
     }
 
-    private void smooth(boolean adjustTotalCounts) {
+    protected void smooth(boolean adjustTotalCounts) {
 
         List<Float> newTargetCnts = new ArrayList<>(targetCnts);
         List<Float> newDecoyCnts = new ArrayList<>(decoyCnts);

@@ -28,14 +28,17 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SummaryReportWriter {
     private final String fileName;
     private BufferedWriter reportWriter;
+    private boolean includeMaxQuant;
 
 
     public SummaryReportWriter(String fileName, boolean includeMaxQuant) {
 
         this.fileName = fileName;
+        this.includeMaxQuant = includeMaxQuant;
+
         try {
             reportWriter = new BufferedWriter(new FileWriter(new File(fileName)));
-            writeHeader(includeMaxQuant);
+            writeHeader();
 
         } catch (IOException e) {
             System.out.println("Unable to write report to file "+ fileName);
@@ -43,7 +46,7 @@ public class SummaryReportWriter {
         }
     }
 
-    private void writeHeader(boolean includeMaxQuant) throws IOException {
+    private void writeHeader() throws IOException {
         if (includeMaxQuant) reportWriter.write("Group\tNrCometPSMs\tNrMaxQuantPSMs\tNrCombinedPSMs\tNrCometPepts\tNrMaxQuantPepts\tNrCombinedPepts\n");
         else reportWriter.write("Group\tNrCometPSMs\tNrCometPepts\n");
     }
@@ -70,8 +73,6 @@ public class SummaryReportWriter {
 
 
     public void write(String group, ConcurrentHashMap<String, List<PeptideSpectrumMatch>> cometPsms) {
-
-        if (reportWriter==null) return;
 
         ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  noDecoyCometPsms = ProcessPsmUtils.removeDecoys(cometPsms);
 

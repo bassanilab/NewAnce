@@ -59,7 +59,7 @@ public class AddMaxQuantFeatures extends ExecutableOptions {
 
         newAnceResultFile = new File(NewAnceParams.getFileValue("newAnceResultFile",getOptionString(line, "naf")));
         maxquantPsmDir = new File(NewAnceParams.getDirectoryValue("newAnceResultFile",getOptionString(line, "mqD")));
-        maxQuantFeatures = NewAnceParams.getSetValue("newAnceResultFile",getOptionString(line, "mqF"));
+        maxQuantFeatures = NewAnceParams.getSetValue(getOptionString(line, "mqF"));
     }
 
     @Override

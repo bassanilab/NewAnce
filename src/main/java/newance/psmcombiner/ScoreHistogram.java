@@ -439,4 +439,19 @@ public abstract class ScoreHistogram implements Serializable {
     public List<Integer> getPsmBins() {
         return psmBins;
     }
+
+    public void clear() {
+        totTargetCnt = 0;
+        totDecoyCnt = 0;
+        targetCnts.clear();
+        decoyCnts.clear();
+        psmBins.clear();
+        gamma.clear();
+        lFDR.clear();
+        pFDR.clear();
+        sortedIndexes = null;
+        indexMap.clear();
+        pi_0 = -1.0;
+        pi_1 = -1.0;
+    }
 }

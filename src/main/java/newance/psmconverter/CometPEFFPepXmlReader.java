@@ -16,6 +16,9 @@ import newance.mzjava.mol.modification.ModAttachment;
 import newance.mzjava.mol.modification.Modification;
 import newance.mzjava.mol.modification.ModificationMatch;
 import newance.mzjava.mol.modification.ModificationMatchResolver;
+import newance.proteinmatch.SequenceVariant;
+import newance.proteinmatch.VariantProtDB;
+import newance.psmcombiner.GroupedFDRCalculator;
 import newance.psmconverter.pepxml_v120.AltProteinDataType;
 import newance.psmconverter.pepxml_v120.ModInfoDataType;
 import newance.psmconverter.pepxml_v120.MsmsPipelineAnalysis;
@@ -47,13 +50,17 @@ public class CometPEFFPepXmlReader {
     protected final boolean discardAmbiguous;
     protected final ModificationMatchResolver modMatchResolver;
     protected final boolean debug;
+    protected final GroupedFDRCalculator groupedFDRCalculator;
+
 
     protected static final BitSet UNKNOWN_AA = new BitSet();
 
-    public CometPEFFPepXmlReader(boolean discardAmbiguousSequences, ModificationMatchResolver modMatchResolver) {
+    public CometPEFFPepXmlReader(GroupedFDRCalculator groupedFDRCalculator, boolean discardAmbiguousSequences,
+                                 ModificationMatchResolver modMatchResolver) {
 
         this.discardAmbiguous = discardAmbiguousSequences;
         this.modMatchResolver = modMatchResolver;
+        this.groupedFDRCalculator = groupedFDRCalculator;
 
         UNKNOWN_AA.set('B');
         UNKNOWN_AA.set('J');
@@ -126,7 +133,7 @@ public class CometPEFFPepXmlReader {
         if(discardAmbiguous && containsUnknownAA(peptideSequence))
             return;
 
-        Set<String> proteins = new HashSet<>();
+        List<String> proteins = new ArrayList<>();
         proteins.add(searchHit.getProtein());
 
         for (AltProteinDataType altProtein : searchHit.getAlternativeProtein()) {
@@ -138,6 +145,7 @@ public class CometPEFFPepXmlReader {
         PeptideMatchDataWrapper peptideMatch = new PeptideMatchDataWrapper(peptideSequence);
         peptideMatch.setRank((int) searchHit.getHitRank());
         peptideMatch.setProteins(proteins);
+        peptideMatch.setLeadingProtein(searchHit.getProtein());
 
         boolean isDecoy = containsOnlyProteinPattern(proteins, NewAnceParams.getInstance().getCometDecoyProtPrefix());
         peptideMatch.setDecoy(isDecoy); // must be called before copyModInfo
@@ -186,34 +194,24 @@ public class CometPEFFPepXmlReader {
                 resolveMod(modMatch);
             }
         }
+
         if (modInfo.getModNtermMass() != null) {
 
             ModificationMatch modMatch = peptideMatch.addModificationMatch(ModAttachment.N_TERM, adjustMass(modInfo.getModNtermMass(), ModAttachment.N_TERM));
             resolveMod(modMatch);
         }
+
         if (modInfo.getModCtermMass() != null) {
 
-            ModificationMatch modMatch = peptideMatch.addModificationMatch(ModAttachment.C_TERM, adjustMass(modInfo.getModCtermMass(), ModAttachment.C_TERM));
+            ModificationMatch modMatch = peptideMatch.addModificationMatch(ModAttachment.C_TERM,
+                    adjustMass(modInfo.getModCtermMass(), ModAttachment.C_TERM));
             resolveMod(modMatch);
         }
 
-        if (modInfo.getAminoacidSubstitution()!=null && !modInfo.getAminoacidSubstitution().isEmpty() && !peptideMatch.isDecoy()) {
+        if (modInfo.getAminoacidSubstitution()!=null && !modInfo.getAminoacidSubstitution().isEmpty() &&
+                !peptideMatch.isDecoy()) {
 
             peptideMatch.setVariant(true);
-            List<Integer> positions = new ArrayList<>();
-            List<Character> wtAAs = new ArrayList<>();
-            for (ModInfoDataType.AminoacidSubstitution aminoacidSubstitution : modInfo.getAminoacidSubstitution()) {
-
-                int position = 0;
-                if (aminoacidSubstitution.getPosition()!=null)
-                    position = aminoacidSubstitution.getPosition().intValue() - 1;
-                char wtAA = aminoacidSubstitution.getOrigAa().charAt(0);
-                wtAAs.add(wtAA);
-                positions.add(position);
-            }
-
-            peptideMatch.setVariantPositions(positions);
-            peptideMatch.setVariantWTAAs(wtAAs);
         }
     }
 
@@ -243,7 +241,7 @@ public class CometPEFFPepXmlReader {
         }
     }
 
-    public boolean containsOnlyProteinPattern(Set<String> proteins, String prefix) {
+    public boolean containsOnlyProteinPattern(List<String> proteins, String prefix) {
 
         if (proteins.isEmpty()) return false;
 

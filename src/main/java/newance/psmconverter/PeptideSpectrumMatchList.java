@@ -68,7 +68,7 @@ public class PeptideSpectrumMatchList {
 
         boolean isDecoy = searchResult.isDecoy();
 
-        Set<String> protACs = searchResult.getProteins();
+        List<String> protACs = searchResult.getProteins();
 
         if (!isDecoy) {
             if (decoyProtPattern != null) protACs =  removeProt(protACs,decoyProtPattern);
@@ -85,14 +85,12 @@ public class PeptideSpectrumMatchList {
         double precMass = spectrumInfo.getPrecursorNeutralMass();
         int rank = searchResult.getRank();
         boolean isVariant = searchResult.isVariant();
-        List<Integer> variantPositions = searchResult.getVariantPositions();
-        List<Character> variantWTAAs = searchResult.getVariantWTAAs();
 
         Peptide peptide = searchResult.toPeptide();
 
         PeptideSpectrumMatch psm = new PeptideSpectrumMatch(spectrumFile, peptide, protACs,
                 searchResult.getScoreMap(),spectrumInfo.getCharge(),rank, rt,
-                scanNr, precMass, isDecoy, isVariant, variantPositions, variantWTAAs);
+                scanNr, precMass, isDecoy, isVariant);
 
 
         psmMap.putIfAbsent(key,new ArrayList<>());
@@ -100,18 +98,16 @@ public class PeptideSpectrumMatchList {
         psmMap.get(key).add(psm);
     }
 
-    public boolean isValidProtein(Set<String> proteins) {
+    public boolean isValidProtein(List<String> proteins) {
 
         if (proteins==null || proteins.isEmpty()) return false;
         if (excludedProtPattern==null) return true;
 
         for (String protein : proteins) {
             Matcher matcher = excludedProtPattern.matcher(protein);
-            if (!matcher.find()) {
-               return false;
-            }
+            if (!matcher.find() && !protein.isEmpty()) return true;
         }
-        return true;
+        return false;
     }
 
     public boolean isValidSpectrum(SpectrumInfo spectrumInfo) {
@@ -123,9 +119,9 @@ public class PeptideSpectrumMatchList {
     }
 
 
-    private Set<String> removeProt(Set<String> acs, Pattern proteinPattern) {
+    private List<String> removeProt(List<String> acs, Pattern proteinPattern) {
 
-        Set<String> trueACs = new HashSet<>(acs);
+        List<String> trueACs = new ArrayList<>(acs);
 
         Matcher matcher;
         for (String ac : acs) {

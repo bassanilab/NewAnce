@@ -69,32 +69,9 @@ public class CometMaxQuantPsmMerger implements BiConsumer<String, List<PeptideSp
 
     private PeptideSpectrumMatch merge(PeptideSpectrumMatch cometPsm, PeptideSpectrumMatch maxQuantPsm) {
 
-        TObjectDoubleMap<String> scoreMap = new TObjectDoubleHashMap<>();
-        scoreMap.put("xcorr",cometPsm.getScore("xcorr"));
-        scoreMap.put("deltacn",cometPsm.getScore("deltacn"));
-        scoreMap.put("spscore",cometPsm.getScore("spscore"));
-        scoreMap.put("neg_log10_p",cometPsm.getScore("neg_log10_p"));
-        scoreMap.put("mass_diff",cometPsm.getScore("mass_diff"));
-        scoreMap.put("tot_num_ions",cometPsm.getScore("tot_num_ions"));
-        scoreMap.put("matched_num_ions",cometPsm.getScore("matched_num_ions"));
-        scoreMap.put("rt",maxQuantPsm.getScore("rt"));
-        scoreMap.put("sn",cometPsm.getScore("sn"));
-        scoreMap.put("mass",cometPsm.getScore("mass"));
-        scoreMap.put("rank",cometPsm.getScore("rank"));
-        scoreMap.put("Score",maxQuantPsm.getScore("Score"));
-        scoreMap.put("Delta score",maxQuantPsm.getScore("Delta score"));
-        scoreMap.put("Mass Error [ppm]",maxQuantPsm.getScore("Mass Error [ppm]"));
-        scoreMap.put("Intensity coverage",maxQuantPsm.getScore("Intensity coverage"));
-        scoreMap.put("Localization prob",maxQuantPsm.getScore("Localization prob"));
+        cometPsm.addScores(maxQuantPsm.getScoreMap());
 
-        PeptideSpectrumMatch psm = new PeptideSpectrumMatch(cometPsm.getSpectrumFile(), cometPsm.getPeptide(), cometPsm.getProteinAcc(),
-                scoreMap,cometPsm.getCharge(),cometPsm.getRank(), cometPsm.getRetentionTime(), cometPsm.getScanNr(), cometPsm.getNeutralPrecMass(),
-                cometPsm.isDecoy(), cometPsm.isVariant(), cometPsm.getVariantPositions(), cometPsm.getVariantWTAAs());
-
-        psm.setVariantAnnots(cometPsm.getVariantAnnots());
-        psm.setGroup(cometPsm.getGroup());
-
-        return psm;
+        return cometPsm;
 
     }
 }

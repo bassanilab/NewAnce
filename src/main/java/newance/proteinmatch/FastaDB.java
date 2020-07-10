@@ -144,7 +144,7 @@ public abstract class FastaDB {
                 protein = parseHeader(line);
                 seq = "";
             } else {
-                seq += line;
+                if (protein!=null) seq += line;
             }
         }
 
@@ -169,7 +169,7 @@ public abstract class FastaDB {
                     protein = parseHeader(line);
                     seq = "";
                 } else {
-                    seq += line;
+                    if (protein!=null) seq += line;
                 }
             }
 

@@ -10,22 +10,18 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.testers;
 
-import newance.proteinmatch.UniProtDB;
-import newance.psmcombiner.ModificationPSMGrouper;
-import newance.psmcombiner.Psm2StringFunction;
-import newance.psmcombiner.RegExpProteinGrouper;
+import newance.psmcombiner.CombinedPsm2StringFunction;
+import newance.psmcombiner.MaxQuantPsm2StringFunction;
 import newance.psmconverter.MaxQuantMultipleMSMSFileConverter;
 import newance.psmconverter.PeptideSpectrumMatch;
 import newance.util.ExecutableOptions;
 import newance.util.NewAnceParams;
-import newance.util.PsmGrouper;
 import newance.util.RunTime2String;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 
 /**
  * @author Markus Müller
@@ -35,12 +31,12 @@ public class MaxQuantPsmReaderTest extends ExecutableOptions {
 
     protected NewAnceParams params;
     protected int maxNrDisplayedPSMs;
-    protected final Psm2StringFunction stringFunction;
+    protected final MaxQuantPsm2StringFunction stringFunction;
 
 
     public MaxQuantPsmReaderTest() {
 
-        stringFunction = new Psm2StringFunction(Psm2StringFunction.TabStringMode.MAXQUANT);
+        stringFunction = new MaxQuantPsm2StringFunction(null, null);
         maxNrDisplayedPSMs = -1;
         createOptions();
     }
@@ -81,14 +77,9 @@ public class MaxQuantPsmReaderTest extends ExecutableOptions {
         for (String specID : psms.keySet()) {
             if(maxNrDisplayedPSMs>=0 && cnt>=maxNrDisplayedPSMs) break;
 
-            for (PeptideSpectrumMatch psm : psms.get(specID)) {
+            System.out.println(stringFunction.apply(specID,psms.get(specID)));
+            cnt += psms.get(specID).size();
 
-                if(maxNrDisplayedPSMs>=0 && cnt>=maxNrDisplayedPSMs) break;
-
-                System.out.println(stringFunction.getTabString(specID,psm));
-
-                cnt++;
-            }
         }
 
         return 0;

@@ -11,6 +11,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.util;
 
+import newance.psmcombiner.CombinedPsm2StringFunction;
 import newance.psmcombiner.Psm2StringFunction;
 
 import java.io.BufferedWriter;

@@ -225,9 +225,9 @@ public class HistogramTree {
                 }
             }
 
-            CometScoreHistogram scoreHistogram = CometScoreHistogram.read(histoFile);
-            setScoreHistogram(scoreHistogram);
-            scoreHistogram.setCanCalculateFDR(0);
+            ScoreHistogram3D scoreHistogram3D = ScoreHistogram3D.read(histoFile);
+            setScoreHistogram(scoreHistogram3D);
+            scoreHistogram3D.setCanCalculateFDR(0);
         }
 
         for (HistogramTree node : children) {
@@ -299,5 +299,16 @@ public class HistogramTree {
 
         return validP;
     }
+
+    public void clear() {
+
+        scoreHistogram.clear();
+
+        for (HistogramTree node : children) {
+            node.clear();
+        }
+    }
+
+
 
 }

@@ -11,8 +11,8 @@ You should have received a copy of the GNU General Public License along with thi
 package newance.psmconverter;
 
 import gnu.trove.map.TObjectDoubleMap;
-import newance.mzjava.mol.AminoAcid;
 import newance.mzjava.mol.Peptide;
+import newance.proteinmatch.SequenceVariant;
 import newance.proteinmatch.VariantInfo;
 
 import java.util.*;
@@ -25,7 +25,7 @@ public class PeptideSpectrumMatch {
 
     private final String spectrumFile;
     private final Peptide peptide;
-    private final Set<String> proteinAcc;
+    private final List<String> proteinIDs;
     private final TObjectDoubleMap<String> scoreMap;
     private final int charge;
     private final int rank;
@@ -33,18 +33,21 @@ public class PeptideSpectrumMatch {
     private final float retentionTime;
     private final double neutralPrecMass;
     private final int scanNr;
-    private final boolean isVariant;
-    private final List<Integer> variantPositions;
-    private final List<Character> variantWTAAs;
-    private Set<String> variantAnnots;
+    private final String firstProteinAC;
+    private boolean isVariant;
+    private final List<SequenceVariant> variants;
+    private int peptideStart;
+    private String wtSequence;
     private String group;
 
-    public PeptideSpectrumMatch(String spectrumFile, Peptide peptide, Set<String> proteinAccs, TObjectDoubleMap<String> scoreMap, int charge, int rank, float retentionTime,
-                                int scanNr, double neutralPrecMass, boolean isDecoy, boolean isVariant, List<Integer> variantPositions, List<Character> variantWTAAs) {
+    public PeptideSpectrumMatch(String spectrumFile, Peptide peptide, List<String> proteinIDs,
+                                TObjectDoubleMap<String> scoreMap, int charge, int rank, float retentionTime,
+                                int scanNr, double neutralPrecMass, boolean isDecoy, boolean isVariant,
+                                List<SequenceVariant> variants) {
 
         this.spectrumFile = spectrumFile;
         this.peptide = peptide;
-        this.proteinAcc = proteinAccs;
+        this.proteinIDs = proteinIDs;
         this.scoreMap = scoreMap;
         this.charge = charge;
         this.isDecoy = isDecoy;
@@ -52,10 +55,47 @@ public class PeptideSpectrumMatch {
         this.retentionTime = retentionTime;
         this.scanNr = scanNr;
         this.neutralPrecMass = neutralPrecMass;
+
+        if (proteinIDs != null && !proteinIDs.isEmpty())
+            this.firstProteinAC = proteinIDs.get(0);
+        else
+            this.firstProteinAC = "";
+
         this.isVariant = isVariant;
-        this.variantPositions = variantPositions;
-        this.variantWTAAs = variantWTAAs;
-        this.variantAnnots = null;
+        if (isVariant) this.variants = variants;
+        else this.variants = null;
+
+        this.peptideStart = -1;
+        this.wtSequence = "";
+        this.group = "";
+    }
+
+    public PeptideSpectrumMatch(String spectrumFile, Peptide peptide, List<String> proteinIDs,
+                                TObjectDoubleMap<String> scoreMap, int charge, int rank, float retentionTime,
+                                int scanNr, double neutralPrecMass, boolean isDecoy, boolean isVariant) {
+
+        this.spectrumFile = spectrumFile;
+        this.peptide = peptide;
+        this.proteinIDs = proteinIDs;
+        this.scoreMap = scoreMap;
+        this.charge = charge;
+        this.isDecoy = isDecoy;
+        this.rank = rank;
+        this.retentionTime = retentionTime;
+        this.scanNr = scanNr;
+        this.neutralPrecMass = neutralPrecMass;
+
+        if (proteinIDs != null && !proteinIDs.isEmpty())
+            this.firstProteinAC = proteinIDs.get(0);
+        else
+            this.firstProteinAC = "";
+
+        this.isVariant = isVariant;
+        if (isVariant) this.variants = new ArrayList<>();
+        else this.variants = null;
+
+        this.peptideStart = -1;
+        this.wtSequence = "";
         this.group = "";
     }
 
@@ -64,9 +104,9 @@ public class PeptideSpectrumMatch {
         return peptide;
     }
 
-    public Set<String> getProteinAcc() {
+    public List<String> getProteinIDs() {
 
-        return Collections.unmodifiableSet(proteinAcc);
+        return Collections.unmodifiableList(proteinIDs);
     }
 
     public TObjectDoubleMap<String> getScoreMap() {
@@ -89,25 +129,17 @@ public class PeptideSpectrumMatch {
         return peptide.toSymbolString();
     }
 
-    public String getWTSequence() {
-        if (!isVariant) return peptide.toSymbolString();
-
-        char[] aas = peptide.toSymbolString().toCharArray();
-
-        for (int i=0;i<variantPositions.size();i++) {
-            aas[variantPositions.get(i)] = variantWTAAs.get(i);
-        }
-
-        return new String(aas);
-    }
-
     public boolean isDecoy() {
 
         return isDecoy;
     }
 
+    public void addScores(TObjectDoubleMap<String> scoreMap) {
+        this.scoreMap.putAll(scoreMap);
+    }
+
     public void addProteinAcc(Set<String> newProteinAccs) {
-        this.proteinAcc.addAll(newProteinAccs);
+        this.proteinIDs.addAll(newProteinAccs);
     }
 
     public String getSpectrumFile() {
@@ -134,18 +166,8 @@ public class PeptideSpectrumMatch {
         return isVariant;
     }
 
-    public List<Integer> getVariantPositions() {
-        return variantPositions;
-    }
-
-    public List<Character> getVariantWTAAs() {
-        return variantWTAAs;
-    }
-
-    public Set<String> getVariantAnnots() { return variantAnnots; }
-
-    public void setVariantAnnots(Set<String> variantAnnots) {
-        this.variantAnnots = variantAnnots;
+    public List<SequenceVariant> getVariants() {
+        return variants;
     }
 
     public String getGroup() {
@@ -156,14 +178,33 @@ public class PeptideSpectrumMatch {
         this.group = group;
     }
 
-    public void addVariantAnnot(int start, VariantInfo variantInfo) {
-        if (!isVariant) return;
+    public String getFirstProteinAC() {
+        return firstProteinAC;
+    }
 
-        if (variantAnnots==null) variantAnnots = new HashSet<>();
+    public void setSequenceVariants(List<SequenceVariant> variants) {
+        this.variants.clear();
+        if (variants != null) this.variants.addAll(variants);
+        else isVariant = false;
+    }
 
-        for (int i=0; i<variantPositions.size();i++) {
-            String annot = variantInfo.getVariantInfo(start, peptide.getSymbol(variantPositions.get(i)).getSymbol().charAt(0),variantPositions.get(i));
-            if (!annot.isEmpty()) variantAnnots.add(annot);
-        }
+    public void setVariant(boolean variant) {
+        isVariant = variant;
+    }
+
+    public int getPeptideStart() {
+        return peptideStart;
+    }
+
+    public void setPeptideStart(int peptideStart) {
+        this.peptideStart = peptideStart;
+    }
+
+    public String getWtSequence() {
+        return wtSequence;
+    }
+
+    public void setWtSequence(String wtSequence) {
+        this.wtSequence = wtSequence;
     }
 }

@@ -10,7 +10,6 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.testers;
 
-import newance.proteinmatch.UniProtDB;
 import newance.psmcombiner.*;
 import newance.psmconverter.CometMultiplePepXMLFileConverter;
 import newance.psmconverter.PeptideSpectrumMatch;
@@ -20,7 +19,6 @@ import org.apache.commons.cli.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 
 /**
  * @author Markus Müller
@@ -30,12 +28,12 @@ public class CometXMLReaderTest extends ExecutableOptions {
 
     protected NewAnceParams params;
     protected int maxNrDisplayedPSMs;
-    protected final Psm2StringFunction stringFunction;
+    protected final CometPsm2StringFunction stringFunction;
 
 
     public CometXMLReaderTest() {
 
-        stringFunction = new Psm2StringFunction(Psm2StringFunction.TabStringMode.COMET);
+        stringFunction = new CometPsm2StringFunction(null, null);
         maxNrDisplayedPSMs = -1;
         createOptions();
     }
@@ -75,14 +73,8 @@ public class CometXMLReaderTest extends ExecutableOptions {
         for (String specID : psms.keySet()) {
             if(maxNrDisplayedPSMs>=0 && cnt>=maxNrDisplayedPSMs) break;
 
-            for (PeptideSpectrumMatch psm : psms.get(specID)) {
-
-                if(maxNrDisplayedPSMs>=0 && cnt>=maxNrDisplayedPSMs) break;
-
-                System.out.println(stringFunction.getTabString(specID,psm));
-
-                cnt++;
-            }
+            System.out.println(stringFunction.apply(specID,psms.get(specID)));
+            cnt += psms.get(specID).size();
         }
 
         return 0;

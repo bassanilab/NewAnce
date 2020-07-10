@@ -19,6 +19,9 @@ import newance.mzjava.mol.modification.ModAttachment;
 import newance.mzjava.mol.modification.Modification;
 import newance.mzjava.mol.modification.ModificationResolver;
 import newance.mzjava.mol.modification.unimod.UnimodModificationResolver;
+import newance.proteinmatch.SequenceVariant;
+import newance.proteinmatch.VariantProtDB;
+import newance.psmcombiner.GroupedFDRCalculator;
 import org.apache.commons.io.FilenameUtils;
 
 
@@ -36,14 +39,24 @@ import java.util.regex.Pattern;
 
 public class MaxQuantPsmReader {
 
+    private final GroupedFDRCalculator groupedFDRCalculator;
     private final ModificationResolver modResolver;
-    private final Map<String,String> peptidesProteinMap; // for decoys
+    private final Map<String,String> peptidesLeadingProteinMap; // for decoys
     private final Map<String,String> peptidesMutationMap; // for decoys
 
     public MaxQuantPsmReader() {
 
+        this.groupedFDRCalculator = null;
         this.modResolver = makeDefaultModResolver();
-        this.peptidesProteinMap = new HashMap<>();
+        this.peptidesLeadingProteinMap = new HashMap<>();
+        this.peptidesMutationMap = new HashMap<>();
+    }
+
+    public MaxQuantPsmReader(GroupedFDRCalculator groupedFDRCalculator) {
+
+        this.groupedFDRCalculator = groupedFDRCalculator;
+        this.modResolver = makeDefaultModResolver();
+        this.peptidesLeadingProteinMap = new HashMap<>();
         this.peptidesMutationMap = new HashMap<>();
     }
 
@@ -59,7 +72,8 @@ public class MaxQuantPsmReader {
 
     private void extractPeptideProteinMap(File peptidesFile) {
 
-        peptidesProteinMap.clear();
+        peptidesLeadingProteinMap.clear();
+        peptidesMutationMap.clear();
 
         try {
             // load the driver into memory
@@ -84,14 +98,13 @@ public class MaxQuantPsmReader {
             }
 
             while (results.next()) {
-                String proteinStr = results.getString("Leading razor protein");
-                if (proteinStr.startsWith("REV__")) {
-                    proteinStr = proteinStr.replace("REV__","DECOY_");
+                String leadingProteinStr = results.getString("Leading razor protein");
+                if (leadingProteinStr.startsWith("REV__")) {
+                    leadingProteinStr = leadingProteinStr.replace("REV__","DECOY_");
                 }
 
                 String peptideSeq = results.getString("Sequence");
-                peptidesProteinMap.put(peptideSeq,proteinStr);
-
+                peptidesLeadingProteinMap.put(peptideSeq,leadingProteinStr);
 
                 if (hasMutations) {
                     String isVariant = results.getString("Mutated");
@@ -113,7 +126,7 @@ public class MaxQuantPsmReader {
 
     public void parse(File file, PeptideSpectrumMatchList callback) {
 
-        if (peptidesProteinMap.isEmpty()) {
+        if (peptidesLeadingProteinMap.isEmpty()) {
 
             File peptidesFile = new File(file.getParent()+File.separator+"peptides.txt");
             if (peptidesFile.exists()) {
@@ -137,7 +150,8 @@ public class MaxQuantPsmReader {
             props.put("fileExtension", "." + FilenameUtils.getExtension(file.getName()));
             // create a connection. The first command line parameter is assumed to
             //  be the directory in which the .csv files are held
-            Connection conn = DriverManager.getConnection("jdbc:relique:csv:" + file.getParent() + "?separator=" + URLEncoder.encode(delimiter, "UTF-8"), props);
+            Connection conn = DriverManager.getConnection("jdbc:relique:csv:" + file.getParent() + "?separator="
+                    + URLEncoder.encode(delimiter, "UTF-8"), props);
 
             // create a Statement object to execute the query with
             Statement stmt = conn.createStatement();
@@ -250,36 +264,38 @@ public class MaxQuantPsmReader {
         boolean isDecoy = true;
         boolean isVariant = peptidesMutationMap.containsKey(peptideSeq);
 
-        Set<String> proteins = new HashSet<>();
+        psm.setVariant(isVariant);
+
+        List<String> proteins = new ArrayList<>();
         for (String ac : getAccessionCode(results)) {
 
             boolean decoy =  ac.equals("DECOY");
 
             // other protein ids than uniprot
+            String leadingProtein = peptidesLeadingProteinMap.get(peptideSeq);
+            psm.setLeadingProtein(leadingProtein);
+
             if (decoy) {
-                if (peptidesProteinMap.containsKey(peptideSeq))
-                    proteins.add(peptidesProteinMap.get(peptideSeq));
+                if (peptidesLeadingProteinMap.containsKey(peptideSeq))
+                    proteins.add(peptidesLeadingProteinMap.get(peptideSeq));
                 else
                     System.out.println("WARNING: peptide seq "+peptideSeq+" not found in peptides.txt.");
             } else {
                 isDecoy = false;
-                if (isVariant)
-                    proteins.add(ac+" "+peptidesMutationMap.get(peptideSeq));
-                else
-                    proteins.add(ac);
+                proteins.add(ac);
+                if (isVariant) psm.setVariant(true);
             }
         }
 
         psm.setProteins(proteins);
         psm.setDecoy(isDecoy);
-        psm.setVariant(isVariant);
 
         setValuesFirst(psm, results);
 
         return psm;
     }
 
-   public PeptideMatchDataWrapper makeSecondModifiedPeptideMatch(ResultSet results) throws SQLException {
+    protected PeptideMatchDataWrapper makeSecondModifiedPeptideMatch(ResultSet results) throws SQLException {
 
         String[] allSequences = results.getString("All modified sequences").split(";");
 
@@ -297,7 +313,7 @@ public class MaxQuantPsmReader {
     }
 
 
-    public List<PeptideMatchDataWrapper> makePeptideMatches(ResultSet results) throws SQLException {
+    protected List<PeptideMatchDataWrapper> makePeptideMatches(ResultSet results) throws SQLException {
 
         List<PeptideMatchDataWrapper> psms = new ArrayList<>();
         psms.add(makeFirstModifiedPeptideMatch(results));
@@ -351,6 +367,7 @@ public class MaxQuantPsmReader {
         peptideMatch.addScore("Mass Error [ppm]", results.getDouble("Mass Error [ppm]"));
         peptideMatch.addScore("Intensity coverage", results.getDouble("Intensity coverage"));
         peptideMatch.addScore("Localization prob", results.getDouble("Localization prob"));
+        peptideMatch.addScore("PEP", results.getDouble("PEP"));
         peptideMatch.setRank(1);
     }
 

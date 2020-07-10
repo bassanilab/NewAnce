@@ -31,20 +31,15 @@ public class GroupedFDRCalculator {
     protected final HistogramTree histogramTreeRoot;
     protected final Map<String, HistogramTree> histogramMap;
     protected final PsmGrouper psmGrouper;
-    protected final int[] nrBins;
     protected final AddUniProtIDs2Psm addUniProtIDs2Psm;
     protected final AddVariantIDs2Psm addVariantIDs2Psm;
+    protected final NewAnceParams.SearchTool searchTool;
 
-    public GroupedFDRCalculator(PsmGrouper psmGrouper) {
+    public GroupedFDRCalculator(PsmGrouper psmGrouper, NewAnceParams.SearchTool searchTool) {
 
-        this.nrBins = new int[3];
-        nrBins[0] = NewAnceParams.getInstance().getNrXCorrBins();
-        nrBins[1] = NewAnceParams.getInstance().getNrDeltaCnBins();
-        nrBins[2] = NewAnceParams.getInstance().getNrSpScoreBins();
-
-        CometScoreHistogram cometScoreHistogram = new CometScoreHistogram(nrBins);
-
-        this.histogramTreeRoot = new HistogramTree(cometScoreHistogram, "root","");
+        this.searchTool = searchTool;
+        ScoreHistogram3D scoreHistogram3D = NewAnceParams.getInstance().getScoreHistogram3D(this.searchTool);
+        this.histogramTreeRoot = new HistogramTree(scoreHistogram3D, "root","");
 
         this.histogramMap = new HashMap<>();
         this.histogramMap.put("root",this.histogramTreeRoot);
@@ -55,40 +50,12 @@ public class GroupedFDRCalculator {
         buildTree();
     }
 
-    public GroupedFDRCalculator(PsmGrouper psmGrouper, UniProtDB uniProtDB) {
+    public GroupedFDRCalculator(PsmGrouper psmGrouper, UniProtDB uniProtDB, VariantProtDB variantProtDB,
+                                NewAnceParams.SearchTool searchTool) {
 
-        this.nrBins = new int[3];
-        nrBins[0] = NewAnceParams.getInstance().getNrXCorrBins();
-        nrBins[1] = NewAnceParams.getInstance().getNrDeltaCnBins();
-        nrBins[2] = NewAnceParams.getInstance().getNrSpScoreBins();
-
-        CometScoreHistogram cometScoreHistogram = new CometScoreHistogram(nrBins);
-
-        this.histogramTreeRoot = new HistogramTree(cometScoreHistogram, "root","");
-
-        this.histogramMap = new HashMap<>();
-        this.histogramMap.put("root",this.histogramTreeRoot);
-        this.psmGrouper = psmGrouper;
-        if (uniProtDB!=null)
-            this.addUniProtIDs2Psm = new AddUniProtIDs2Psm(uniProtDB);
-        else
-            this.addUniProtIDs2Psm = null;
-
-        this.addVariantIDs2Psm = null;
-
-        buildTree();
-    }
-
-    public GroupedFDRCalculator(PsmGrouper psmGrouper, UniProtDB uniProtDB, VariantProtDB variantProtDB) {
-
-        this.nrBins = new int[3];
-        nrBins[0] = NewAnceParams.getInstance().getNrXCorrBins();
-        nrBins[1] = NewAnceParams.getInstance().getNrDeltaCnBins();
-        nrBins[2] = NewAnceParams.getInstance().getNrSpScoreBins();
-
-        CometScoreHistogram cometScoreHistogram = new CometScoreHistogram(nrBins);
-
-        this.histogramTreeRoot = new HistogramTree(cometScoreHistogram, "root","");
+        this.searchTool = searchTool;
+        ScoreHistogram3D scoreHistogram3D = NewAnceParams.getInstance().getScoreHistogram3D(this.searchTool);
+        this.histogramTreeRoot = new HistogramTree(scoreHistogram3D, "root","");
 
         this.histogramMap = new HashMap<>();
         this.histogramMap.put("root",this.histogramTreeRoot);
@@ -108,14 +75,9 @@ public class GroupedFDRCalculator {
 
     public GroupedFDRCalculator() {
 
-        this.nrBins = new int[3];
-        nrBins[0] = NewAnceParams.getInstance().getNrXCorrBins();
-        nrBins[1] = NewAnceParams.getInstance().getNrDeltaCnBins();
-        nrBins[2] = NewAnceParams.getInstance().getNrSpScoreBins();
-
-        CometScoreHistogram cometScoreHistogram = new CometScoreHistogram(nrBins);
-
-        this.histogramTreeRoot = new HistogramTree(cometScoreHistogram, "root","");
+        this.searchTool = NewAnceParams.SearchTool.COMET;
+        ScoreHistogram3D scoreHistogram3D = NewAnceParams.getInstance().getScoreHistogram3D(this.searchTool);
+        this.histogramTreeRoot = new HistogramTree(scoreHistogram3D, "root","");
 
         this.histogramMap = new HashMap<>();
         this.histogramMap.put("root",this.histogramTreeRoot);
@@ -132,18 +94,18 @@ public class GroupedFDRCalculator {
         Set<String> groups = new HashSet<>();
 
         if (psmGrouper!=null) groups = psmGrouper.getGroups();
-        CometScoreHistogram cometScoreHistogram;
+        ScoreHistogram3D scoreHistogram3D;
 
         for (int Z=NewAnceParams.getInstance().getMinCharge();Z<=NewAnceParams.getInstance().getMaxCharge();Z++) {
-            cometScoreHistogram = new CometScoreHistogram(nrBins);
+            scoreHistogram3D = NewAnceParams.getInstance().getScoreHistogram3D(searchTool);
             String label = "Z"+String.valueOf(Z);
-            HistogramTree node = histogramTreeRoot.addHistogram(cometScoreHistogram,label,"");
+            HistogramTree node = histogramTreeRoot.addHistogram(scoreHistogram3D,label,"");
             this.histogramMap.put(label,node);
 
             for (String group : groups) {
-                cometScoreHistogram = new CometScoreHistogram(nrBins);
+                scoreHistogram3D = NewAnceParams.getInstance().getScoreHistogram3D(searchTool);
                 label = "Z"+String.valueOf(Z)+"_"+group;
-                HistogramTree leaf = node.addHistogram(cometScoreHistogram,label, group);
+                HistogramTree leaf = node.addHistogram(scoreHistogram3D,label, group);
                 this.histogramMap.put(label,leaf);
             }
         }
@@ -160,8 +122,7 @@ public class GroupedFDRCalculator {
             if (!node.getScoreHistogram().canCalculateFDR()) {
 
                 String filename = outputDir+File.separatorChar+fileprefix+"_"+label+".txt";
-                node.setScoreHistogram(CometScoreHistogram.read(new File(filename)));
-
+                node.setScoreHistogram(ScoreHistogram3D.read(new File(filename)));
             }
         }
     }
@@ -437,6 +398,60 @@ public class GroupedFDRCalculator {
         }
 
         return grplFDRMap;
+    }
+
+    public void clear() {
+        histogramTreeRoot.clear();
+    }
+
+    public NewAnceParams.SearchTool getSearchTool() {
+        return searchTool;
+    }
+
+
+    public void process(int minNrPsmsPerHisto, int smoothDegree) {
+
+        setCanCalculateFDR(minNrPsmsPerHisto);
+        importPriorHistos();
+        calcClassProbs();
+        calcLocalFDR();
+        smoothHistogram(smoothDegree);
+        calcLocalFDR();
+    }
+
+    public UniProtDB getUniProtDB() {
+        if (addUniProtIDs2Psm==null) return null;
+        else return addUniProtIDs2Psm.getUniProtDB();
+    }
+
+    public VariantProtDB getVariantProtDB() {
+        if (addVariantIDs2Psm==null) return null;
+        else return addVariantIDs2Psm.getVariantProtDB();
+    }
+
+
+    public static GroupedFDRCalculator buildGroupedFDRCalculator(UniProtDB uniProtDB, VariantProtDB variantProtDB,
+            NewAnceParams.SearchTool searchTool) {
+
+        PsmGrouper psmGrouper;
+        NewAnceParams params = NewAnceParams.getInstance();
+
+        if (params.getGroupingMethod().equals("fasta")) {
+            if (params.getProteinGroupMap().isEmpty())
+                psmGrouper = new RegExpProteinGrouper(params.getGroupRegExs(), params.getGroupNames());
+            else
+                psmGrouper = new RegExpProteinGrouper(params.getGroupRegExs(), params.getGroupNames(),
+                        params.getProteinGroupMap());
+        } else if (params.getGroupingMethod().equals("modif")) {
+            psmGrouper = new ModificationPSMGrouper();
+        } else {
+            psmGrouper = new OneGroupGrouper();
+        }
+
+        GroupedFDRCalculator groupedFDRCalculator =
+                new GroupedFDRCalculator(psmGrouper, uniProtDB, variantProtDB, searchTool);
+
+        return groupedFDRCalculator;
     }
 
 }

@@ -46,7 +46,7 @@ public abstract class MultiplePsmFileConverter {
 
     public void reportDBProteins() {
 
-        psms.forEach((id,psm) -> System.out.println(id+", "+psm.get(0).getPeptide().toString()+", "+psm.get(0).getProteinAcc().toString()));
+        psms.forEach((id,psm) -> System.out.println(id+", "+psm.get(0).getPeptide().toString()+", "+psm.get(0).getProteinIDs().toString()));
     }
 
     public ConcurrentHashMap<String, List<PeptideSpectrumMatch>> getPsms() {

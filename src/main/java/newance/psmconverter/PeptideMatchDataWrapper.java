@@ -19,6 +19,7 @@ import gnu.trove.map.hash.TObjectDoubleHashMap;
 import newance.mzjava.mol.AminoAcid;
 import newance.mzjava.mol.Peptide;
 import newance.mzjava.mol.modification.*;
+import newance.proteinmatch.SequenceVariant;
 
 import java.util.*;
 
@@ -39,9 +40,8 @@ public class PeptideMatchDataWrapper  {
     private Map<ModAttachment, List<ModificationMatch>> termMatchMap;
     private boolean isDecoy;
     private boolean isVariant;
-    private List<Integer> variantPositions;
-    private List<Character> variantWTAAs;
-    private Set<String> proteins;
+    private List<String> proteins;
+    private String leadingProtein;
 
     private final TObjectDoubleMap<String> scoreMap = new TObjectDoubleHashMap<>();
 
@@ -62,8 +62,6 @@ public class PeptideMatchDataWrapper  {
         numMissedCleavages = -1;
         isDecoy = false;
         isVariant = false;
-        variantPositions = null;
-        variantWTAAs = null;
         proteins = null;
         sideChainMatchMap = null;
         termMatchMap = null;
@@ -87,8 +85,6 @@ public class PeptideMatchDataWrapper  {
         numMissedCleavages = -1;
         isDecoy = false;
         isVariant = false;
-        variantPositions = null;
-        variantWTAAs = null;
         proteins = null;
         sideChainMatchMap = null;
         termMatchMap = null;
@@ -144,13 +140,21 @@ public class PeptideMatchDataWrapper  {
         this.numMissedCleavages = numMissedCleavages;
     }
 
-    public Set<String> getProteins() {
+    public List<String> getProteins() {
 
         return proteins;
     }
 
-    public void setProteins(Set<String> proteins) {
+    public void setProteins(List<String> proteins) {
         this.proteins = proteins;
+    }
+
+    public String getLeadingProtein() {
+        return leadingProtein;
+    }
+
+    public void setLeadingProtein(String leadingProtein) {
+        this.leadingProtein = leadingProtein;
     }
 
     public boolean isDecoy() {
@@ -167,22 +171,6 @@ public class PeptideMatchDataWrapper  {
 
     public void setVariant(boolean variant) {
         isVariant = variant;
-    }
-
-    public List<Integer> getVariantPositions() {
-        return variantPositions;
-    }
-
-    public void setVariantPositions(List<Integer> variantPositions) {
-        this.variantPositions = variantPositions;
-    }
-
-    public List<Character> getVariantWTAAs() {
-        return variantWTAAs;
-    }
-
-    public void setVariantWTAAs(List<Character> variantWTAAs) {
-        this.variantWTAAs = variantWTAAs;
     }
 
     public String getSequence() {
@@ -406,5 +394,7 @@ public class PeptideMatchDataWrapper  {
         return new Peptide(aminoAcids);
     }
 
-
+    public void addVariants(List<SequenceVariant> variants) {
+        variants.addAll(variants);
+    }
 }

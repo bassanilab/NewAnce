@@ -10,6 +10,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.psmconverter;
 
+import newance.psmcombiner.GroupedFDRCalculator;
 import newance.util.PsmPredicate;
 
 import java.io.File;
@@ -22,9 +23,14 @@ import java.util.concurrent.CountDownLatch;
 
 public class MaxQuantMSMSConverter extends SinglePsmFileConverter {
 
-    public MaxQuantMSMSConverter(File msmsFile, Map<String,List<PeptideSpectrumMatch>> psms, CountDownLatch latch) {
+    private final GroupedFDRCalculator groupedFDRCalculator;
+
+    public MaxQuantMSMSConverter(File msmsFile, Map<String,List<PeptideSpectrumMatch>> psms,
+                                 GroupedFDRCalculator groupedFDRCalculator, CountDownLatch latch) {
 
         super(msmsFile, psms, latch);
+
+        this.groupedFDRCalculator = groupedFDRCalculator;
     }
 
     public void run() {
@@ -38,7 +44,7 @@ public class MaxQuantMSMSConverter extends SinglePsmFileConverter {
 
         PeptideSpectrumMatchList peptideSpectrumMatchList = new PeptideSpectrumMatchList(new SpectrumKeyFunctionImpl(), psmPredicate, psmMap);
 
-        MaxQuantPsmReader psmReader = new MaxQuantPsmReader();
+        MaxQuantPsmReader psmReader = new MaxQuantPsmReader(groupedFDRCalculator);
         psmReader.parse(psmFile, peptideSpectrumMatchList);
 
         addPsms(psmMap);

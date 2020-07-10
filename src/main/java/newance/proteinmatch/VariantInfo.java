@@ -14,6 +14,7 @@ package newance.proteinmatch;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author Markus Müller
@@ -21,78 +22,34 @@ import java.util.List;
 
 public class VariantInfo {
 
-    public class VariantSimple {
-
-        final private int position;
-        final private char mutatedAA;
-        final private String info;
-
-        // \VariantSimple=(141|A|rs75062661_0)
-        public VariantSimple(String mutation) {
-
-            mutation = mutation.substring(1,mutation.indexOf(')'));
-            String[] fields = mutation.split("\\|");
-
-            this.position = Integer.parseInt(fields[0]);
-            this.mutatedAA = fields[1].charAt(0);
-            // old versions of fasta files have the format \VariantSimple=(141|A)
-            if (fields.length==3)
-                this.info = fields[2];
-            else
-                this.info = "";
-        }
-
-        public int getPosition() {
-            return position;
-        }
-
-        public char getMutatedAA() {
-            return mutatedAA;
-        }
-
-        public String getInfo() {
-            return info;
-        }
-
-        public String toString() {
-            return String.format("(%d|%s|%s)",position,mutatedAA,info);
-        }
-    }
-
     final protected String proteinID;
-    final protected List<VariantSimple> variants;
+    final protected List<SequenceVariant> variants;
 
+    private VariantInfo(String proteinID, List<SequenceVariant> variants) {
 
-    //>ENSP00000343864.2 \Length=676 \VariantSimple=(579|Q|rs13302979_0) (410|Q|rs34903276_0) (406|E|rs13303368_0) (398|G|rs13302983_0) (663|A|rs7417106_0)
-    public VariantInfo(String header) {
-
-        String[] fields = header.split("\\\\");
-        this.proteinID = fields[0].substring(1).trim();
-        this.variants = new ArrayList<>();
-        for (int i=1;i < fields.length;i++) {
-
-            if (fields[i].startsWith("VariantSimple=")) {
-                String[] variantStrs = fields[i].split("=")[1].split(" ");
-                for (String variant : variantStrs) variants.add(new VariantSimple(variant));
-                break;
-            }
-        }
+        this.proteinID = proteinID;
+        this.variants = variants;
     }
 
     public String getProteinID() {
         return proteinID;
     }
 
-    public List<VariantSimple> getVariants() {
+    public List<SequenceVariant> getVariants() {
         return variants;
     }
 
+    public int size() {return variants.size();}
+
+    public SequenceVariant get(int idx) {
+        return variants.get(idx);
+    }
+
     public String toString() {
-        String varStr = proteinID;
+        String varStr = proteinID + " ";
 
         if (!variants.isEmpty()) {
-            varStr += " \\VariantSimple=";
-            for (VariantSimple variant : variants) varStr += variant.toString()+" ";
+            for (SequenceVariant variant : variants) varStr += variant.toString()+" ";
             return varStr.substring(0,varStr.length()-1);
         } else
             return varStr;
@@ -103,13 +60,85 @@ public class VariantInfo {
         return !variants.isEmpty();
     }
 
-    public String getVariantInfo(int start, char mutatedAA, int peptideVarPos) {
+    //>ENSP00000343864.2 \Length=676 \VariantSimple=(579|Q|rs13302979_0) (410|Q|rs34903276_0) (406|E|rs13303368_0) (398|G|rs13302983_0) (663|A|rs7417106_0)
+    public static VariantInfo parseFastaHeader(String header) {
 
-        for (VariantSimple variant : variants) {
-            // start+peptideVarPos+1 because PEFF format start counting from 1
-            if (variant.getPosition() == start+peptideVarPos+1 && variant.getMutatedAA() == mutatedAA) return variant.getInfo();
+        int pos1 = header.indexOf("\\VariantSimple=");
+        int pos2 = header.indexOf("\\VariantComplex=");
+        int pos4 = header.indexOf("\\Length=");
+
+        int pos3 = header.indexOf(" ");
+        pos3 = (pos3 > 0)?pos3:header.length();
+
+        String proteinID = header.substring(1,pos3);
+
+        int length = -1;
+        if (pos4 >= 0) {
+            pos3 = header.indexOf('\\', pos4 + 1);
+            pos3 = (pos3 < 0) ? header.length() : pos3;
+            length = Integer.parseInt(header.substring(pos4 + "\\Length=".length(), pos3).trim());
         }
 
-        return "";
+        List<SequenceVariant> variants = new ArrayList<>();
+
+        if (pos1>=0) {
+            pos3 = header.indexOf('\\', pos1 + 1);
+            pos3 = (pos3 < 0) ? header.length() : pos3;
+            String varSimpleStr = header.substring(pos1 + "\\VariantSimple=".length(), pos3);
+
+            parseSimpleVariants(proteinID, length, varSimpleStr, variants);
+        }
+
+        if (pos2>=0) {
+            pos3 = header.indexOf('\\', pos2 + 1);
+            pos3 = (pos3 < 0) ? header.length() : pos3;
+            String varComplexStr = header.substring(pos2 + "\\VariantComplex=".length(), pos3);
+
+            parseComplexVariants(proteinID, length, varComplexStr, variants);
+        }
+
+        return new VariantInfo(proteinID, variants);
+    }
+
+    private static void parseSimpleVariants(String proteinID, int proteinLength,
+                                            String varSimpleStr,List<SequenceVariant> variants) {
+
+        int pos = 0;
+        int pos2 = varSimpleStr.indexOf(' ');
+
+        while (pos2>0) {
+            pos = (pos==0)?0:pos+1;
+            if (pos2-pos > 5)
+                variants.add(SequenceVariant.parseSimpleVariantString(proteinID, proteinLength,
+                        varSimpleStr.substring(pos,pos2)));
+            pos = pos2;
+            pos2 = varSimpleStr.indexOf(' ',pos+1);
+        }
+
+        pos = (pos==0)?0:pos+1;
+        if (varSimpleStr.length()-pos > 5)
+            variants.add(SequenceVariant.parseSimpleVariantString(proteinID, proteinLength,
+                    varSimpleStr.substring(pos,varSimpleStr.length())));
+    }
+
+    private static void parseComplexVariants(String proteinID, int proteinLength,
+                                             String varComplexStr,List<SequenceVariant> variants) {
+
+        int pos = 0;
+        int pos2 = varComplexStr.indexOf(' ');
+
+        while (pos2>0) {
+            pos = (pos==0)?0:pos+1;
+            if (pos2-pos > 5)
+                variants.add(SequenceVariant.parseComplexVariantString(proteinID, proteinLength,
+                        varComplexStr.substring(pos,pos2)));
+            pos = pos2;
+            pos2 = varComplexStr.indexOf(' ',pos+1);
+        }
+
+        pos = (pos==0)?0:pos+1;
+        if (varComplexStr.length()-pos > 5)
+            variants.add(SequenceVariant.parseComplexVariantString(proteinID, proteinLength,
+                    varComplexStr.substring(pos,varComplexStr.length())));
     }
 }

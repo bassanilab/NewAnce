@@ -13,9 +13,9 @@ package newance.util;
 
 
 import newance.mzjava.mol.modification.Modification;
+import newance.psmcombiner.ScoreHistogram3D;
 
 import java.io.*;
-import java.nio.BufferUnderflowException;
 import java.nio.file.InvalidPathException;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -28,6 +28,8 @@ import java.util.regex.PatternSyntaxException;
 public class NewAnceParams implements Serializable {
 
     private static NewAnceParams instance = null;
+
+    public enum SearchTool {MAXQUANT,COMET};
 
     // When reading PSM results files the modifications are mapped to the modifications defined here. Modifications are mapped by means of there mass only
     // (this will change in future versions, where the mapping will be done by mass and amino acid)
@@ -59,21 +61,23 @@ public class NewAnceParams implements Serializable {
     private boolean debug = false;
 
     private double fdrCometThreshold = 0.03;
+    private double fdrMaxQuantThreshold = 0.03;
 
     private String groupingMethod = "none";
     private List<String> groupNames = new ArrayList<>();
     private List<Pattern> groupRegExs = new ArrayList<>();
     private Pattern spectrumRegExp = null;
-    private Pattern codingProtRegExp = null;
     private String proteinGroupMapFile = "";
     private Map<String,Set<String>> proteinGroupMap = new HashMap<>();
-    private boolean writeCometTabFile = false;
+    private boolean reportAllPSM = false;
 
     private int minNrPsmsPerHisto = 100000;
 
     private String outputTag = "";
 
     private int nrBins3D = 40;
+
+    //Comet histo data
     private double minXCorr = 0.0;
     private double maxXCorr = 5.0;
     private int nrXCorrBins = nrBins3D;
@@ -84,17 +88,27 @@ public class NewAnceParams implements Serializable {
     private double maxSpScore = 2500.0;
     private int nrSpScoreBins = nrBins3D;
 
+    // MaxQuant histo data
+    private double minScore = 0.0;
+    private double maxScore = 500.0;
+    private int nrScoreBins = nrBins3D;
+    private double minDeltaScore = 0.0;
+    private double maxDeltaScore = 300.0;
+    private int nrDeltaScoreBins = nrBins3D;
+    private double minPEP = 0.0;
+    private double maxPEP = 0.1;
+    private int nrPEPBins = nrBins3D;
+
     private int smoothDegree = 1;
 
     private String fdrControlMethod = "combined";
 
-    private String version = "1.6.1";
+    private String version = "1.7.0";
 
     private String cometPsmDir = "";
     private String maxquantPsmDir = "";
     private Pattern cometPsmRegExp = null;
     private Pattern maxquantPsmRegExp = null;
-    private boolean includeMaxQuant = false;
     private String outputDir = "";
     private boolean reportHistos = false;
     private String readHistos = "";
@@ -146,8 +160,8 @@ public class NewAnceParams implements Serializable {
         res +=  "smoothDegree="+smoothDegree+"\n";
         res +=  "nrThreads="+nrThreads+"\n";
         res +=  "fdrCometThreshold="+fdrCometThreshold+"\n";
+        res +=  "fdrMaxQuantThreshold="+fdrMaxQuantThreshold+"\n";
         res +=  "spectrumRegExp="+spectrumRegExp+"\n";
-        res +=  "codingProtRegExp="+ codingProtRegExp +"\n";
         res +=  "proteinGroupMapFile="+ proteinGroupMapFile +"\n";
         res +=  "minNrPsmsPerHisto="+minNrPsmsPerHisto+"\n";
         res +=  "outputTag="+ outputTag +"\n";
@@ -160,13 +174,21 @@ public class NewAnceParams implements Serializable {
         res +=  "minSpScore="+minSpScore+"\n";
         res +=  "maxSpScore="+maxSpScore+"\n";
         res +=  "nrSpScoreBins="+nrSpScoreBins+"\n";
+        res +=  "minScore1="+minScore+"\n";
+        res +=  "maxScore1="+maxScore+"\n";
+        res +=  "nrScore1Bins="+nrScoreBins+"\n";
+        res +=  "minScore2="+minDeltaScore+"\n";
+        res +=  "maxScore2="+maxDeltaScore+"\n";
+        res +=  "nrScore2Bins="+nrDeltaScoreBins+"\n";
+        res +=  "minScore3="+minPEP+"\n";
+        res +=  "maxScore3="+maxPEP+"\n";
+        res +=  "nrScore3Bins="+nrPEPBins+"\n";
         res +=  "fdrControlMethod="+fdrControlMethod+"\n";
         res +=  "version="+version+"\n";
         res +=  "cometPsmDir="+cometPsmDir+"\n";
         res +=  "maxquantPsmDir="+maxquantPsmDir+"\n";
         res +=  "cometPsmRegExp="+cometPsmRegExp+"\n";
         res +=  "maxquantPsmRegExp="+maxquantPsmRegExp+"\n";
-        res +=  "includeMaxQuant="+includeMaxQuant+"\n";
         res +=  "outputDir="+outputDir+"\n";
         res +=  "reportHistos="+reportHistos+"\n";
         res +=  "readHistos="+readHistos+"\n";
@@ -181,7 +203,7 @@ public class NewAnceParams implements Serializable {
         res +=  "groupingMethod="+groupingMethod+"\n";
         res +=  "groupNames="+iterableStringToString(groupNames)+"\n";
         res +=  "groupRegExs="+iterablePatternToString(groupRegExs)+"\n";
-        res +=  "writeCometTabFile="+writeCometTabFile+"\n";
+        res +=  "reportAllPSM="+ reportAllPSM +"\n";
         res +=  "writeParamsFile="+writeParamsFile+"\n";
 
         return res;
@@ -218,7 +240,7 @@ public class NewAnceParams implements Serializable {
             String buf = "";
             Set<Modification> modifs = new HashSet<>();
             try {
-                for (String modif : getSetValue("modifications", variableValueMap.get("modifications"))) {
+                for (String modif : getSetValue( variableValueMap.get("modifications"))) {
                     buf = modif;
                     if (!modif.trim().isEmpty()) modifs.add(Modification.parseModification(modif));
                 }
@@ -280,19 +302,23 @@ public class NewAnceParams implements Serializable {
             fdrCometThreshold = getDoubleValue("fdrCometThreshold",variableValueMap.get("fdrCometThreshold"), 0.0, Double.MAX_VALUE);
         }
 
+        if (variableValueMap.containsKey("fdrMaxQuantThreshold")) {
+            fdrMaxQuantThreshold = getDoubleValue("fdrMaxQuantThreshold",variableValueMap.get("fdrMaxQuantThreshold"), 0.0, Double.MAX_VALUE);
+        }
+
         if (variableValueMap.containsKey("groupingMethod")) {
             groupingMethod = getStringValue("groupingMethod",variableValueMap.get("groupingMethod"),new HashSet<>(Arrays.asList(new String[]{"fasta","modif","none"})));
         }
 
         if (variableValueMap.containsKey("groupNames")) {
-            groupNames = getListValue("groupNames",variableValueMap.get("groupNames"));
+            groupNames = getListValue(variableValueMap.get("groupNames"));
 
             if (hasDuplicates(groupNames)) throw new RuntimeException("Duplicates in groupNames: "+groupNames+". Abort.");
             if (hasNA(groupNames)) throw new RuntimeException("Empty items in groupNames: "+groupNames+". Abort.");
         }
 
         if (variableValueMap.containsKey("groupRegExs")) {
-            List<String> groupRegExStr = getListValue("groupRegExs",variableValueMap.get("groupRegExs"));
+            List<String> groupRegExStr = getListValue(variableValueMap.get("groupRegExs"));
             if (hasDuplicates(groupRegExStr)) throw new RuntimeException("Duplicates in groupRegExs: "+groupRegExStr+". Abort.");
             if (hasNA(groupRegExStr)) throw new RuntimeException("Empty items in groupRegExs: "+groupRegExStr+". Abort.");
 
@@ -307,14 +333,8 @@ public class NewAnceParams implements Serializable {
 
         }
 
-        if (variableValueMap.containsKey("writeCometTabFile")) {
-            writeCometTabFile = getBooleanValue("writeCometTabFile",variableValueMap.get("writeCometTabFile"));
-        }
-
-        if (variableValueMap.containsKey("codingProtRegExp")) {
-            codingProtRegExp = getPatternValue("codingProtRegExp",variableValueMap.get("codingProtRegExp"));
-            groupRegExs.add(codingProtRegExp);
-            groupingMethod = "fasta";
+        if (variableValueMap.containsKey("reportAllPSM")) {
+            reportAllPSM = getBooleanValue("reportAllPSM",variableValueMap.get("reportAllPSM"));
         }
 
         if (variableValueMap.containsKey("spectrumRegExp")) {
@@ -370,6 +390,42 @@ public class NewAnceParams implements Serializable {
             nrSpScoreBins = getIntegerValue("nrSpScoreBins",variableValueMap.get("nrSpScoreBins"), 1, 100000);
         }
 
+        if (variableValueMap.containsKey("minScore1")) {
+            minScore = getDoubleValue("minScore1",variableValueMap.get("minScore1"), 0.0, Double.MAX_VALUE);
+        }
+
+        if (variableValueMap.containsKey("maxScore1")) {
+            maxScore = getDoubleValue("maxScore1",variableValueMap.get("maxScore1"), 0.0, Double.MAX_VALUE);
+        }
+
+        if (variableValueMap.containsKey("nrScore1Bins")) {
+            nrScoreBins = getIntegerValue("nrScore1Bins",variableValueMap.get("nrScore1Bins"), 1, 100000);
+        }
+
+        if (variableValueMap.containsKey("minScore2")) {
+            minDeltaScore = getDoubleValue("minScore2",variableValueMap.get("minScore2"), 0.0, Double.MAX_VALUE);
+        }
+
+        if (variableValueMap.containsKey("maxScore2")) {
+            maxDeltaScore = getDoubleValue("maxScore2",variableValueMap.get("maxScore2"), 0.0, Double.MAX_VALUE);
+        }
+
+        if (variableValueMap.containsKey("nrScore2Bins")) {
+            nrDeltaScoreBins = getIntegerValue("nrScore2Bins",variableValueMap.get("nrScore2Bins"), 1, 100000);
+        }
+
+        if (variableValueMap.containsKey("minScore3")) {
+            minPEP = getDoubleValue("minScore3",variableValueMap.get("minScore3"), 0.0, Double.MAX_VALUE);
+        }
+
+        if (variableValueMap.containsKey("maxScore3")) {
+            maxPEP = getDoubleValue("maxScore3",variableValueMap.get("maxScore3"), 0.0, Double.MAX_VALUE);
+        }
+
+        if (variableValueMap.containsKey("nrScore3Bins")) {
+            nrPEPBins = getIntegerValue("nrScore3Bins",variableValueMap.get("nrScore3Bins"), 1, 100000);
+        }
+
         if (variableValueMap.containsKey("fdrControlMethod")) {
             fdrControlMethod = getStringValue("fdrControlMethod",variableValueMap.get("fdrControlMethod").trim().toLowerCase(),
             new HashSet<>(Arrays.asList(new String[]{"combined","separate"})));
@@ -383,21 +439,12 @@ public class NewAnceParams implements Serializable {
             cometPsmRegExp = getPatternValue("cometPsmRegExp",variableValueMap.get("cometPsmRegExp"));
         }
 
-        if (variableValueMap.containsKey("includeMaxQuant")) {
-            includeMaxQuant = getBooleanValue("includeMaxQuant",variableValueMap.get("includeMaxQuant"));
+        if (variableValueMap.containsKey("maxquantPsmDir")) {
+            maxquantPsmDir = getDirectoryValue("maxquantPsmDir", variableValueMap.get("maxquantPsmDir"));
         }
 
-        if (includeMaxQuant) {
-
-            if (variableValueMap.containsKey("maxquantPsmDir")) {
-                maxquantPsmDir = getDirectoryValue("maxquantPsmDir", variableValueMap.get("maxquantPsmDir"));
-            } else {
-                throw new RuntimeException("No valid value for MaxQuant directory provided. Abort");
-            }
-
-            if (variableValueMap.containsKey("maxquantPsmRegExp")) {
-                maxquantPsmRegExp = getPatternValue("maxquantPsmRegExp", variableValueMap.get("maxquantPsmRegExp"));
-            }
+        if (variableValueMap.containsKey("maxquantPsmRegExp")) {
+            maxquantPsmRegExp = getPatternValue("maxquantPsmRegExp", variableValueMap.get("maxquantPsmRegExp"));
         }
 
         if (variableValueMap.containsKey("outputDir")) {
@@ -499,7 +546,7 @@ public class NewAnceParams implements Serializable {
 
     public static Set<Modification> getModifications(String variable, String value) {
 
-        Set<String> modifStrs = getSetValue(variable, value);
+        Set<String> modifStrs = getSetValue(value);
         Set<Modification> modifications = new HashSet<>();
 
         for (String modifStr : modifStrs) {
@@ -514,7 +561,7 @@ public class NewAnceParams implements Serializable {
         return modifications;
     }
 
-    public static String getStringValue(String variable, String value, Set<String> allowedValues) {
+    private static String getStringValue(String variable, String value, Set<String> allowedValues) {
 
         if (allowedValues.contains(value)) {
             return value;
@@ -523,7 +570,7 @@ public class NewAnceParams implements Serializable {
         }
     }
 
-    public static String getStringValue(String variable, String value) {
+    private static String getStringValue(String variable, String value) {
 
         if (!value.isEmpty()) {
             return value;
@@ -532,7 +579,7 @@ public class NewAnceParams implements Serializable {
         }
     }
 
-    public static Pattern getPatternValue(String variable, String value) {
+    private static Pattern getPatternValue(String variable, String value) {
 
         if (value.isEmpty()) return null;
 
@@ -543,7 +590,7 @@ public class NewAnceParams implements Serializable {
         }
     }
 
-    public static boolean getBooleanValue(String variable, String value) {
+    private static boolean getBooleanValue(String variable, String value) {
 
         if (value.toLowerCase().equals("true")) {
             return true;
@@ -564,7 +611,7 @@ public class NewAnceParams implements Serializable {
         return value;
     }
 
-    public static String getNewDirectoryValue(String variable, String value) {
+    private static String getNewDirectoryValue(String variable, String value) {
 
         File dir = new File(value);
 
@@ -589,7 +636,7 @@ public class NewAnceParams implements Serializable {
         return value;
     }
 
-    public static Double getDoubleValue(String variable, String value, double min, double max) {
+    private static Double getDoubleValue(String variable, String value, double min, double max) {
 
         Double d;
         try {
@@ -606,7 +653,7 @@ public class NewAnceParams implements Serializable {
         }
     }
 
-    public static Integer getIntegerValue(String variable, String value, int min, int max) {
+    private static Integer getIntegerValue(String variable, String value, int min, int max) {
 
         Integer i;
         try {
@@ -622,7 +669,7 @@ public class NewAnceParams implements Serializable {
         }
     }
 
-    public static Set<String> getSetValue(String variable, String value) {
+    public static Set<String> getSetValue(String value) {
 
         int i = 0;
         while (value.charAt(i)=='[' && i<value.length()) i++;
@@ -642,7 +689,7 @@ public class NewAnceParams implements Serializable {
         }
     }
 
-    public static List<String> getListValue(String variable, String value) {
+    private static List<String> getListValue(String value) {
 
         int i = 0;
         while (value.charAt(i)=='[' && i<value.length()) i++;
@@ -662,7 +709,7 @@ public class NewAnceParams implements Serializable {
         }
     }
 
-    protected static boolean hasDuplicates(List<String> list) {
+    private static boolean hasDuplicates(List<String> list) {
 
 
         for (int i=0;i<list.size()-1;i++) {
@@ -677,7 +724,7 @@ public class NewAnceParams implements Serializable {
     }
 
 
-    protected static boolean hasNA(List<String> list) {
+    private static boolean hasNA(List<String> list) {
 
         for (int i=0;i<list.size();i++) {
             if (list.get(i).isEmpty()) return true;
@@ -686,7 +733,7 @@ public class NewAnceParams implements Serializable {
         return false;
     }
 
-    protected String iterableStringToString(Iterable<String> iterable) {
+    private String iterableStringToString(Iterable<String> iterable) {
         String outStr = "[";
 
         for (String s : iterable) {
@@ -697,7 +744,7 @@ public class NewAnceParams implements Serializable {
         return outStr;
     }
 
-    protected String iterablePatternToString(Iterable<Pattern> iterable) {
+    private String iterablePatternToString(Iterable<Pattern> iterable) {
         String outStr = "[";
 
         for (Pattern p : iterable) {
@@ -708,7 +755,7 @@ public class NewAnceParams implements Serializable {
         return outStr;
     }
 
-    protected String iterableModifToString(Iterable<Modification> iterable) {
+    private String iterableModifToString(Iterable<Modification> iterable) {
         String outStr = "[";
 
         for (Modification m : iterable) {
@@ -719,14 +766,14 @@ public class NewAnceParams implements Serializable {
         return outStr;
     }
 
-    protected static Map<String,Set<String>> readProteinGroupMapFile(String fileName) {
+    private static Map<String,Set<String>> readProteinGroupMapFile(String fileName) {
 
         Map<String,Set<String>> proteinGroupMap = new HashMap<>();
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)));
 
-            String line = "";
+            String line;
 
             while ((line = reader.readLine())!=null) {
                 String[] fields = line.split("\t");
@@ -797,10 +844,6 @@ public class NewAnceParams implements Serializable {
         return spectrumRegExp;
     }
 
-    public Pattern getCodingProtRegExp() {
-        return codingProtRegExp;
-    }
-
     public Map<String,Set<String>> getProteinGroupMap() {
         return proteinGroupMap;
     }
@@ -811,46 +854,6 @@ public class NewAnceParams implements Serializable {
 
     public String getOutputTag() {
         return outputTag;
-    }
-
-    public int getNrBins3D() {
-        return nrBins3D;
-    }
-
-    public double getMinXCorr() {
-        return minXCorr;
-    }
-
-    public double getMaxXCorr() {
-        return maxXCorr;
-    }
-
-    public int getNrXCorrBins() {
-        return nrXCorrBins;
-    }
-
-    public double getMinDeltaCn() {
-        return minDeltaCn;
-    }
-
-    public double getMaxDeltaCn() {
-        return maxDeltaCn;
-    }
-
-    public int getNrDeltaCnBins() {
-        return nrDeltaCnBins;
-    }
-
-    public double getMinSpScore() {
-        return minSpScore;
-    }
-
-    public double getMaxSpScore() {
-        return maxSpScore;
-    }
-
-    public int getNrSpScoreBins() {
-        return nrSpScoreBins;
     }
 
     public String getFdrControlMethod() {
@@ -875,10 +878,6 @@ public class NewAnceParams implements Serializable {
 
     public Pattern getMaxquantPsmRegExp() {
         return maxquantPsmRegExp;
-    }
-
-    public boolean isIncludeMaxQuant() {
-        return includeMaxQuant;
     }
 
     public String getOutputDir() {
@@ -953,7 +952,114 @@ public class NewAnceParams implements Serializable {
         return groupRegExs;
     }
 
-    public boolean isWriteCometTabFile() {
-        return writeCometTabFile;
+    public boolean reportAllPSM() {
+        return reportAllPSM;
+    }
+
+    public double getFdrMaxQuantThreshold() {
+        return fdrMaxQuantThreshold;
+    }
+
+    public double getFdrThreshold(SearchTool searchTool) {
+        if (searchTool==SearchTool.COMET)
+            return fdrCometThreshold;
+        else
+            return fdrMaxQuantThreshold;
+    }
+
+    public ScoreHistogram3D getScoreHistogram3D(SearchTool searchTool) {
+
+        if (searchTool==SearchTool.COMET) {
+            int[] nrBins = new int[3];
+            nrBins[0] = nrXCorrBins;
+            nrBins[1] = nrDeltaCnBins;
+            nrBins[2] = nrSpScoreBins;
+            return new ScoreHistogram3D(nrBins, minXCorr, maxXCorr, nrXCorrBins, minDeltaCn, maxDeltaCn, nrDeltaCnBins,
+                    minSpScore, maxSpScore, nrSpScoreBins, "xcorr", "deltacn", "spscore");
+        } else {
+
+            int[] nrBins = new int[3];
+            nrBins[0] = nrScoreBins;
+            nrBins[1] = nrDeltaScoreBins;
+            nrBins[2] = nrPEPBins;
+            return new ScoreHistogram3D(nrBins, minScore, maxScore, nrScoreBins, minDeltaScore, maxDeltaScore,
+                    nrDeltaScoreBins, minPEP, maxPEP, nrPEPBins, "Score", "Delta score", "PEP");
+        }
+    }
+
+    public int getNrBins3D() {
+        return nrBins3D;
+    }
+
+    public double getMinXCorr() {
+        return minXCorr;
+    }
+
+    public double getMaxXCorr() {
+        return maxXCorr;
+    }
+
+    public int getNrXCorrBins() {
+        return nrXCorrBins;
+    }
+
+    public double getMinDeltaCn() {
+        return minDeltaCn;
+    }
+
+    public double getMaxDeltaCn() {
+        return maxDeltaCn;
+    }
+
+    public int getNrDeltaCnBins() {
+        return nrDeltaCnBins;
+    }
+
+    public double getMinSpScore() {
+        return minSpScore;
+    }
+
+    public double getMaxSpScore() {
+        return maxSpScore;
+    }
+
+    public int getNrSpScoreBins() {
+        return nrSpScoreBins;
+    }
+
+    public double getMinScore() {
+        return minScore;
+    }
+
+    public double getMaxScore() {
+        return maxScore;
+    }
+
+    public int getNrScoreBins() {
+        return nrScoreBins;
+    }
+
+    public double getMinDeltaScore() {
+        return minDeltaScore;
+    }
+
+    public double getMaxDeltaScore() {
+        return maxDeltaScore;
+    }
+
+    public int getNrDeltaScoreBins() {
+        return nrDeltaScoreBins;
+    }
+
+    public double getMinPEP() {
+        return minPEP;
+    }
+
+    public double getMaxPEP() {
+        return maxPEP;
+    }
+
+    public int getNrPEPBins() {
+        return nrPEPBins;
     }
 }

@@ -13,9 +13,11 @@ package newance.psmconverter;
 import newance.mzjava.mol.modification.AbsoluteTolerance;
 import newance.mzjava.mol.modification.ModListModMatchResolver;
 import newance.mzjava.mol.modification.Modification;
+import newance.psmcombiner.GroupedFDRCalculator;
 import newance.util.NewAnceParams;
 import newance.util.PsmPredicate;
 import org.junit.Ignore;
+import org.junit.Test;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
@@ -47,7 +49,7 @@ public class PepXMLParserTest {
         Collection<Modification> modifications = params.getModifications();
         ModListModMatchResolver modMatchResolver = new ModListModMatchResolver(new AbsoluteTolerance(params.getModifMatchMassTol()), modifications);
 
-        CometPEFFPepXmlReader psmReader = new CometPEFFPepXmlReader( true, modMatchResolver);
+        CometPEFFPepXmlReader psmReader = new CometPEFFPepXmlReader( null, true, modMatchResolver);
         psmReader.parse(new File(psmFile), peptideSpectrumMatchList);
     }
 

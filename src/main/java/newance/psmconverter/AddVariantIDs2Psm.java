@@ -10,15 +10,10 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.psmconverter;
 
-import newance.proteinmatch.PeptideUniProtSequenceMatch;
-import newance.proteinmatch.VariantInfo;
-import newance.proteinmatch.VariantProtDB;
-import newance.proteinmatch.VariantProtein;
+import newance.proteinmatch.*;
+import newance.util.NewAnceParams;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.BiConsumer;
 
 /**
@@ -35,14 +30,36 @@ public class AddVariantIDs2Psm implements BiConsumer<String,List<PeptideSpectrum
 
     public void add(PeptideSpectrumMatch psm) {
 
-        if (!psm.isVariant() || psm.isDecoy()) return;
+        String seq = psm.getPeptide().toSymbolString();
+        String firstProtein = psm.getFirstProteinAC();
 
-        Map<String, List<PeptideUniProtSequenceMatch>> matches = variantProtDB.findPeptide(psm.getWTSequence());
+        if (psm.isDecoy()) {
+            seq = reverse(seq).substring(0,seq.length()-1);
+            if (firstProtein.startsWith("DECOY_"))
+                firstProtein = firstProtein.substring("DECOY_".length());
+        }
 
-        for (String ac : matches.keySet()) {
-            for (PeptideUniProtSequenceMatch peptideMatch : matches.get(ac)) {
-                VariantInfo variantInfo = ((VariantProtein)peptideMatch.getProtein()).getVariantInfo();
-                psm.addVariantAnnot(peptideMatch.getStart(), variantInfo);
+        VariantProtein protein = (VariantProtein) variantProtDB.getProtein(firstProtein);
+
+        if (protein == null)
+            System.out.println("No protein in VariantDB found for peptide " + seq + " from "+
+            firstProtein);
+        else {
+            if (psm.isVariant()) {
+                List<SequenceVariant> variants = protein.matchWithVariant(seq);
+                if (variants != null && !variants.isEmpty()) {
+                    psm.setSequenceVariants(variants);
+                    psm.setPeptideStart(protein.getPeptideStart());
+                    psm.setWtSequence(protein.getWTSequence(psm.getPeptideStart(), seq.length(), 10));
+                } else {
+                    if (!psm.isDecoy()) System.out.println(psm.getPeptide().toSymbolString() + "(" + protein.toString() +
+                            ")" + " does not contain variants.");
+                    psm.setVariant(false);
+                }
+            } else {
+                int start = protein.getSequence().indexOf(seq);
+                psm.setPeptideStart(start);
+                psm.setWtSequence(reverse(protein.getWTSequence(start, seq.length(),10)));
             }
         }
     }
@@ -54,6 +71,23 @@ public class AddVariantIDs2Psm implements BiConsumer<String,List<PeptideSpectrum
             add(peptideSpectrumMatch);
         }
     }
+
+    public VariantProtDB getVariantProtDB() {
+        return variantProtDB;
+    }
+
+    protected static String reverse(String seq) {
+
+        char[] array = seq.toCharArray();
+        for (int i = 0; i<array.length/2; i++) {
+            char tmp = array[i];
+            array[i] = array[array.length-1-i];
+            array[array.length-1-i] = tmp;
+        }
+
+        return new String(array);
+    }
+
 
 }
 

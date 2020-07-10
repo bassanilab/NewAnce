@@ -48,4 +48,16 @@ public class FastaProtein {
     public void setSequence(char[] sequence) {
         this.sequence = sequence;
     }
+
+
+    public String getWTSequence(int start, int length, int offset) {
+
+        if (start < 0 || start >= sequence.length) return "";
+
+        start = (start-offset < 0)?0:start-offset;
+        length = (start+length+2*offset < sequence.length)?length+2*offset:sequence.length-start;
+
+        return String.copyValueOf(sequence, start, length);
+    }
+
 }

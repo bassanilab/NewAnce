@@ -113,14 +113,19 @@ public class AddVariantIDs2PsmTest {
 
         Peptide peptide = Peptide.parse("QSEDGSHTIQIMY");
 
-        List<Integer> varPos = new ArrayList<>();
-        List<Character> wtAAs = new ArrayList<>();
-        varPos.add(3);
-        wtAAs.add('A');
+        List<SequenceVariant> variants = new ArrayList<>();
 
-        PeptideSpectrumMatch psm = new PeptideSpectrumMatch("Spectrum_file", peptide, new HashSet<>(),
+        variants.add(new SequenceVariant("ENSP00000379873.1", 365,3,"A",""));
+
+        List<String> proteins = new ArrayList<>();
+        proteins.add("ENSP00000379873.1");
+        proteins.add("ENSP00000366002.5");
+        proteins.add("ENSP00000366005.5");
+        proteins.add("ENSP00000365998.2");
+
+        PeptideSpectrumMatch psm = new PeptideSpectrumMatch("Spectrum_file", peptide, proteins,
                 new TObjectDoubleHashMap<>(), 2, 1, 100, 100, 1507.661308,
-                false, true, varPos, wtAAs);
+                false, true, variants);
 
 
         List<PeptideSpectrumMatch> psms = new ArrayList<>();
@@ -128,10 +133,8 @@ public class AddVariantIDs2PsmTest {
 
         addVariantIDs2Psm.accept("spec_id", psms);
 
-        Assert.assertEquals(3, psm.getVariantAnnots().size());
-        Assert.assertTrue(psm.getVariantAnnots().contains("rs1136692_2"));
-        Assert.assertTrue(psm.getVariantAnnots().contains("rs1136692_1"));
-        Assert.assertTrue(psm.getVariantAnnots().contains("rs1136692_0"));
+        Assert.assertEquals(1, psm.getVariants().size());
+        Assert.assertEquals("rs1136692_0",psm.getVariants().get(0).getInfo());
 
     }
 }

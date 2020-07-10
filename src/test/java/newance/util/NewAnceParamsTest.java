@@ -25,7 +25,7 @@ public class NewAnceParamsTest {
 
         String setStr = "[[a,b,c,d,e]]";
 
-        Set<String> set = NewAnceParams.getSetValue("bla",setStr);
+        Set<String> set = NewAnceParams.getSetValue(setStr);
 
         Assert.assertEquals(5,set.size());
         Assert.assertTrue(set.contains("a"));
@@ -36,7 +36,7 @@ public class NewAnceParamsTest {
 
         setStr = "[a,b,c,d,e]";
 
-        set = NewAnceParams.getSetValue("bla",setStr);
+        set = NewAnceParams.getSetValue(setStr);
 
         Assert.assertEquals(5,set.size());
         Assert.assertTrue(set.contains("a"));
@@ -48,7 +48,7 @@ public class NewAnceParamsTest {
 
         setStr = "[a,b,c,d,e[1]]";
 
-        set = NewAnceParams.getSetValue("bla",setStr);
+        set = NewAnceParams.getSetValue(setStr);
 
         Assert.assertEquals(5,set.size());
         Assert.assertTrue(set.contains("a"));
@@ -60,7 +60,7 @@ public class NewAnceParamsTest {
 
         setStr = "[[1]a,b,c,d,e]";
 
-        set = NewAnceParams.getSetValue("bla",setStr);
+        set = NewAnceParams.getSetValue(setStr);
 
         Assert.assertEquals(5,set.size());
         Assert.assertTrue(set.contains("[1]a"));
@@ -72,7 +72,7 @@ public class NewAnceParamsTest {
 
         setStr = "a,b,c,d,e";
 
-        set = NewAnceParams.getSetValue("bla",setStr);
+        set = NewAnceParams.getSetValue(setStr);
 
         Assert.assertEquals(5,set.size());
         Assert.assertTrue(set.contains("a"));

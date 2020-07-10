@@ -76,5 +76,8 @@ public class AddUniProtIDs2Psm implements BiConsumer<String,List<PeptideSpectrum
         }
     }
 
+    public UniProtDB getUniProtDB() {
+        return uniProtDB;
+    }
 }
 

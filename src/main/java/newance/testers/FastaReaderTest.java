@@ -10,9 +10,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.testers;
 
-import newance.proteinmatch.FastaProtein;
-import newance.proteinmatch.UniProtDB;
-import newance.proteinmatch.UniProtProtein;
+import newance.proteinmatch.*;
 import newance.util.ExecutableOptions;
 import newance.util.NewAnceParams;
 import newance.util.RunTime2String;
@@ -29,11 +27,13 @@ public class FastaReaderTest extends ExecutableOptions {
     protected String fastaFile;
     protected NewAnceParams params;
     protected int maxNrDisplayedPSMs;
-
+    protected String fileType;
 
     public FastaReaderTest() {
 
         createOptions();
+        fileType = "uniprot";
+        maxNrDisplayedPSMs = -1;
     }
 
     public static void main(String[] args) {
@@ -60,20 +60,29 @@ public class FastaReaderTest extends ExecutableOptions {
     public int run() throws IOException {
 
         long start = System.currentTimeMillis();
-        UniProtDB uniProtDB = new UniProtDB(fastaFile);
-        System.out.println("Reading fasta in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
 
+        FastaDB fastaDB;
+        if (fileType.equals("uniprot")) fastaDB = new UniProtDB(fastaFile);
+        else fastaDB = new VariantProtDB(fastaFile);
+
+        System.out.println("Reading fasta in " + RunTime2String.getTimeDiffString(System.currentTimeMillis() - start));
         int cnt = 0;
 
-        System.out.println("NewAnceID\tProteinID\tProtName\tGeneName\tDescription\tDB\tSequence\n");
+        System.out.println("\nNewAnceID\tProteinID\tProtName\tGeneName\tDescription\tDB\tSequence");
 
-        for (FastaProtein prot : uniProtDB.getProteins()) {
+        for (FastaProtein prot : fastaDB.getProteins()) {
             if(maxNrDisplayedPSMs>=0 && cnt>=maxNrDisplayedPSMs) break;
 
-            UniProtProtein protein = (UniProtProtein) prot;
-            System.out.print(protein.toString()+"\t"+prot.getProteinID()+"\t"+protein.getUniProtName()+"\t"+
-                    protein.getGeneName()+"\t"+protein.getDescription()+"\t");
-            System.out.println(protein.getDbFlag()+"\t"+prot.getSequence());
+            if (fileType.equals("uniprot")) {
+                UniProtProtein protein = (UniProtProtein) prot;
+                System.out.println(protein.toString() + "\t" + prot.getProteinID() + "\t" + protein.getUniProtName() + "\t" +
+                        protein.getGeneName() + "\t" + protein.getDescription() + "\t" + protein.getDbFlag());
+                System.out.println(prot.getSequence());
+            } else {
+                VariantProtein protein = (VariantProtein) prot;
+                System.out.println(protein.toString());
+                System.out.println(prot.getSequence());
+            }
             cnt++;
         }
 
@@ -85,6 +94,7 @@ public class FastaReaderTest extends ExecutableOptions {
 
         this.cmdLineOpts = new Options();
 
+        cmdLineOpts.addOption(Option.builder("t").required(false).hasArg(true).longOpt("fileType").desc("Fasta file type to be tested (uniprot or peff)").build());
         cmdLineOpts.addOption(Option.builder("fa").required(false).hasArg().longOpt("fastaFile").desc("Fasta file to be tested").build());
         cmdLineOpts.addOption(Option.builder("maxP").required(false).hasArg().longOpt("maxDisplayedPsms").desc("Maximal number of psms written to standard output").build());
         cmdLineOpts.addOption(Option.builder("h").required(false).hasArg(false).longOpt("help").desc("Help option for command line help").build());
@@ -100,7 +110,8 @@ public class FastaReaderTest extends ExecutableOptions {
         maxNrDisplayedPSMs = (maxPStr.isEmpty())?-1:Integer.parseInt(maxPStr);
 
         fastaFile = getOptionString(line,"fa");
-
+        fileType = getOptionString(line, "t").toLowerCase();
+        if (fileType.isEmpty()) fileType = "uniprot";
     }
 
 }

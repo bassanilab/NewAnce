@@ -19,9 +19,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -39,7 +37,7 @@ public class GroupedFDRCalculatorTest {
         groups.add("cryptic");
 
         RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(regex,groups);
-        GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper);
+        GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper, NewAnceParams.SearchTool.COMET);
 
         System.out.print(groupedFDRCalculator.printTree(1));
     }
@@ -54,19 +52,19 @@ public class GroupedFDRCalculatorTest {
         groups.add("cryptic");
 
         RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(regex,groups);
-        GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper);
+        GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper, NewAnceParams.SearchTool.COMET);
 
         TObjectDoubleMap<String> scoreMap = new TObjectDoubleHashMap<>();
         scoreMap.put("xcorr", NewAnceParams.getInstance().getMinXCorr());
         scoreMap.put("deltacn", NewAnceParams.getInstance().getMinDeltaCn());
         scoreMap.put("spscore", NewAnceParams.getInstance().getMinSpScore());
 
-        Set<String> prots = new HashSet<>();
+        List<String> prots = new ArrayList<>();
         prots.add("sp|protein1");
         prots.add("protein2");
 
         PeptideSpectrumMatch peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile", Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
 
         groupedFDRCalculator.add(peptideSpectrumMatch);
 
@@ -88,27 +86,27 @@ public class GroupedFDRCalculatorTest {
         groups.add("cryptic");
 
         RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(regex,groups);
-        GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper);
+        GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper, NewAnceParams.SearchTool.COMET);
 
         NewAnceParams params = NewAnceParams.getInstance();
-        CometScoreHistogram cometScoreHistogram = CometScoreHistogramTest.buildScoreHisto();
+        ScoreHistogram3D scoreHistogram3D = ScoreHistogram3DTest.buildScoreHisto();
 
-        List<Float> xcorrMids = cometScoreHistogram.calcMids(cometScoreHistogram.calcBreaks((float)params.getMinXCorr(),(float)params.getMaxXCorr(),params.getNrXCorrBins()));
-        List<Float> deltacnMids = cometScoreHistogram.calcMids(cometScoreHistogram.calcBreaks((float)params.getMinDeltaCn(),(float)params.getMaxDeltaCn(),params.getNrDeltaCnBins()));
-        List<Float> spscoreMids = cometScoreHistogram.calcMids(cometScoreHistogram.calcBreaks((float)params.getMinSpScore(),(float)params.getMaxSpScore(),params.getNrSpScoreBins()));
+        List<Float> xcorrMids = scoreHistogram3D.calcMids(scoreHistogram3D.calcBreaks((float)params.getMinXCorr(),(float)params.getMaxXCorr(),params.getNrXCorrBins()));
+        List<Float> deltacnMids = scoreHistogram3D.calcMids(scoreHistogram3D.calcBreaks((float)params.getMinDeltaCn(),(float)params.getMaxDeltaCn(),params.getNrDeltaCnBins()));
+        List<Float> spscoreMids = scoreHistogram3D.calcMids(scoreHistogram3D.calcBreaks((float)params.getMinSpScore(),(float)params.getMaxSpScore(),params.getNrSpScoreBins()));
 
         int xcorrIdx = xcorrMids.size()/2;
         int deltacnIdx = deltacnMids.size()/2;
         int spscoreIdx = spscoreMids.size()/2;
 
-        Set<String> prots = new HashSet<>();
+        List<String> prots = new ArrayList<>();
         prots.add("sp|protein1");
         prots.add("protein2");
         addPsms(xcorrIdx,deltacnIdx,spscoreIdx,groupedFDRCalculator,prots, 10, false);
         addPsms(xcorrIdx,deltacnIdx,spscoreIdx,groupedFDRCalculator,prots, 1, true);
         addPsms(xcorrIdx+5,deltacnIdx+5,spscoreIdx+5,groupedFDRCalculator,prots, 1, false);
 
-        prots = new HashSet<>();
+        prots = new ArrayList<>();
         prots.add("protein3");
         prots.add("protein4");
         addPsms(xcorrIdx,deltacnIdx,spscoreIdx,groupedFDRCalculator,prots, 2, false);
@@ -152,27 +150,27 @@ public class GroupedFDRCalculatorTest {
         groups.add("cryptic");
 
         RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(regex,groups);
-        GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper);
+        GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper, NewAnceParams.SearchTool.COMET);
 
         NewAnceParams params = NewAnceParams.getInstance();
-        CometScoreHistogram cometScoreHistogram = CometScoreHistogramTest.buildScoreHisto();
+        ScoreHistogram3D scoreHistogram3D = ScoreHistogram3DTest.buildScoreHisto();
 
-        List<Float> xcorrMids = cometScoreHistogram.calcMids(cometScoreHistogram.calcBreaks((float)params.getMinXCorr(),(float)params.getMaxXCorr(),params.getNrXCorrBins()));
-        List<Float> deltacnMids = cometScoreHistogram.calcMids(cometScoreHistogram.calcBreaks((float)params.getMinDeltaCn(),(float)params.getMaxDeltaCn(),params.getNrDeltaCnBins()));
-        List<Float> spscoreMids = cometScoreHistogram.calcMids(cometScoreHistogram.calcBreaks((float)params.getMinSpScore(),(float)params.getMaxSpScore(),params.getNrSpScoreBins()));
+        List<Float> xcorrMids = scoreHistogram3D.calcMids(scoreHistogram3D.calcBreaks((float)params.getMinXCorr(),(float)params.getMaxXCorr(),params.getNrXCorrBins()));
+        List<Float> deltacnMids = scoreHistogram3D.calcMids(scoreHistogram3D.calcBreaks((float)params.getMinDeltaCn(),(float)params.getMaxDeltaCn(),params.getNrDeltaCnBins()));
+        List<Float> spscoreMids = scoreHistogram3D.calcMids(scoreHistogram3D.calcBreaks((float)params.getMinSpScore(),(float)params.getMaxSpScore(),params.getNrSpScoreBins()));
 
         int xcorrIdx = xcorrMids.size()/2;
         int deltacnIdx = deltacnMids.size()/2;
         int spscoreIdx = spscoreMids.size()/2;
 
-        Set<String> prots = new HashSet<>();
+        List<String> prots = new ArrayList<>();
         prots.add("sp|protein1");
         prots.add("protein2");
         addPsms(xcorrIdx, deltacnIdx, spscoreIdx, groupedFDRCalculator, prots, 10, false);
         addPsms(xcorrIdx, deltacnIdx, spscoreIdx, groupedFDRCalculator, prots, 1, true);
         addPsms(xcorrIdx+5,deltacnIdx+5,spscoreIdx+5, groupedFDRCalculator, prots, 1, false);
 
-        prots = new HashSet<>();
+        prots = new ArrayList<>();
         prots.add("protein3");
         prots.add("protein4");
         addPsms(xcorrIdx, deltacnIdx, spscoreIdx, groupedFDRCalculator, prots, 2, false);
@@ -278,29 +276,29 @@ public class GroupedFDRCalculatorTest {
         groups.add("cryptic");
 
         RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(regex,groups);
-        GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper);
+        GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper, NewAnceParams.SearchTool.COMET);
 
         groupedFDRCalculator.setCanCalculateFDR(1);
 
         NewAnceParams params = NewAnceParams.getInstance();
-        CometScoreHistogram cometScoreHistogram = CometScoreHistogramTest.buildScoreHisto();
+        ScoreHistogram3D scoreHistogram3D = ScoreHistogram3DTest.buildScoreHisto();
 
-        List<Float> xcorrMids = cometScoreHistogram.calcMids(cometScoreHistogram.calcBreaks((float)params.getMinXCorr(),(float)params.getMaxXCorr(),params.getNrXCorrBins()));
-        List<Float> deltacnMids = cometScoreHistogram.calcMids(cometScoreHistogram.calcBreaks((float)params.getMinDeltaCn(),(float)params.getMaxDeltaCn(),params.getNrDeltaCnBins()));
-        List<Float> spscoreMids = cometScoreHistogram.calcMids(cometScoreHistogram.calcBreaks((float)params.getMinSpScore(),(float)params.getMaxSpScore(),params.getNrSpScoreBins()));
+        List<Float> xcorrMids = scoreHistogram3D.calcMids(scoreHistogram3D.calcBreaks((float)params.getMinXCorr(),(float)params.getMaxXCorr(),params.getNrXCorrBins()));
+        List<Float> deltacnMids = scoreHistogram3D.calcMids(scoreHistogram3D.calcBreaks((float)params.getMinDeltaCn(),(float)params.getMaxDeltaCn(),params.getNrDeltaCnBins()));
+        List<Float> spscoreMids = scoreHistogram3D.calcMids(scoreHistogram3D.calcBreaks((float)params.getMinSpScore(),(float)params.getMaxSpScore(),params.getNrSpScoreBins()));
 
         int xcorrIdx = xcorrMids.size()/2;
         int deltacnIdx = deltacnMids.size()/2;
         int spscoreIdx = spscoreMids.size()/2;
 
-        Set<String> prots = new HashSet<>();
+        List<String> prots = new ArrayList<>();
         prots.add("sp|protein1");
         prots.add("protein2");
         addPsms(xcorrIdx, deltacnIdx, spscoreIdx, groupedFDRCalculator, prots, 10, false);
         addPsms(xcorrIdx, deltacnIdx, spscoreIdx, groupedFDRCalculator, prots, 1, true);
         addPsms(xcorrIdx+5,deltacnIdx+5,spscoreIdx+5, groupedFDRCalculator, prots, 1, false);
 
-        prots = new HashSet<>();
+        prots = new ArrayList<>();
         prots.add("protein3");
         prots.add("protein4");
         addPsms(xcorrIdx, deltacnIdx, spscoreIdx, groupedFDRCalculator, prots, 2, false);
@@ -314,14 +312,14 @@ public class GroupedFDRCalculatorTest {
     }
 
 
-    public static void addPsms(int xcorrIdx, int deltacnIdx, int spscoreIdx, GroupedFDRCalculator groupedFDRCalculator, Set<String> prots, int freq, boolean isDecoy)
+    public static void addPsms(int xcorrIdx, int deltacnIdx, int spscoreIdx, GroupedFDRCalculator groupedFDRCalculator, List<String> prots, int freq, boolean isDecoy)
     {
         NewAnceParams params = NewAnceParams.getInstance();
-        CometScoreHistogram cometScoreHistogram = CometScoreHistogramTest.buildScoreHisto();
+        ScoreHistogram3D scoreHistogram3D = ScoreHistogram3DTest.buildScoreHisto();
 
-        List<Float> xcorrMids = cometScoreHistogram.calcMids(cometScoreHistogram.calcBreaks((float)params.getMinXCorr(),(float)params.getMaxXCorr(),params.getNrXCorrBins()));
-        List<Float> deltacnMids = cometScoreHistogram.calcMids(cometScoreHistogram.calcBreaks((float)params.getMinDeltaCn(),(float)params.getMaxDeltaCn(),params.getNrDeltaCnBins()));
-        List<Float> spscoreMids = cometScoreHistogram.calcMids(cometScoreHistogram.calcBreaks((float)params.getMinSpScore(),(float)params.getMaxSpScore(),params.getNrSpScoreBins()));
+        List<Float> xcorrMids = scoreHistogram3D.calcMids(scoreHistogram3D.calcBreaks((float)params.getMinXCorr(),(float)params.getMaxXCorr(),params.getNrXCorrBins()));
+        List<Float> deltacnMids = scoreHistogram3D.calcMids(scoreHistogram3D.calcBreaks((float)params.getMinDeltaCn(),(float)params.getMaxDeltaCn(),params.getNrDeltaCnBins()));
+        List<Float> spscoreMids = scoreHistogram3D.calcMids(scoreHistogram3D.calcBreaks((float)params.getMinSpScore(),(float)params.getMaxSpScore(),params.getNrSpScoreBins()));
 
         TObjectDoubleMap<String> scoreMap = new TObjectDoubleHashMap<>();
         scoreMap.put("xcorr",xcorrMids.get(xcorrIdx));
@@ -348,7 +346,7 @@ public class GroupedFDRCalculatorTest {
 
                     n = freq*(3-n)*(3-n);
                     for (int m=0; m<n; m++) groupedFDRCalculator.add(new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                            100, 101, 1001.1, isDecoy, false, null, null));
+                            100, 101, 1001.1, isDecoy, false, null));
                 }
             }
         }

@@ -29,20 +29,20 @@ public class RegExpProteinGrouperTest {
         TObjectDoubleMap<String> scoreMap = new TObjectDoubleHashMap<>();
         scoreMap.put("xcorr", NewAnceParams.getInstance().getMinXCorr());
 
-        Set<String> prots = new HashSet<>();
+        List<String> prots = new ArrayList<>();
         prots.add("sp|protein1");
         prots.add("protein2");
 
         PeptideSpectrumMatch peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile", Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
 
         Assert.assertEquals("canonical",psmGrouper.apply("",peptideSpectrumMatch));
 
-        prots = new HashSet<>();
+        prots = new ArrayList<>();
         prots.add("protein2");
 
         peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile", Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
 
 
         Assert.assertEquals("cryptic",psmGrouper.apply("",peptideSpectrumMatch));
@@ -63,29 +63,29 @@ public class RegExpProteinGrouperTest {
         TObjectDoubleMap<String> scoreMap = new TObjectDoubleHashMap<>();
         scoreMap.put("xcorr", NewAnceParams.getInstance().getMinXCorr());
 
-        Set<String> prots = new HashSet<>();
+        List<String> prots = new ArrayList<>();
         prots.add("ENSTprotein1");
         prots.add("ENSTprotein2");
 
         PeptideSpectrumMatch peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile", Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
 
         Assert.assertEquals("lnc",psmGrouper.apply("",peptideSpectrumMatch));
 
-        prots = new HashSet<>();
+        prots = new ArrayList<>();
         prots.add("protein2");
 
         peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile", Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
 
         Assert.assertEquals("ere",psmGrouper.apply("",peptideSpectrumMatch));
 
-        prots = new HashSet<>();
+        prots = new ArrayList<>();
         prots.add("ENSTprotein1");
         prots.add("sp|protein1");
 
         peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile", Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
 
         Assert.assertEquals("canonical",psmGrouper.apply("",peptideSpectrumMatch));
     }
@@ -109,50 +109,50 @@ public class RegExpProteinGrouperTest {
         TObjectDoubleMap<String> scoreMap = new TObjectDoubleHashMap<>();
         scoreMap.put("xcorr", NewAnceParams.getInstance().getMinXCorr());
 
-        Set<String> prots = new HashSet<>();
+        List<String> prots = new ArrayList<>();
         prots.add("sp|protein1");
         prots.add("ENSTprotein2");
 
         PeptideSpectrumMatch peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile", Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
 
         Assert.assertEquals("ere",psmGrouper.apply("",peptideSpectrumMatch));
 
         exclude.get("ere").add("ENSTprotein2");
 
-        prots = new HashSet<>();
+        prots = new ArrayList<>();
         prots.add("ENSTprotein2");
 
         peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile", Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
 
 
         Assert.assertEquals("ere",psmGrouper.apply("",peptideSpectrumMatch));
 
-        prots = new HashSet<>();
+        prots = new ArrayList<>();
         prots.add("protein2");
 
         peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile", Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
 
 
         Assert.assertEquals("ere",psmGrouper.apply("",peptideSpectrumMatch));
 
-        prots = new HashSet<>();
+        prots = new ArrayList<>();
         prots.add("sp|protein2");
 
         peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile", Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
 
 
         Assert.assertEquals("canonical",psmGrouper.apply("",peptideSpectrumMatch));
 
-        prots = new HashSet<>();
+        prots = new ArrayList<>();
         prots.add("ENSTprotein3");
         prots.add("protein3");
 
         peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile", Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
 
 
         Assert.assertEquals("lnc",psmGrouper.apply("",peptideSpectrumMatch));

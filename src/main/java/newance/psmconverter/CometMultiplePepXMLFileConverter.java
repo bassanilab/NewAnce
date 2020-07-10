@@ -43,7 +43,8 @@ public class CometMultiplePepXMLFileConverter extends MultiplePsmFileConverter {
         this.reportHistosOnly = false;
     }
 
-    public CometMultiplePepXMLFileConverter(String psmRootDirName, Pattern regex, GroupedFDRCalculator groupedFDRCalculator, boolean reportHistosOnly) {
+    public CometMultiplePepXMLFileConverter(String psmRootDirName, Pattern regex,
+                                            GroupedFDRCalculator groupedFDRCalculator, boolean reportHistosOnly) {
 
         super(psmRootDirName, regex);
 
@@ -78,7 +79,7 @@ public class CometMultiplePepXMLFileConverter extends MultiplePsmFileConverter {
 
             CountDownLatch latch = new CountDownLatch(nrThreads);
             for (int j =0;j<nrThreads;j++) {
-                exe.submit(new CometPepXmlConverter(psmFileList.get(threadCnt), psmBuffer, latch));
+                exe.submit(new CometPepXmlConverter(psmFileList.get(threadCnt), psmBuffer, groupedFDRCalculator, latch));
                 threadCnt++;
             }
 

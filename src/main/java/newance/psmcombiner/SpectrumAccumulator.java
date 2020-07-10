@@ -49,7 +49,7 @@ public class SpectrumAccumulator implements BiConsumer<String, List<PeptideSpect
 
             peptidePSMMap.get(peptideSeq).add(psm);
 
-            for (String protein : psm.getProteinAcc()) {
+            for (String protein : psm.getProteinIDs()) {
                 proteinPeptideMap.putIfAbsent(protein,Collections.synchronizedSet(new HashSet<>()));
 
                 proteinPeptideMap.get(protein).add(peptideSeq);

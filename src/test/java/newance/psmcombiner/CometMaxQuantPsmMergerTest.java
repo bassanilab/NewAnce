@@ -49,7 +49,7 @@ public class CometMaxQuantPsmMergerTest {
 
         ConcurrentHashMap<String, List<PeptideSpectrumMatch>> psms = new ConcurrentHashMap<>();
 
-        Set<String> prots = new HashSet<>();
+        List<String> prots = new ArrayList<>();
         prots.add("protein1");
         prots.add("protein2");
 
@@ -59,7 +59,7 @@ public class CometMaxQuantPsmMergerTest {
         scoreMap.put("spscore",100.0);
 
         PeptideSpectrumMatch peptideSpectrumMatch1 = new PeptideSpectrumMatch("spectrumFile", Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
 
         scoreMap = new TObjectDoubleHashMap<>();
         scoreMap.put("xcorr",2.0);
@@ -67,7 +67,7 @@ public class CometMaxQuantPsmMergerTest {
         scoreMap.put("spscore",200.0);
 
         PeptideSpectrumMatch peptideSpectrumMatch2 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDER"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
 
         psms.put("spec1",Collections.synchronizedList(new ArrayList<>()));
         psms.get("spec1").add(peptideSpectrumMatch1);
@@ -79,12 +79,12 @@ public class CometMaxQuantPsmMergerTest {
         scoreMap.put("spscore",300.0);
 
         peptideSpectrumMatch1 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-            100, 101, 1001.1, false, false, null, null);
+            100, 101, 1001.1, false, false, null);
         psms.put("spec2",Collections.synchronizedList(new ArrayList<>()));
         psms.get("spec2").add(peptideSpectrumMatch1);
 
         peptideSpectrumMatch1 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
         psms.put("spec5",Collections.synchronizedList(new ArrayList<>()));
         psms.get("spec5").add(peptideSpectrumMatch1);
 
@@ -96,7 +96,7 @@ public class CometMaxQuantPsmMergerTest {
 
         ConcurrentHashMap<String, List<PeptideSpectrumMatch>> psms = new ConcurrentHashMap<>();
 
-        Set<String> prots = new HashSet<>();
+        List<String> prots = new ArrayList<>();
         prots.add("protein1");
         prots.add("protein2");
 
@@ -107,13 +107,13 @@ public class CometMaxQuantPsmMergerTest {
         scoreMap.put("Score",1.0);
 
         PeptideSpectrumMatch peptideSpectrumMatch1 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
 
         scoreMap = new TObjectDoubleHashMap<>();
         scoreMap.put("Score",2.0);
 
         PeptideSpectrumMatch peptideSpectrumMatch2 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDER"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
 
         psms.put("spec1",Collections.synchronizedList(new ArrayList<>()));
         psms.get("spec1").add(peptideSpectrumMatch1);
@@ -123,7 +123,7 @@ public class CometMaxQuantPsmMergerTest {
         scoreMap.put("Score",3.0);
 
         peptideSpectrumMatch1 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDER"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
         psms.put("spec2",Collections.synchronizedList(new ArrayList<>()));
         psms.get("spec2").add(peptideSpectrumMatch1);
 
@@ -131,7 +131,7 @@ public class CometMaxQuantPsmMergerTest {
         scoreMap.put("Score",4.0);
 
         peptideSpectrumMatch1 = new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null, null);
+                100, 101, 1001.1, false, false, null);
         psms.put("spec3",Collections.synchronizedList(new ArrayList<>()));
         psms.get("spec3").add(peptideSpectrumMatch1);
 
