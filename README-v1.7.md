@@ -1,6 +1,6 @@
 # NewAnce Version 1.7
 
-This version allows to calculate a group specific FDR fo MaxQuant. It also includes better variant annotations suporting complex variants. 
+This version allows to calculate a group specific FDR for both MaxQuant and Comet. It also includes better variant annotations supporting complex variants. 
 The code has been tested on Linux, Mac, and Windows using Java 1.8. Comet result previous to consensus filtering can be exported.
  
 ## TOC
@@ -58,33 +58,27 @@ usage: newance.psmcombiner.CometMaxQuantCombiner
  -minL,--minLength <arg>            Minimal length of peptide (default value: 8)
  -minPEP,--minPEP <arg>             Minimal MaxQuant PEP in histogram (default value 0)
  -minPH,--minPsm4Histo <arg>        Minimal number of psms to calculate local FDR in histogram (default value: 100000).
- -minScore,--minScore <arg>         Minimal MaxQuant Score in histogram (default value 0)
- -minSP,--minSpScore <arg>          Minimal Comet SpScore in histogram (default value 0)
- -minXC,--minXCorr <arg>            Minimal Comet XCorr in histogram (default value 0)
- -minZ,--minCharge <arg>            Minimal charge of PSM (default value: 1)
- -mod,--modifications <arg>         Comma separated list of peptide modifications used in search (e.g. Cysteinyl:C3H5NO2S,Oxidation:O)
- -mqD,--maxquantPsmDir <arg>        MaxQuant psm root directory.
- -mqFDR,--maxquantFDR <arg>         FDR for filtering MaxQuant PSMs before combination (default value 0.03)
- -nrDCB,--nrDeltaCnBins <arg>       Number of Comet DeltaCn bins in histogram (default value 40)
- -nrDSB,--nrDeltaScoreBins <arg>    MaxQuant of Comet DeltaScore bins in histogram (default value 40)
- -nrPEPB,--nrPEPBins <arg>          Number of MaxQuant PEP bins in histogram (default value 40)
- -nrScoreB,--nrScoreBins <arg>      Number of MaxQuant Score bins in histogram (default value 40)
- -nrSPB,--nrSpScoreBins <arg>       Number of Comet SpScore bins in histogram (default value 40)
- -nrTh,--nrThreads <arg>            Number of threads used by NewAnce (default value: nr of available processors - 2)
- -nrXCB,--nrXCorrBins <arg>         Number of Comet XCorr bins in histogram (default value 40)
- -outD,--outputDir <arg>            Output directory for results (required)
- -outT,--outputTag <arg>            Tag inserted into output file names after prefix.
- -ppG,--peptideProteinGrouping      Perform peptide protein grouping export.
- -readH,--readHistograms <arg>      Directory where histograms files are placed.
- -repH,--reportHistogram            Report histograms to text files
- -rP,--readParamFile <arg>          Name of file from which parameters should to read.
- -seFa,--searchFastaFile <arg>      Fasta file that was used for the search (required for protein grouping export and annotation of variants)
- -smD,--smoothDegree <arg>          Degree of smoothing (0: no smoothing, n: n x smoothing) (default value 1)
- -spRE,--spectrumFilter <arg>       If this option is set, only spectrum ids that match this regexp are used.  If not set no filtering is performed.
- -upFa,--uniProtFastaFile <arg>     Fasta file with coding or canonical proteins (e.g. UniProt fasta file)
- -v,--version                       Version of NewAnce software
- -wAll,--writeFullPSMExport         If flag is set, all Comet and MaxQuant PSMs are written to a tab file.
- -wP,--write2ParamFile              This option is set if parameters should be written to file.
+ -minScore,--minScore <arg>             Minimal MaxQuant Score in histogram (default value 0)
+ -minSP,--minSpScore <arg>              Minimal Comet SpScore in histogram (default value 0)
+ -minXC,--minXCorr <arg>                Minimal Comet XCorr in histogram (default value 0)
+ -minZ,--minCharge <arg>                Minimal charge of PSM (default value: 1)
+ -mod,--modifications <arg>             Comma separated list of peptide modifications used in search (e.g. Cysteinyl:C3H5NO2S,Oxidation:O)
+ -mqD,--maxquantPsmDir <arg>            MaxQuant psm root directory.
+ -mqFDR,--maxquantFDR <arg>             FDR for filtering MaxQuant PSMs before combination (default value 0.03)
+ -nrDCB,--nrDeltaCnBins <arg>           Number of Comet DeltaCn bins in histogram (default value 40)
+ -nrDSB,--nrDeltaScoreBins <arg>        Number of MaxQuant DeltaScore bins in histogram (default value 40)
+ -nrPEPB,--nrPEPBins <arg>              Number of MaxQuant PEP bins in histogram (default value 40)
+ -nrScoreB,--nrScoreBins <arg>          Number of MaxQuant Score bins in histogram (default value 40)
+ -nrSPB,--nrSpScoreBins <arg>           Number of Comet SpScore bins in histogram (default value 40)
+ -nrTh,--nrThreads <arg>                Number of threads used by NewAnce (default value: nr of available processors - 2)
+ -nrXCB,--nrXCorrBins <arg>             Number of Comet XCorr bins in histogram (default value 40)
+ -outD,--outputDir <arg>                Output directory for results (required)
+ -outT,--outputTag <arg>                Tag inserted into output file names after prefix.
+ -ppG,--peptideProteinGrouping          Perform peptide protein grouping export.
+ -rCoH,--readCometHistograms <arg>      Directory where Comet histograms files are placed.
+ -repH,--reportHistogram                Report histograms to text files
+ -rMqH,--readMaxQuantHistograms <arg>   Directory where MaxQuant histograms files are placed.
+ -rP,--readParamFile <arg>              Name of file from which parameters should to read.
 ```
 
 The comand line options in more detail:
@@ -376,25 +370,11 @@ described in the publication, where it groups proteins, that share peptides toge
 ```
 
 ```
--protG,--proteinGroup <arg>        Name of group with protein coding or canonical sequences (default "prot"). Will be used as prefix for output
-                                    files.
-                                    
-Name of group with protein coding or canonical sequences (default "prot"). Will be used as prefix for protein coding PSM 
-output file.
-```
+-rCoH,--readCometHistograms <arg>      Directory where Comet histograms files are placed.
 
-```
--protRE,--protRegExp <arg>         Regular expression to match fasta name of coding proteins (e.g. sp\||tr\| ).
-
-Regular expression (e.g. "sp\||tr\|" or ".*_HUMAN") defining the protein coding fasta entries.
-```
-
-```
--readH,--readHistograms <arg>      Directory where histograms files are placed.
-
-Instead of being calculated with the available Comet PSMs, score histograms are imported. This is useful in case there is not 
+Instead of being calculated with the available Comet PSMs, precaluclated score histograms are imported. This is useful in case there are not 
 enough data to build them. NewAnce provides default histograms for high resolution OrbiTrap immunopeptidomics data. Otherwise 
-a user can create histograms by analysing a larger dataset (20+ runs) and exporting the histograms with the -repH option. When importing histograms the histogram settings -maxDC,-maxSP,-maxXC,-maxZ,-minDC,-minSP,-minXC,-minZ,-nrDCB,-nrSPB,-nrXCB are overwritten.
+a user can create histograms by analysing a larger dataset (20+ runs) and exporting the histograms (CometHistogramCalculator, see below). When importing histograms the histogram settings -maxDC,-maxSP,-maxXC,-maxZ,-minDC,-minSP,-minXC,-minZ,-nrDCB,-nrSPB,-nrXCB are overwritten.
 ```
 
 ```
@@ -402,6 +382,14 @@ a user can create histograms by analysing a larger dataset (20+ runs) and export
 
 Comet score histograms are written to text files. These histograms can be imported with the -readH option and used as score 
 histograms in case there is not enough data to build them.
+```
+
+```
+-rMqH,--readMaxQuantHistograms <arg>      Directory where MaxQuant histograms files are placed.
+
+Instead of being calculated with the available MaxQuant PSMs, precaluclated score histograms are imported. This is useful in case there are not 
+enough data to build them. NewAnce provides default histograms for high resolution OrbiTrap immunopeptidomics data. Otherwise 
+a user can create histograms by analysing a larger dataset (20+ runs) and exporting the histograms (MaxQuantHistogramCalculator). When importing histograms the histogram settings -maxDC,-maxSP,-maxXC,-maxZ,-minDC,-minSP,-minXC,-minZ,-nrDCB,-nrSPB,-nrXCB are overwritten.
 ```
 
 ```
