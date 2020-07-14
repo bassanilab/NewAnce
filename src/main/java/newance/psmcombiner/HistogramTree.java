@@ -14,7 +14,6 @@ import newance.psmconverter.PeptideSpectrumMatch;
 import newance.util.NewAnceParams;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -198,23 +197,23 @@ public class HistogramTree {
     }
 
     // import non-leaf histos
-    public void importPriorCoreHistos() {
+    public void importPriorCoreHistos(String histoDir) {
 
         if (isLeaf()) return;
 
         NewAnceParams params = NewAnceParams.getInstance();
 
         // import histos from files if provided
-        if (!NewAnceParams.getInstance().getReadHistos().isEmpty() && (!scoreHistogram.canCalculateFDR() || params.isForceHistos())) {
+        if (!histoDir.isEmpty() && (!scoreHistogram.canCalculateFDR() || params.isForceHistos())) {
 
-            File histoFile = new File(params.getReadHistos() + File.separatorChar + "prior_histo_" + id + ".txt");
+            File histoFile = new File(histoDir + File.separatorChar + "prior_histo_" + id + ".txt");
 
             if (!histoFile.exists()) {
 
                 if (!id.equals("root") && !id.equals("Z1") && !id.equals("Z2") && !id.equals("Z3")) {
-                    histoFile = new File(NewAnceParams.getInstance().getReadHistos() + File.separatorChar + "prior_histo_Z3.txt");
+                    histoFile = new File(histoDir + File.separatorChar + "prior_histo_Z3.txt");
                     if (histoFile.exists()) {
-                        System.out.println("WARNING: histogram file " + NewAnceParams.getInstance().getReadHistos() + File.separatorChar + "prior_histo_" + id + ".txt does not exist. Taking prior_histo_Z3.txt instead.");
+                        System.out.println("WARNING: histogram file " + histoDir + File.separatorChar + "prior_histo_" + id + ".txt does not exist. Taking prior_histo_Z3.txt instead.");
                     } else {
                         System.out.println("ERROR: histogram file " + histoFile.getAbsolutePath() + " does not exist.  Abort.");
                         System.exit(1);
@@ -231,7 +230,7 @@ public class HistogramTree {
         }
 
         for (HistogramTree node : children) {
-            node.importPriorCoreHistos();
+            node.importPriorCoreHistos(histoDir);
         }
     }
 

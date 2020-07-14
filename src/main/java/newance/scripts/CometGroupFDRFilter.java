@@ -277,7 +277,7 @@ public class CometGroupFDRFilter extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("coFDR").required(false).hasArg().longOpt("cometFDR").desc("FDR for filtering Comet PSMs before combination (default value 0.03)").build());
         cmdLineOpts.addOption(Option.builder("outD").required().hasArg().longOpt("outputDir").desc("Output directory for results (required)").build());
         cmdLineOpts.addOption(Option.builder("repH").required(false).hasArg(false).longOpt("reportHistogram").desc("Report histograms to text files").build());
-        cmdLineOpts.addOption(Option.builder("readH").required(false).hasArg().longOpt("readHistograms").desc("Directory where histograms files are placed.").build());
+        cmdLineOpts.addOption(Option.builder("rCoH").required(false).hasArg().longOpt("readCometHistograms").desc("Directory where Comet histograms files are placed.").build());
         cmdLineOpts.addOption(Option.builder("fH").required(false).hasArg(false).longOpt("forceHistograms").desc("Histograms are imported even if enough PSMs are available.").build());
         cmdLineOpts.addOption(Option.builder("groupM").required(false).hasArg().longOpt("groupingMethod").desc("Method for PSM grouping: fasta or modif or none (default none).").build());
         cmdLineOpts.addOption(Option.builder("groupN").required(false).hasArg().longOpt("groupNames").desc("Comma separated list of names of sequence groups in fasta file (e.g. prot,lncRNA,TE ). Will be used as prefixes for output files.").build());
@@ -329,7 +329,7 @@ public class CometGroupFDRFilter extends ExecutableOptions {
         params.add("debug", getOptionString(line, "d"));
         params.add("forceHistos", getOptionString(line, "fH"));
         params.add("reportHistos", getOptionString(line, "repH"));
-        params.add("readHistos", getOptionString(line, "readH"));
+        params.add("readCometHistos", getOptionString(line, "rCoH"));
         params.add("outputDir", getOptionString(line, "outD"));
         params.add("searchFastaFile", getOptionString(line, "seFa"));
         params.add("uniprotFastaFile", getOptionString(line, "upFa"));

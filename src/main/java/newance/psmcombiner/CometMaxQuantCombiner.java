@@ -359,7 +359,8 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("mqFDR").required(false).hasArg().longOpt("maxquantFDR").desc("FDR for filtering MaxQuant PSMs before combination (default value 0.03)").build());
         cmdLineOpts.addOption(Option.builder("outD").required().hasArg().longOpt("outputDir").desc("Output directory for results (required)").build());
         cmdLineOpts.addOption(Option.builder("repH").required(false).hasArg(false).longOpt("reportHistogram").desc("Report histograms to text files").build());
-        cmdLineOpts.addOption(Option.builder("readH").required(false).hasArg().longOpt("readHistograms").desc("Directory where histograms files are placed.").build());
+        cmdLineOpts.addOption(Option.builder("rCoH").required(false).hasArg().longOpt("readCometHistograms").desc("Directory where Comet histograms files are placed.").build());
+        cmdLineOpts.addOption(Option.builder("rMqH").required(false).hasArg().longOpt("readMaxQuantHistograms").desc("Directory where MaxQuant histograms files are placed.").build());
         cmdLineOpts.addOption(Option.builder("fH").required(false).hasArg(false).longOpt("forceHistograms").desc("Histograms are imported even if enough PSMs are available.").build());
         cmdLineOpts.addOption(Option.builder("groupM").required(false).hasArg().longOpt("groupingMethod").desc("Method for PSM grouping: fasta or modif or none (default none).").build());
         cmdLineOpts.addOption(Option.builder("groupN").required(false).hasArg().longOpt("groupNames").desc("Comma separated list of names of sequence groups in fasta file (e.g. prot,lncRNA,TE ). Will be used as prefixes for output files.").build());
@@ -369,7 +370,7 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("exclP").required(false).hasArg().longOpt("excludeProts").desc("Regular expression of proteins excluded from analysis. If not set no proteins are excluded.").build());
         cmdLineOpts.addOption(Option.builder("groupF").required(false).hasArg().longOpt("groupProteinFile").desc("Tab file with protein group assignments which will override assignment by groupRE").build());
         cmdLineOpts.addOption(Option.builder("mod").required(false).hasArg().longOpt("modifications").desc("Comma separated list of peptide modifications used in search (e.g. Cysteinyl:C3H5NO2S,Oxidation:O)").build());
-        cmdLineOpts.addOption(Option.builder("seFa").required(false).hasArg().longOpt("searchFastaFile").desc("Fasta file that was used for the search (required for protein grouping export and annotation of variants in the Comet results)").build());
+        cmdLineOpts.addOption(Option.builder("seFa").required(false).hasArg().longOpt("searchFastaFile").desc("Fasta file that was used for the search (required for protein grouping export and annotation of variants)").build());
         cmdLineOpts.addOption(Option.builder("upFa").required(false).hasArg().longOpt("uniProtFastaFile").desc("Fasta file with coding or canonical proteins (e.g. UniProt fasta file)").build());
         cmdLineOpts.addOption(Option.builder("ppG").required(false).hasArg(false).longOpt("peptideProteinGrouping").desc("Perform peptide protein grouping export.").build());
         cmdLineOpts.addOption(Option.builder("maxR").required(false).hasArg().longOpt("maxRank").desc("Maximal rank of peptide in list of spectrum matches (rank 1 = best) (default value: 1)").build());
@@ -396,7 +397,7 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("nrScoreB").required(false).hasArg().longOpt("nrScoreBins").desc("Number of MaxQuant Score bins in histogram (default value 40)" ).build());
         cmdLineOpts.addOption(Option.builder("minDS").required(false).hasArg().longOpt("minDeltaScore").desc("Minimal MaxQuant DeltaScore in histogram (default value 0)").build());
         cmdLineOpts.addOption(Option.builder("maxDS").required(false).hasArg().longOpt("maxDeltaScore").desc("Maximal MaxQuant DeltaScore in histogram (default value 1)").build());
-        cmdLineOpts.addOption(Option.builder("nrDSB").required(false).hasArg().longOpt("nrDeltaScoreBins").desc("MaxQuant of Comet DeltaScore bins in histogram (default value 40)").build());
+        cmdLineOpts.addOption(Option.builder("nrDSB").required(false).hasArg().longOpt("nrDeltaScoreBins").desc("Number of MaxQuant DeltaScore bins in histogram (default value 40)").build());
         cmdLineOpts.addOption(Option.builder("minPEP").required(false).hasArg().longOpt("minPEP").desc("Minimal MaxQuant PEP in histogram (default value 0)").build());
         cmdLineOpts.addOption(Option.builder("maxPEP").required(false).hasArg().longOpt("maxPEP").desc("Maximal MaxQuant PEP in histogram (default value 2500)").build());
         cmdLineOpts.addOption(Option.builder("nrPEPB").required(false).hasArg().longOpt("nrPEPBins").desc("Number of MaxQuant PEP bins in histogram (default value 40)").build());
@@ -422,7 +423,8 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         params.add("debug", getOptionString(line, "d"));
         params.add("forceHistos", getOptionString(line, "fH"));
         params.add("reportHistos", getOptionString(line, "repH"));
-        params.add("readHistos", getOptionString(line, "readH"));
+        params.add("readCometHistos", getOptionString(line, "rCoH"));
+        params.add("readMaxQuantHistos", getOptionString(line, "rMqH"));
         params.add("outputDir", getOptionString(line, "outD"));
         params.add("searchFastaFile", getOptionString(line, "seFa"));
         params.add("uniprotFastaFile", getOptionString(line, "upFa"));

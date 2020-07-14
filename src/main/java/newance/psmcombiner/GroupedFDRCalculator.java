@@ -209,7 +209,10 @@ public class GroupedFDRCalculator {
 
     public void importPriorHistos() {
 
-        histogramTreeRoot.importPriorCoreHistos();
+        if (searchTool == NewAnceParams.SearchTool.COMET)
+            histogramTreeRoot.importPriorCoreHistos(NewAnceParams.getInstance().getReadCometHistos());
+        else if (searchTool == NewAnceParams.SearchTool.MAXQUANT)
+            histogramTreeRoot.importPriorCoreHistos(NewAnceParams.getInstance().getReadMaxQuantHistos());
     }
 
 

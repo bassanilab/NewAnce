@@ -111,7 +111,8 @@ public class NewAnceParams implements Serializable {
     private Pattern maxquantPsmRegExp = null;
     private String outputDir = "";
     private boolean reportHistos = false;
-    private String readHistos = "";
+    private String readCometHistos = "";
+    private String readMaxQuantHistos = "";
     private boolean forceHistos = false;
     private String searchFastaFile = "";
     private String uniprotFastaFile= "";
@@ -191,7 +192,8 @@ public class NewAnceParams implements Serializable {
         res +=  "maxquantPsmRegExp="+maxquantPsmRegExp+"\n";
         res +=  "outputDir="+outputDir+"\n";
         res +=  "reportHistos="+reportHistos+"\n";
-        res +=  "readHistos="+readHistos+"\n";
+        res +=  "readCometHistos="+ readCometHistos +"\n";
+        res +=  "readMaxQuantHistos="+ readMaxQuantHistos +"\n";
         res +=  "forceHistos="+forceHistos+"\n";
         res +=  "searchFastaFile="+searchFastaFile+"\n";
         res +=  "uniprotFastaFile="+uniprotFastaFile+"\n";
@@ -459,8 +461,12 @@ public class NewAnceParams implements Serializable {
             debug = getBooleanValue("debug",variableValueMap.get("debug"));
         }
 
-        if (variableValueMap.containsKey("readHistos")) {
-            readHistos = getDirectoryValue("readHistos",variableValueMap.get("readHistos"));
+        if (variableValueMap.containsKey("readCometHistos")) {
+            readCometHistos = getDirectoryValue("readCometHistos",variableValueMap.get("readCometHistos"));
+        }
+
+        if (variableValueMap.containsKey("readMaxQuantHistos")) {
+            readMaxQuantHistos = getDirectoryValue("readMaxQuantHistos",variableValueMap.get("readMaxQuantHistos"));
         }
 
         if (variableValueMap.containsKey("forceHistos")) {
@@ -912,8 +918,8 @@ public class NewAnceParams implements Serializable {
         return smoothDegree;
     }
 
-    public String getReadHistos() {
-        return readHistos;
+    public String getReadCometHistos() {
+        return readCometHistos;
     }
 
     public String getMaxQuantMainScore() {
@@ -1061,5 +1067,17 @@ public class NewAnceParams implements Serializable {
 
     public int getNrPEPBins() {
         return nrPEPBins;
+    }
+
+    public String getProteinGroupMapFile() {
+        return proteinGroupMapFile;
+    }
+
+    public boolean isReportAllPSM() {
+        return reportAllPSM;
+    }
+
+    public String getReadMaxQuantHistos() {
+        return readMaxQuantHistos;
     }
 }
