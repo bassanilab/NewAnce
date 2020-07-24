@@ -46,12 +46,12 @@ public class CometPsm2StringFunction extends Psm2StringFunction {
         return  psm.getScore("xcorr")+"\t"+psm.getScore("deltacn")+"\t"+
                 psm.getScore("spscore")+"\t"+expectStr+"\t+"+psm.getScore("mass_diff")+"\t"+
                 (int)psm.getScore("tot_num_ions")+"\t"+(int)psm.getScore("matched_num_ions")+"\t"+
-                lfdrStr+"\t"+psm.getGroup()+"\t"+pass;
+                lfdrStr+"\t"+pass;
     }
 
     @Override
     public String getScoreHeader() {
-        return "XCorr\tDeltaCn\tSpScore\tExpect\tMassdiff\tTot_num_ions\tNum_matched_ions\tlFDR\tGroup\tpassFDR";
+        return "XCorr\tDeltaCn\tSpScore\tExpect\tMassdiff\tTot_num_ions\tNum_matched_ions\tComet.lFDR\tComet.passFDR";
     }
 
 }

@@ -51,7 +51,7 @@ public abstract class Psm2StringFunction implements BiFunction<String, List<Pept
 
     protected String getPSMHeader() {
         return "Peptide\tSequence\tPeptideMass\tModifName\tModifPosition\tModifMass\tModifAA\tProteins\tIsVariant\t" +
-                "VariantStart\tVariantEnd\tVariantSeq\tVariantID\tWTSeq\tIsDecoy\tRank";
+                "VariantStart\tVariantEnd\tVariantSeq\tVariantID\tWTSeq\tIsDecoy\tRank\tGroup";
     }
 
     protected String getSpecIDString(String specID, PeptideSpectrumMatch psm) {
@@ -73,7 +73,7 @@ public abstract class Psm2StringFunction implements BiFunction<String, List<Pept
         String variantString = getVariantString(psm);
 
         return  peptide.toString()+"\t"+peptide.toSymbolString()+"\t"+pepMass+"\t"+modifString+"\t"+protACs+"\t"+
-                variantString+"\t"+psm.isDecoy()+"\t"+ rank;
+                variantString+"\t"+psm.isDecoy()+"\t"+ rank+"\t"+ psm.getGroup();
 
     }
 

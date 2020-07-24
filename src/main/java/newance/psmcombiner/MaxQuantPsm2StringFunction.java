@@ -39,12 +39,12 @@ public class MaxQuantPsm2StringFunction extends Psm2StringFunction {
 
         return psm.getScore("Mass Error [ppm]")+"\t"+psm.getScore("Score")+"\t"+
                 psm.getScore("Delta score")+"\t"+psm.getScore("PEP")+"\t"+
-                psm.getScore("Localization prob")+"\t"+lfdrStr+"\t"+psm.getGroup()+"\t"+pass;
+                psm.getScore("Localization prob")+"\t"+lfdrStr+"\t"+pass;
     }
 
     @Override
     public String getScoreHeader() {
-        return "Mass.Error[ppm]\tScore\tDelta.score\tPEP\tLocalization.prob\tlFDR\tGroup\tpassFDR";
+        return "Mass.Error[ppm]\tScore\tDelta.score\tPEP\tLocalization.prob\tMaxQuant.lFDR\tMaxQuant.passFDR";
     }
 
 }

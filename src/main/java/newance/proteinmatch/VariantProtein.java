@@ -79,6 +79,8 @@ public class VariantProtein extends FastaProtein {
             SequenceVariant variant = variantInfo.get(i);
             int j=variant.getStartWT()-1; // variantInfo starts position counting from 1
 
+            if (j >= variantPos.length) continue;
+
             if (variantPos[j] == null) {
                 variantPos[j] = new int[5]; // max 5 variant per pos
                 variantPos[j][0] = i;
