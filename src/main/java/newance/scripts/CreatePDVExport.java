@@ -105,7 +105,7 @@ public class CreatePDVExport extends ExecutableOptions {
 
         int charge = Integer.parseInt(results.getString("Charge"));
         double pm = Double.parseDouble(results.getString("PeptideMass"));
-        String mdStr = results.getString("Comet.massdiff");
+        String mdStr = results.getString("Massdiff");
         if (mdStr.startsWith("+")) mdStr = mdStr.substring(1);
         double dm = Double.parseDouble(mdStr);
 
