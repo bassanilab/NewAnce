@@ -12,7 +12,7 @@ The code has been tested on Linux, Mac, and Windows using Java 1.8. Comet result
 5. [PDV export](#PDV-export)
 6. [Extend MaxQuant features](#Extend-MaxQuant-features)
 7. [Export score histograms](#Export-score-histograms)
-8. [Spectronaut DIA export](#Spectronaut DIA export)
+8. [Spectronaut DIA export](#Spectronaut-DIA-export)
 9. [Match peptides to fasta file](#Match-peptides-to-fasta-file)
 
 ## Command line options 
