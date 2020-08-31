@@ -26,15 +26,16 @@ import java.util.regex.Pattern;
 /**
  * Created by markusmueller on 17.02.20.
  */
-public class AddMaxQuantFeatures extends ExecutableOptions {
+public class CreateSpectronautExport extends ExecutableOptions {
 
     private File maxquantPsmDir;
     private File newAnceResultFile;
-    private Set<String> maxQuantFeatures;
-    private Map<String,String> newAnceLines;
+    private List<String> mqFeatures;
+    private List<String> spectronautFeatures;
+    private Set<String> newAnceSpectra;
     private Map<String,String> maxQuantLines;
 
-    public AddMaxQuantFeatures(String version) {
+    public CreateSpectronautExport(String version) {
 
         this.version = version;
         createOptions();
@@ -46,7 +47,6 @@ public class AddMaxQuantFeatures extends ExecutableOptions {
         this.cmdLineOpts = new Options();
 
         cmdLineOpts.addOption(Option.builder("mqD").required(false).hasArg().longOpt("maxquantPsmDir").desc("MaxQuant psm root directory.").hasArg().build());
-        cmdLineOpts.addOption(Option.builder("mqF").required(false).hasArg().longOpt("maxquantFeatures").desc("Comma separated list [feature1,feature2,feature3] of MaxQuant features to be added to NewAnce result file.").hasArg().build());
         cmdLineOpts.addOption(Option.builder("naf").required().hasArg().longOpt("newAnceResultFile").desc("Result file from NewAnce analysis (required)").build());
         cmdLineOpts.addOption(Option.builder("h").required(false).hasArg(false).longOpt("help").desc("Help option for command line help").build());
         cmdLineOpts.addOption(Option.builder("v").required(false).hasArg(false).longOpt("version").desc("Version of NewAnce software").build());
@@ -59,7 +59,36 @@ public class AddMaxQuantFeatures extends ExecutableOptions {
 
         newAnceResultFile = new File(NewAnceParams.getFileValue("newAnceResultFile",getOptionString(line, "naf")));
         maxquantPsmDir = new File(NewAnceParams.getDirectoryValue("maxquantPsmDir",getOptionString(line, "mqD")));
-        maxQuantFeatures = NewAnceParams.getSetValue(getOptionString(line, "mqF"));
+
+        spectronautFeatures = new ArrayList<>();
+        mqFeatures = new ArrayList<>();
+
+        spectronautFeatures.add("Raw File");
+        mqFeatures.add("Raw file");
+
+        spectronautFeatures.add("Precursor Charge");
+        mqFeatures.add("Charge");
+
+        spectronautFeatures.add("Stripped Sequence");
+        mqFeatures.add("Sequence");
+
+        spectronautFeatures.add("Protein Group Id");
+        mqFeatures.add("Proteins");
+
+        spectronautFeatures.add("Labeled Sequence");
+        mqFeatures.add("Modified sequence");
+
+        spectronautFeatures.add("Scan Event");
+        mqFeatures.add("Scan event number");
+
+        spectronautFeatures.add("Scan Number");
+        mqFeatures.add("Scan number");
+
+        spectronautFeatures.add("Retention Time");
+        mqFeatures.add("Retention time");
+
+        spectronautFeatures.add("MS1 Intensity");
+        mqFeatures.add("Precursor Intensity");
     }
 
     @Override
@@ -68,7 +97,7 @@ public class AddMaxQuantFeatures extends ExecutableOptions {
         readNewAnceFile();
         readMaxQuantFiles();
 
-        writeNewAnceFile();
+        writeSpectronautFile();
 
         return 0;
     }
@@ -112,14 +141,11 @@ public class AddMaxQuantFeatures extends ExecutableOptions {
             ResultSet results = stmt.executeQuery("SELECT * FROM " + FilenameUtils.removeExtension(file.getName()));
 
 
-            Set<String> invalidFeatures = new HashSet<>();
-            for (String feature : maxQuantFeatures) {
+            for (String feature : mqFeatures) {
                 if (results.findColumn(feature)==0) {
-                    invalidFeatures.add(feature);
-                    System.out.println("WARNING: feature "+feature+" is not a valid msms.txt column name. This feature is ignored.");
+                    System.out.println("ERROR: feature "+feature+" is not a valid msms.txt column name. This feature is ignored.");
                 }
             }
-            maxQuantFeatures.removeAll(invalidFeatures);
 
             while (results.next()) {
 
@@ -129,11 +155,14 @@ public class AddMaxQuantFeatures extends ExecutableOptions {
 
                 String specID = rawFile + "." + scanNumber + "." + scanNumber + "." + charge;
 
-                if (newAnceLines.containsKey(specID)) {
+                if (newAnceSpectra.contains(specID)) {
 
                     String values = "";
-                    for (String feature : maxQuantFeatures) {
-                        values += "\t"+results.getString(feature);
+                    for (String feature : mqFeatures) {
+                        if (results.findColumn(feature) != 0)
+                            values += values.isEmpty()?results.getString(feature):"\t"+results.getString(feature);
+                        else
+                            values += "\tNA";
                     }
                     maxQuantLines.put(specID,values);
                 }
@@ -150,20 +179,18 @@ public class AddMaxQuantFeatures extends ExecutableOptions {
 
     private void readNewAnceFile() {
 
-        newAnceLines = new HashMap<>();
+        newAnceSpectra = new HashSet<>();
         try {
             BufferedReader lineReader = new BufferedReader(new FileReader(newAnceResultFile ));
 
-            String line = lineReader.readLine();
-            newAnceLines.put("TITLE", line);
-
+            String line;
             while ((line = lineReader.readLine()) != null) {
 
-                if (line.isEmpty()) continue;
+                if (line.isEmpty() || line.startsWith("Spectrum\tScanNr\tCharge")) continue;
 
                 String[] fields = line.split("\t");
 
-                newAnceLines.put(fields[0],line);
+                newAnceSpectra.add(fields[0]);
 
             }
             lineReader.close();
@@ -172,24 +199,21 @@ public class AddMaxQuantFeatures extends ExecutableOptions {
         }
     }
 
-    private void writeNewAnceFile() {
+    private void writeSpectronautFile() {
         try {
 
-            String newNewAnceFile = newAnceResultFile.getAbsolutePath().replace("PSMs.txt","PSMs_extend.txt");
+            String newNewAnceFile = newAnceResultFile.getAbsolutePath().replace("PSMs.txt","_Spectronaut.txt");
             BufferedWriter writer = new BufferedWriter(new FileWriter(newNewAnceFile));
 
-            String header = newAnceLines.get("TITLE");
-            for (String feature : maxQuantFeatures) {
-                header += "\t"+feature;
+            String header = "";
+            for (String feature : spectronautFeatures) {
+                header += (header.isEmpty())?feature:"\t"+feature;
             }
             writer.write(header+"\n");
 
-            for  (String key : newAnceLines.keySet()) {
+            for  (String key : newAnceSpectra) {
 
-                if (!key.equals("TITLE")) {
-                    String line = newAnceLines.get(key)+maxQuantLines.get(key);
-                    writer.write(line+"\n");
-                }
+                writer.write(maxQuantLines.get(key)+"\n");
             }
             writer.close();
 
@@ -208,7 +232,7 @@ public class AddMaxQuantFeatures extends ExecutableOptions {
 
     public static void main(String[] args) {
 
-        AddMaxQuantFeatures addMaxQuantFeatures =  new AddMaxQuantFeatures("Version 1.0.0");
+        CreateSpectronautExport addMaxQuantFeatures =  new CreateSpectronautExport("Version 1.0.0");
         try {
             addMaxQuantFeatures.init(args).parseOptions(args).run();
         } catch (MissingOptionException e) {
