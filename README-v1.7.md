@@ -495,6 +495,7 @@ NewAnce writes the PSMs for the protein coding and non-canonical groups to tab d
 * WTSeq : WT sequence(if present, NA otherwise). 10 AA are added to N- and C-term.
 * IsDecoy : true if peptide originates from reversed protein sequence. false otherwise.
 * Rank : rank of PSM in Comet search
+* Group : PSM group assigned by NewAnce (one of the groups defined in -groupN option)
 * XCorr : Comet xcorr score  
 * DeltaCn : Comet deltacn score  
 * SpScore : Comet spscore score    
@@ -502,17 +503,15 @@ NewAnce writes the PSMs for the protein coding and non-canonical groups to tab d
 * Massdiff : Comet mass difference between neutral precursor and peptide masses (atomic units)
 * Tot_num_ions : Comet total number of theoretical fragment ions considered for the match  
 * Num_matched_ions : Comet number of theoretical fragment ions that produced a match to experimental fragment masses
-* lFDR : local FDR for Comet PSMs calculated by NewAnce 
-* Group : PSM group assigned by NewAnce (one of the groups defined in -groupN option)
-* passFDR : true if PSMs passed the Comet FDR filter, false otherwise
+* Comet.lFDR : local FDR for Comet PSMs calculated by NewAnce 
+* Comet.passFDR : true if PSMs passed the Comet FDR filter, false otherwise
 * Mass.Error[ppm] : MaxQuant relative mass error between neutral precursor and peptide masses (ppm)  
 * Score : MaxQuant Score
 * Delta.score : MaxQuant Delta score
 * PEP : MaxQuant PEP value
 * Localization.prob : MaxQuant Localization probability of PTM (NA if no PTM is present)
-* lFDR : local FDR for MaxQuant PSMs calculated by NewAnce 
-* Group : PSM group assigned by NewAnce (one of the groups defined in -groupN option)
-* passFDR : true if PSMs passed the MaxQuant FDR filter, false otherwise
+* MaxQuant.lFDR : local FDR for MaxQuant PSMs calculated by NewAnce 
+* MaxQuant.passFDR : true if PSMs passed the MaxQuant FDR filter, false otherwise
 
 ## Tests
 
