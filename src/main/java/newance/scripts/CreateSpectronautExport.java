@@ -202,7 +202,7 @@ public class CreateSpectronautExport extends ExecutableOptions {
     private void writeSpectronautFile() {
         try {
 
-            String newNewAnceFile = newAnceResultFile.getAbsolutePath().replace("PSMs.txt","_Spectronaut.txt");
+            String newNewAnceFile = newAnceResultFile.getAbsolutePath().replace(".txt","_Spectronaut.txt");
             BufferedWriter writer = new BufferedWriter(new FileWriter(newNewAnceFile));
 
             String header = "";

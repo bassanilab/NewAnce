@@ -33,8 +33,11 @@ public class AddVariantIDs2Psm implements BiConsumer<String,List<PeptideSpectrum
         String seq = psm.getPeptide().toSymbolString();
         String firstProtein = psm.getFirstProteinAC();
 
+        if (seq.equals("QEKDALAV"))
+            System.out.println("I'm here: "+seq);
+
         if (psm.isDecoy()) {
-            seq = reverse(seq).substring(0,seq.length()-1);
+            seq = seq.charAt(0)+reverse(seq.substring(1,seq.length()));
             if (firstProtein.startsWith("DECOY_"))
                 firstProtein = firstProtein.substring("DECOY_".length());
         }
@@ -59,7 +62,10 @@ public class AddVariantIDs2Psm implements BiConsumer<String,List<PeptideSpectrum
             } else {
                 int start = protein.getSequence().indexOf(seq);
                 psm.setPeptideStart(start);
-                psm.setWtSequence(reverse(protein.getWTSequence(start, seq.length(),10)));
+                if (psm.isDecoy())
+                    psm.setWtSequence(reverse(protein.getWTSequence(start, seq.length(),10)));
+                else
+                    psm.setWtSequence(protein.getWTSequence(start, seq.length(),10));
             }
         }
     }
