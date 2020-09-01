@@ -12,7 +12,8 @@ The code has been tested on Linux, Mac, and Windows using Java 1.8. Comet result
 5. [PDV export](#PDV-export)
 6. [Extend MaxQuant features](#Extend-MaxQuant-features)
 7. [Export score histograms](#Export-score-histograms)
-8. [Match peptides to fasta file](#Match-peptides-to-fasta-file)
+8. [Spectronaut DIA export](#Spectronaut-DIA-export)
+9. [Match peptides to fasta file](#Match-peptides-to-fasta-file)
 
 ## Command line options 
 
@@ -658,7 +659,7 @@ Options for AddMaxQuantFeatures:
 ```
 -mqD,--maxquantPsmDir <arg>                    MaxQuant psm root directory (required)
 
-Directors under which MaxQuant msms.txt files are found.
+Directory under which MaxQuant msms.txt files are found.
 ```
 
 ```
@@ -703,9 +704,40 @@ Running CometHistogramCalculator:
 java -Xmx12G -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CometHistogramCalculator -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -outD 0D5P/lncRNA/NewAnce/histos -outT prior_histo -spRE .* -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -nrTh 5
 ```
 
+## Spectronaut DIA export
+
+This class can be used to export the NewAnce PSMs to the Spectronaut format for spectrum library generation and DIA analysis (version 1.7.1 or higher).
+
+```
+-mqD,--maxquantPsmDir <arg>            MaxQuant psm root directory (required)
+
+Root directory under which MaxQuant msms.txt file(s) is (are) found. All msms.txt file in under this root directory are considered.
+```
+
+```
+-naf,--newAnceResultFile <arg>         Result file from NewAnce analysis (required)
+
+NewAnce result file containing peptide spectrum matches (PSMs). Each PSM in this file is exported to Spectronaut format. "_Spectronaut" tage will be added to the end of the NewAnce file name.
+```
+
+Printing CreateSpectronautExport options:
+
+```
+java -cp NewAnce-1.7.1-SNAPSHOT.jar newance.scripts.CreateSpectronautExport -h
+```
+
+Running CreateSpectronautExport:
+
+```
+java -Xmx12G -cp NewAnce-1.7.1-SNAPSHOT.jar newance.scripts.CreateSpectronautExport -mqD 0D5P/lncRNA/MaxQuant -naf 0D5P/lncRNA/NewAnce/lncRNA_0D5P_NewAncePSMs.txt 
+```
+
 ## Match peptides to fasta file
 
 This class can be used to match peptide sequences from a tab file to protein sequences in a fasta file (matches treat I/L as equal). This can be useful if you want to check whether ceratin peptides are part of UniProt for example.
+
+
+Printing AnnotatePeptides options:
 
 ```
 java -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.AnnotatePeptides -h
