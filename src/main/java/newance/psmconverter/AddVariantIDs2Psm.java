@@ -33,10 +33,8 @@ public class AddVariantIDs2Psm implements BiConsumer<String,List<PeptideSpectrum
         String seq = psm.getPeptide().toSymbolString();
         String firstProtein = psm.getFirstProteinAC();
 
-        if (seq.equals("QEKDALAV"))
-            System.out.println("I'm here: "+seq);
-
         if (psm.isDecoy()) {
+            // Decoy peptide in Comet keeps first AA and reverses rest of peptide
             seq = seq.charAt(0)+reverse(seq.substring(1,seq.length()));
             if (firstProtein.startsWith("DECOY_"))
                 firstProtein = firstProtein.substring("DECOY_".length());

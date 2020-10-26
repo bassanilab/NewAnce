@@ -111,7 +111,7 @@ public class CreatePDVExport extends ExecutableOptions {
 
         fileWriter.write(charge+"\t"+results.getString("PeptideMass")+"\t");
 
-        double mz = (pm+dm+charge+ MassCalculator.PROTON_MASS)/charge;
+        double mz = (pm+dm+charge*MassCalculator.PROTON_MASS)/charge;
         fileWriter.write(String.format("%.5f",mz)+"\t");
 
         String modifStr = "-";
@@ -208,7 +208,9 @@ public class CreatePDVExport extends ExecutableOptions {
             fileWriter.write("spectrum_title\tpeptide\tcharge\tpep_mass\tmz\tmodification\n");
 
             while (results.next()) {
+
                 String spectrum = results.getString("Spectrum");
+                System.out.println(spectrum);
                 String msmsFileName = spectrum.substring(0,spectrum.indexOf('.'));
                 int scanNr = Integer.parseInt(results.getString("ScanNr"));
 
