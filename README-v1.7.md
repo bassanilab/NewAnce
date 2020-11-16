@@ -706,12 +706,18 @@ java -Xmx12G -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CometHistogramCalcul
 
 ## Spectronaut DIA export
 
-This class can be used to export the NewAnce PSMs to the Spectronaut format for spectrum library generation and DIA analysis (version 1.7.1 or higher).
+This class can be used to export the NewAnce PSMs to the Spectronaut format for spectrum library generation and DIA analysis (version 1.7.1 or higher).  Information for precursor ion intensities and scan event numbers can be obtained either from MaxQuant result files or from mgf files. 
 
 ```
--mqD,--maxquantPsmDir <arg>            MaxQuant psm root directory (required)
+-mqD,--maxquantPsmDir <arg>            MaxQuant psm root directory
 
 Root directory under which MaxQuant msms.txt file(s) is (are) found. All msms.txt file in under this root directory are considered.
+```
+
+```
+-mgf,--mgfDir <arg>            Directory containing mgf files
+
+Root directory under which mgf files are found. If -mqD option is set too, the MaxQaunt msms.txt file is used and the mgf files are ignored.
 ```
 
 ```
