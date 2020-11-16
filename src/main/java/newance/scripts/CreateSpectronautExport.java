@@ -303,6 +303,7 @@ public class CreateSpectronautExport extends ExecutableOptions {
 
         if (peptide.indexOf('(')<0) return "_"+peptide+"_";
 
+
         String modifiedPeptide = peptide.replaceAll("Oxidation","Oxidation (M)");
         modifiedPeptide = modifiedPeptide.replaceAll("Phopsho","Phospho (STY)");
         modifiedPeptide = modifiedPeptide.replaceAll("\\(Acetyl\\)_","(Acetyl (Protein N-term))");
