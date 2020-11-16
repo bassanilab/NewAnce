@@ -149,7 +149,6 @@ public class CreatePDVExport extends ExecutableOptions {
 
     private List<MsnSpectrum> selectMatchedSpectra(String rawFileName, Set<Integer> scanNumbers) {
 
-        PeakList.Precision precision = PeakList.Precision.DOUBLE;
         List<MsnSpectrum> spectra = new ArrayList<>();
 
         File mgfFile = new File(mgfDir.getAbsolutePath()+File.separator+rawFileName+".mgf");
@@ -170,6 +169,7 @@ public class CreatePDVExport extends ExecutableOptions {
                         spectrum.setComment(rawFileName+"."+scanNr+"."+scanNr+"."+spectrum.getPrecursor().getCharge());
                         spectra.add(spectrum);
                     }
+
                 } catch (IOException e) {
                     System.out.println("WARNING : " + e.getMessage());
                 }

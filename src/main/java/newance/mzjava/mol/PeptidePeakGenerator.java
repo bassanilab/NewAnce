@@ -25,14 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package newance.mzjava.ms.spectrum;
+package newance.mzjava.mol;
+
+
+import newance.mzjava.ms.peaklist.PeakAnnotation;
+import newance.mzjava.ms.spectrum.AnnotatedPeak;
+
+import java.util.List;
+import java.util.Set;
 
 /**
- * An enum to represent the types of fragments
- *
  * @author Oliver Horlacher
  * @version 1.0
  */
-public enum FragmentType {
-    FORWARD, REVERSE, UNKNOWN, INTERNAL, MONOMER, INTACT
+public interface PeptidePeakGenerator<A extends PeakAnnotation> {
+
+    /**
+     * Generate peaks that are observed for the fragment at the supplied charge states.
+     * The generated peaks are to be added to peaks
+     *
+     * @param precursor the peptide that this fragment was derived from
+     * @param fragment the fragment
+     * @param charges the charges for which to generate peaks
+     * @param peaks the list of peaks
+     * @return the peaks list that was passed in
+     */
+    List<AnnotatedPeak<A>> generatePeaks(Peptide precursor, PeptideFragment fragment, int[] charges, List<AnnotatedPeak<A>> peaks);
+
+    Set<FragmentType> getFragmentTypes();
 }

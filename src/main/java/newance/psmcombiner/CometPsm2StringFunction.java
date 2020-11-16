@@ -40,11 +40,12 @@ public class CometPsm2StringFunction extends Psm2StringFunction {
         float lfdr = groupedFDRCalculator.getLocalFDR(psm);
         String lfdrStr = (groupedFDRCalculator ==null)?"":String.format("%.5f",lfdr);
         String expectStr = String.format("%.5f",psm.getScore("expect"));
+        String mdStr = String.format("%.5f",psm.getScore("mass_diff"));
         String pass = "NA";
         if (grpThresholdMap!=null) pass = (lfdr<=grpThresholdMap.get(psm.getGroup()))?"true":"false";
 
         return  psm.getScore("xcorr")+"\t"+psm.getScore("deltacn")+"\t"+
-                psm.getScore("spscore")+"\t"+expectStr+"\t+"+psm.getScore("mass_diff")+"\t"+
+                psm.getScore("spscore")+"\t"+expectStr+"\t+"+mdStr+"\t"+
                 (int)psm.getScore("tot_num_ions")+"\t"+(int)psm.getScore("matched_num_ions")+"\t"+
                 lfdrStr+"\t"+pass;
     }

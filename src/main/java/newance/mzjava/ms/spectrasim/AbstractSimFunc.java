@@ -57,6 +57,16 @@ public abstract class AbstractSimFunc<X extends PeakAnnotation, Y extends PeakAn
     }
 
     /**
+     * Creates a AbstractSimFunc that uses a DefaultPeakListAligner and clear processor chain.
+     *
+     * @param peakListAligner object to align the two PeakLists
+     */
+    protected AbstractSimFunc(PeakListAligner<X, Y> peakListAligner) {
+
+        this.peakPairProcessorChain = new PeakPairProcessorChain<X, Y>(peakListAligner);
+    }
+
+    /**
      * Creates a AbstractSimFunc that uses the supplied PeakListAligner and PeakPairProcessor chain.
      *
      * @param peakListAligner the object that is used to align the PeakList pairs

@@ -10,8 +10,6 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.util;
 
-
-
 import newance.mzjava.mol.modification.Modification;
 import newance.psmcombiner.ScoreHistogram3D;
 
@@ -103,7 +101,7 @@ public class NewAnceParams implements Serializable {
 
     private String fdrControlMethod = "combined";
 
-    private String version = "1.7.1";
+    private String version = "1.7.2";
 
     private String cometPsmDir = "";
     private String maxquantPsmDir = "";
