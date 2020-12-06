@@ -706,18 +706,31 @@ java -Xmx12G -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CometHistogramCalcul
 
 ## Spectronaut DIA export
 
-This class can be used to export the NewAnce PSMs to the Spectronaut format for spectrum library generation and DIA analysis (version 1.7.1 or higher).
+This class can be used to export the NewAnce PSMs to the Spectronaut format for spectrum library generation and DIA analysis 
+(version 1.7.1 or higher).  Information for precursor ion intensities and scan event numbers can be obtained either from 
+MaxQuant result files or from mgf files. 
 
 ```
--mqD,--maxquantPsmDir <arg>            MaxQuant psm root directory (required)
+-mqD,--maxquantPsmDir <arg>            MaxQuant psm root directory
 
-Root directory under which MaxQuant msms.txt file(s) is (are) found. All msms.txt file in under this root directory are considered.
+Root directory under which MaxQuant msms.txt file(s) is (are) found. All msms.txt file in under this 
+root directory are considered. The 'Scan Event' and 'MS1 Intensity' intensity values in the Spectronaut file
+are obtained from the values in the msms.txt files.
+```
+
+```
+-mgf,--mgfDir <arg>            Directory containing mgf files
+
+Root directory under which mgf files are found. The 'Scan Event' and 'MS1 Intensity' intensity values in the Spectronaut file
+are calculated from the mgf files. If -mqD option is set too, the MaxQuant msms.txt file(s) are used and the mgf files are 
+ignored. If neither -mgf nor -mqD options are set, the 'Scan Event' and 'MS1 Intensity' intensity values are set to NA.
 ```
 
 ```
 -naf,--newAnceResultFile <arg>         Result file from NewAnce analysis (required)
 
-NewAnce result file containing peptide spectrum matches (PSMs). Each PSM in this file is exported to Spectronaut format. "_Spectronaut" tage will be added to the end of the NewAnce file name.
+NewAnce result file containing peptide spectrum matches (PSMs). Each PSM in this file is exported to Spectronaut format. 
+"_Spectronaut" tage will be added to the end of the NewAnce file name.
 ```
 
 Printing CreateSpectronautExport options:
@@ -734,7 +747,8 @@ java -Xmx12G -cp NewAnce-1.7.1-SNAPSHOT.jar newance.scripts.CreateSpectronautExp
 
 ## Match peptides to fasta file
 
-This class can be used to match peptide sequences from a tab file to protein sequences in a fasta file (matches treat I/L as equal). This can be useful if you want to check whether ceratin peptides are part of UniProt for example.
+This class can be used to match peptide sequences from a tab file to protein sequences in a fasta file (matches treat I/L as equal). 
+This can be useful if you want to check whether ceratin peptides are part of UniProt for example.
 
 
 Printing AnnotatePeptides options:
