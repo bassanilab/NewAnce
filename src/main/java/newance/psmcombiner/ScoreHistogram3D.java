@@ -154,9 +154,41 @@ public class ScoreHistogram3D extends SmoothedScoreHistogram {
             else decoyCnts.set(idx,decoyCnts.get(idx)+value);
         }
 
-        if (isDecoy) totTargetCnt += value;
+        if (!isDecoy) totTargetCnt += value;
         else totDecoyCnt += value;
     }
+
+    // combine 2 histograms self and other: self = alpha*self + (1-alpha)*other
+    public boolean add(ScoreHistogram3D other, float alpha) {
+
+        if (!hasSameLayout(other)) return false;
+        if (alpha<0 || alpha>1) return false;
+
+        for (Integer bin : other.psmBins) {
+
+            int thisIdx = indexMap.get(bin);
+            int otherIdx = other.indexMap.get(bin);
+            if (thisIdx<0) {
+                indexMap.set(bin,currIndex);
+                psmBins.add(bin);
+                currIndex++;
+            }
+
+            if (thisIdx<0) {
+                targetCnts.add((1 - alpha) * other.targetCnts.get(otherIdx));
+                decoyCnts.add((1 - alpha) * other.decoyCnts.get(otherIdx));
+            } else {
+                targetCnts.set(thisIdx,alpha*targetCnts.get(thisIdx) + (1-alpha)*other.targetCnts.get(otherIdx));
+                decoyCnts.set(thisIdx,alpha*decoyCnts.get(thisIdx) + (1-alpha)*other.decoyCnts.get(otherIdx));
+            }
+        }
+
+        totTargetCnt = alpha*totTargetCnt+(1-alpha)*other.totTargetCnt;
+        totDecoyCnt = alpha*totDecoyCnt+(1-alpha)*other.totDecoyCnt;
+
+        return true;
+    }
+
 
     @Override
     protected Set<Integer> getNeighbourIndex(int bin) {
@@ -199,7 +231,6 @@ public class ScoreHistogram3D extends SmoothedScoreHistogram {
         }
         return indexMap;
     }
-
 
     public void write(String outputDir, String fileTag, String id) {
 
@@ -333,6 +364,20 @@ public class ScoreHistogram3D extends SmoothedScoreHistogram {
         smoothedHistogram.smooth(adjustTotalCounts);
     }
 
+    public boolean hasSameLayout(ScoreHistogram3D that) {
 
+        if (Double.compare(that.minScore1, minScore1) != 0) return false;
+        if (Double.compare(that.maxScore1, maxScore1) != 0) return false;
+        if (nrScore1Bins != that.nrScore1Bins) return false;
+        if (Double.compare(that.minScore2, minScore2) != 0) return false;
+        if (Double.compare(that.maxScore2, maxScore2) != 0) return false;
+        if (nrScore2Bins != that.nrScore2Bins) return false;
+        if (Double.compare(that.minScore3, minScore3) != 0) return false;
+        if (Double.compare(that.maxScore3, maxScore3) != 0) return false;
+        if (nrScore3Bins != that.nrScore3Bins) return false;
+        if (!score1.equalsIgnoreCase(that.score1)) return false;
+        if (!score2.equalsIgnoreCase(that.score2)) return false;
+        return score3.equalsIgnoreCase(that.score3);
+    }
 
 }

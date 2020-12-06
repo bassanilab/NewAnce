@@ -276,8 +276,8 @@ public class ScoreHistogram3DTest {
         cometScoreHistogram.calcClassProb();
 
         Assert.assertFalse(cometScoreHistogram.isEmpty());
-        Assert.assertEquals(0.5,cometScoreHistogram.getPi_0(),0.00001);
-        Assert.assertEquals(0.5,cometScoreHistogram.getPi_1(),0.00001);
+        Assert.assertEquals(0.0,cometScoreHistogram.getPi_0(),0.00001);
+        Assert.assertEquals(1.0,cometScoreHistogram.getPi_1(),0.00001);
         Assert.assertEquals(0f,cometScoreHistogram.getTotDecoyCnt(),0.0001);
         Assert.assertEquals(1f,cometScoreHistogram.getTotTargetCnt(),0.0001);
 
@@ -288,16 +288,16 @@ public class ScoreHistogram3DTest {
         cometScoreHistogram.calcClassProb();
 
         Assert.assertFalse(cometScoreHistogram.isEmpty());
-        Assert.assertEquals(0.5,cometScoreHistogram.getPi_0(),0.00001);
-        Assert.assertEquals(0.5,cometScoreHistogram.getPi_1(),0.00001);
+        Assert.assertEquals(1.0,cometScoreHistogram.getPi_0(),0.00001);
+        Assert.assertEquals(0.0,cometScoreHistogram.getPi_1(),0.00001);
         Assert.assertEquals(1f,cometScoreHistogram.getTotDecoyCnt(),0.0001);
         Assert.assertEquals(1f,cometScoreHistogram.getTotTargetCnt(),0.0001);
 
         for (int i=0;i<8;i++) cometScoreHistogram.add(peptideSpectrumMatch1);
         cometScoreHistogram.calcClassProb();
 
-        Assert.assertEquals(0.5,cometScoreHistogram.getPi_0(),0.00001);
-        Assert.assertEquals(0.5,cometScoreHistogram.getPi_1(),0.00001);
+        Assert.assertEquals(0.2,cometScoreHistogram.getPi_0(),0.00001);
+        Assert.assertEquals(0.8,cometScoreHistogram.getPi_1(),0.00001);
         Assert.assertEquals(1f,cometScoreHistogram.getTotDecoyCnt(),0.0001);
         Assert.assertEquals(9f,cometScoreHistogram.getTotTargetCnt(),0.0001);
     }
@@ -335,8 +335,8 @@ public class ScoreHistogram3DTest {
             Assert.assertEquals(0f,cometScoreHistogram.getTotTargetCnt(),0.0001);
         } else {
 
-            Assert.assertEquals(0.5,cometScoreHistogram.getPi_0(),0.00001);
-            Assert.assertEquals(0.5,cometScoreHistogram.getPi_1(),0.00001);
+            Assert.assertEquals(0.0,cometScoreHistogram.getPi_0(),0.00001);
+            Assert.assertEquals(1.0,cometScoreHistogram.getPi_1(),0.00001);
             Assert.assertEquals(0f,cometScoreHistogram.getTotDecoyCnt(),0.0001);
             Assert.assertEquals(14f,cometScoreHistogram.getTotTargetCnt(),0.0001);
         }
@@ -401,8 +401,8 @@ public class ScoreHistogram3DTest {
             Assert.assertEquals(10,smoothed.decoyCnts.size());
         } else {
 
-            Assert.assertEquals(0.5,cometScoreHistogram.getPi_0(),0.00001);
-            Assert.assertEquals(0.5,cometScoreHistogram.getPi_1(),0.00001);
+            Assert.assertEquals(0.0,cometScoreHistogram.getPi_0(),0.00001);
+            Assert.assertEquals(1.0,cometScoreHistogram.getPi_1(),0.00001);
             Assert.assertEquals(0f,cometScoreHistogram.getTotDecoyCnt(),0.0001);
             Assert.assertEquals(11f,cometScoreHistogram.getTotTargetCnt(),0.0001);
 
@@ -451,8 +451,8 @@ public class ScoreHistogram3DTest {
             Assert.assertEquals(10,smoothed.decoyCnts.size());
         } else {
 
-            Assert.assertEquals(0.5,cometScoreHistogram.getPi_0(),0.00001);
-            Assert.assertEquals(0.5,cometScoreHistogram.getPi_1(),0.00001);
+            Assert.assertEquals(0.0,cometScoreHistogram.getPi_0(),0.00001);
+            Assert.assertEquals(1.0,cometScoreHistogram.getPi_1(),0.00001);
             Assert.assertEquals(0f,cometScoreHistogram.getTotDecoyCnt(),0.0001);
             Assert.assertEquals(11f,cometScoreHistogram.getTotTargetCnt(),0.0001);
 
@@ -657,6 +657,16 @@ public class ScoreHistogram3DTest {
         cometScoreHistogram.smoothHistogram(true);
         counts = cometScoreHistogram.getTargetDecoyCounts(0.2f);
 
+        tCnt = 0;
+        dCnt = 0;
+        for (PeptideSpectrumMatch psm : psms) {
+
+            if (cometScoreHistogram.getLocalFDR(psm) > 0.2) continue;
+
+            if (psm.isDecoy()) dCnt++;
+            else tCnt++;
+        }
+
         Assert.assertEquals(dCnt,counts[0],0.00001);
         Assert.assertEquals(tCnt,counts[1],0.00001);
     }
@@ -726,6 +736,40 @@ public class ScoreHistogram3DTest {
 
         Assert.assertEquals(14,psmCounts[0],0.00001);
         Assert.assertEquals(14,psmCounts[1],0.00001);
+    }
+
+    @Test
+    public void test_addHistos() {
+
+        ScoreHistogram3D scoreHistogram1 = buildScoreHisto();
+        ScoreHistogram3D scoreHistogram2 = buildScoreHisto();
+
+        NewAnceParams params = NewAnceParams.getInstance();
+
+        List<Float> xcorrMids = scoreHistogram1.calcMids(scoreHistogram1.calcBreaks((float)params.getMinXCorr(),(float)params.getMaxXCorr(),params.getNrXCorrBins()));
+        List<Float> deltacnMids = scoreHistogram1.calcMids(scoreHistogram1.calcBreaks((float)params.getMinDeltaCn(),(float)params.getMaxDeltaCn(),params.getNrDeltaCnBins()));
+        List<Float> spscoreMids = scoreHistogram1.calcMids(scoreHistogram1.calcBreaks((float)params.getMinSpScore(),(float)params.getMaxSpScore(),params.getNrSpScoreBins()));
+
+        int xcorrIdx = xcorrMids.size()/2;
+        int deltacnIdx = deltacnMids.size()/2;
+        int spscoreIdx = spscoreMids.size()/2;
+
+        addPsms(xcorrIdx, deltacnIdx, spscoreIdx, scoreHistogram1, false);
+        addPsms(xcorrIdx, deltacnIdx, spscoreIdx, scoreHistogram1, true);
+
+        addPsms(xcorrIdx, deltacnIdx, spscoreIdx, scoreHistogram2, false);
+        addPsms(xcorrIdx, deltacnIdx, spscoreIdx, scoreHistogram2, true);
+
+        scoreHistogram1.add(scoreHistogram2,0.5f);
+
+        for (Integer bin : scoreHistogram1.psmBins) {
+            Integer idx = scoreHistogram1.indexMap.get(bin);
+            Assert.assertEquals(scoreHistogram1.targetCnts.get(idx),scoreHistogram2.targetCnts.get(idx), 0.0001);
+            Assert.assertEquals(scoreHistogram1.decoyCnts.get(idx),scoreHistogram2.decoyCnts.get(idx), 0.0001);
+        }
+
+        Assert.assertEquals(scoreHistogram1.totDecoyCnt, scoreHistogram2.totDecoyCnt, 0.0001);
+        Assert.assertEquals(scoreHistogram1.totTargetCnt, scoreHistogram2.totTargetCnt, 0.0001);
     }
 
     public static List<Integer> addPsms(int xcorrIdx, int deltacnIdx, int spscoreIdx,

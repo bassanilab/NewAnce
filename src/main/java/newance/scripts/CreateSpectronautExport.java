@@ -13,10 +13,10 @@ package newance.scripts;
 import newance.mzjava.ms.io.mgf.MgfReader;
 import newance.mzjava.ms.io.mgf.MsConvertTitleParser;
 import newance.mzjava.ms.spectrum.MsnSpectrum;
+import newance.mzjava.ms.spectrum.ScanNumberList;
 import newance.util.ExecutableOptions;
 import newance.util.NewAnceParams;
 import org.apache.commons.cli.*;
-import org.apache.commons.collections15.map.HashedMap;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -43,11 +44,14 @@ public class CreateSpectronautExport extends ExecutableOptions {
     private Map<String,Integer> spectrumScanEventNrMap;
     private Map<String,Set<Integer>> spectrumScanNrMap;
     private Map<String,Double> spectrumIntensityMap;
+    private Pattern titleRegExp = null;
 
     public CreateSpectronautExport(String version) {
 
         this.version = version;
         createOptions();
+
+        titleRegExp = Pattern.compile("(^[\\w\\-]+)\\.(\\d+)\\.\\d+\\.\\d+");
     }
 
     @Override
@@ -124,7 +128,8 @@ public class CreateSpectronautExport extends ExecutableOptions {
             spectrumIntensityMap = new HashMap<>();
 
             for (String mgfFileName : mgfFileMap.keySet()) {
-                parseMgfFile(mgfFileMap.get(mgfFileName), spectrumScanNrMap.get(mgfFileName));
+                if (spectrumScanNrMap.containsKey(mgfFileName))
+                    parseMgfFile(mgfFileMap.get(mgfFileName), spectrumScanNrMap.get(mgfFileName));
             }
             rereadNewAnceFile();
         }
@@ -152,9 +157,7 @@ public class CreateSpectronautExport extends ExecutableOptions {
     }
 
 
-    private List<MsnSpectrum> parseMgfFile(File mgfFile, Set<Integer> scanNumbers) {
-
-        List<MsnSpectrum> spectra = new ArrayList<>();
+    private void parseMgfFile(File mgfFile, Set<Integer> matchedScanNumbers) {
 
         System.out.println("Parsing and matching mgf file : " + mgfFile.getAbsolutePath());
         String fileName = mgfFile.getName();
@@ -170,18 +173,36 @@ public class CreateSpectronautExport extends ExecutableOptions {
                 try {
                     spectrum = reader.next();
 
-                    int scanNr = spectrum.getScanNumbers().getFirst().getValue();
+                    ScanNumberList scanNrs = spectrum.getScanNumbers();
+                    int scanNr = -1;
+                    String spectrumID = "";
+                    if (!scanNrs.isEmpty()) {
+                        scanNr = spectrum.getScanNumbers().getFirst().getValue();
+                        spectrumID = fileName+"."+scanNr+"."+scanNr+"."+spectrum.getPrecursor().getCharge();
 
-                    if (scanNr == prevScanNr+1) scanEventNr++;
+                    } else {
+                        // this is already done in the mgf reader. this code can be adapted if there is some strange
+                        // mgf TITLE field
+                        String title = spectrum.getComment().split("\\s")[0];
+                        Matcher m = titleRegExp.matcher(title);
+                        if (m.find()) {
+                            scanNr = Integer.parseInt(m.group(2));
+                            spectrumID = title;
+                        } else {
+                            spectrumID = spectrum.getComment();
+                        }
+                    }
+
+
+                    if (scanNr > 0 && scanNr == prevScanNr+1) scanEventNr++;
                     else scanEventNr = 1;
 
                     prevScanNr = scanNr;
 
-                    if (scanNumbers.contains(scanNr)) {
-                        spectrum.setComment(fileName+"."+scanNr+"."+scanNr+"."+spectrum.getPrecursor().getCharge());
-                        spectra.add(spectrum);
-                        spectrumScanEventNrMap.putIfAbsent(spectrum.getComment(),scanEventNr);
-                        spectrumIntensityMap.putIfAbsent(spectrum.getComment(),spectrum.getPrecursor().getIntensity());
+                    if (matchedScanNumbers.contains(scanNr)) {
+                        spectrum.setComment(spectrumID);
+                        spectrumScanEventNrMap.putIfAbsent(spectrumID,scanEventNr);
+                        spectrumIntensityMap.putIfAbsent(spectrumID,spectrum.getPrecursor().getIntensity());
                     }
                 } catch (IOException e) {
                     System.out.println("WARNING : " + e.getMessage());
@@ -191,8 +212,6 @@ public class CreateSpectronautExport extends ExecutableOptions {
         catch(IOException e) {
             System.out.println("Cannot parse mgf file : " + mgfFile.getAbsolutePath());
         }
-
-        return spectra;
     }
 
 
@@ -338,6 +357,11 @@ public class CreateSpectronautExport extends ExecutableOptions {
 
                 String spectrum = results.getString("Spectrum");
 
+                if (!spectrumScanEventNrMap.containsKey(spectrum)) {
+                    System.out.println("Spectrum "+spectrum+" not found in mgf files. Skip.");
+                    continue;
+                }
+
                 String values = "";
                 for (String feature : psmFeatures) {
                     if (!values.isEmpty()) values += "\t";
@@ -362,6 +386,14 @@ public class CreateSpectronautExport extends ExecutableOptions {
                         if (spectrumIntensityMap.containsKey(spectrum))
                             values += spectrumIntensityMap.get(spectrum);
                         else
+                            values += "NA";
+
+                    } else if (feature.startsWith("Spectrum")) {
+                        Matcher m = titleRegExp.matcher(results.getString(feature));
+                        if (m.find()) {
+                            String mgfFileName = m.group(1);
+                            values += mgfFileName;
+                        } else
                             values += "NA";
 
                     } else if (results.findColumn(feature) != 0) {
@@ -398,7 +430,7 @@ public class CreateSpectronautExport extends ExecutableOptions {
             }
             writer.write(header+"\n");
 
-            for  (String key : newAnceSpectra) {
+            for  (String key : psmLines.keySet()) {
 
                 writer.write(psmLines.get(key)+"\n");
             }

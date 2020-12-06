@@ -125,36 +125,38 @@ public abstract class ScoreHistogram implements Serializable {
 
     protected void calcClassProb() {
 
-        List<Float> pvalues = calcPValues();
-
-        int n = pvalues.size();
-
-        if (n==0) {
-            pi_0 = pi_1 = 0.5;
-            return;
-        }
-
-        float th = 0.05f/n;
-        int i;
-        for (i=0;i<n;i++) {
-            if (pvalues.get(i)>th) break;
-        }
-
-        pi_1 = 1.05f*i/n;
-        if (pi_1>=1.0) {
-            pi_1 = totTargetCnt/(totTargetCnt+totDecoyCnt);
-        }
-
-//        if (totTargetCnt>0) {
-//            pi_0 = (2.0 * totDecoyCnt) / (totTargetCnt+totDecoyCnt);
-//            pi_0 = (pi_0>1.0)?1.0:pi_0;
-//        } else if (totDecoyCnt>0){
-//            pi_0 = 1.0;
-//        }  else {
-//            pi_0 = 0.5;
+//        List<Float> pvalues = calcPValues();
+//
+//        int n = pvalues.size();
+//
+//        if (n==0) {
+//            pi_0 = pi_1 = 0.5;
+//            return;
+//        }
+//
+//        float th = 0.05f/n;
+//        int i;
+//        for (i=0;i<n;i++) {
+//            if (pvalues.get(i)>th) break;
+//        }
+//
+//        pi_1 = 1.05f*i/n;
+//        if (pi_1>=1.0) {
+//            pi_1 = totTargetCnt/(totTargetCnt+totDecoyCnt);
 //        }
 
-        pi_0 = 1.0 - pi_1;
+//        pi_0 = 1.0 - pi_1;
+
+        if (totTargetCnt>0) {
+            pi_0 = (2.0 * totDecoyCnt) / (totTargetCnt+totDecoyCnt);
+            pi_0 = (pi_0>1.0)?1.0:pi_0;
+        } else if (totDecoyCnt>0){
+            pi_0 = 1.0;
+        }  else {
+            pi_0 = 0.5;
+        }
+
+        pi_1 = 1.0 - pi_0;
     }
 
     protected List<Float> calcPValues() {

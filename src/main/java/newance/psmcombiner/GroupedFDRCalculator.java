@@ -415,9 +415,9 @@ public class GroupedFDRCalculator {
     public void process(int minNrPsmsPerHisto, int smoothDegree) {
 
         setCanCalculateFDR(minNrPsmsPerHisto);
-        importPriorHistos();
         calcClassProbs();
-        calcLocalFDR();
+        importPriorHistos();
+//        calcLocalFDR();
         smoothHistogram(smoothDegree);
         calcLocalFDR();
     }
@@ -444,6 +444,12 @@ public class GroupedFDRCalculator {
                 psmGrouper = new RegExpProteinGrouper(params.getGroupRegExs(), params.getGroupNames());
             else
                 psmGrouper = new RegExpProteinGrouper(params.getGroupRegExs(), params.getGroupNames(),
+                        params.getProteinGroupMap());
+        } else if (params.getGroupingMethod().equals("famo")) {
+            if (params.getProteinGroupMap().isEmpty())
+                psmGrouper = new ProteinModifGrouper(params.getGroupRegExs(), params.getGroupNames());
+            else
+                psmGrouper = new ProteinModifGrouper(params.getGroupRegExs(), params.getGroupNames(),
                         params.getProteinGroupMap());
         } else if (params.getGroupingMethod().equals("modif")) {
             psmGrouper = new ModificationPSMGrouper();

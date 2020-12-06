@@ -36,7 +36,7 @@ public class GroupedFDRCalculatorTest {
         groups.add("canonical");
         groups.add("cryptic");
 
-        RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(regex,groups);
+        ProteinModifGrouper psmGrouper = new ProteinModifGrouper(regex,groups);
         GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper, NewAnceParams.SearchTool.COMET);
 
         System.out.print(groupedFDRCalculator.printTree(1));
@@ -51,7 +51,7 @@ public class GroupedFDRCalculatorTest {
         groups.add("canonical");
         groups.add("cryptic");
 
-        RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(regex,groups);
+        ProteinModifGrouper psmGrouper = new ProteinModifGrouper(regex,groups);
         GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper, NewAnceParams.SearchTool.COMET);
 
         TObjectDoubleMap<String> scoreMap = new TObjectDoubleHashMap<>();
@@ -85,7 +85,7 @@ public class GroupedFDRCalculatorTest {
         groups.add("canonical");
         groups.add("cryptic");
 
-        RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(regex,groups);
+        ProteinModifGrouper psmGrouper = new ProteinModifGrouper(regex,groups);
         GroupedFDRCalculator groupedFDRCalculator = new GroupedFDRCalculator(psmGrouper, NewAnceParams.SearchTool.COMET);
 
         NewAnceParams params = NewAnceParams.getInstance();
@@ -225,8 +225,8 @@ public class GroupedFDRCalculatorTest {
 
             float[] cnts = groupedFDRCalculator.histogramMap.get(label).getScoreHistogram().getTargetDecoyCounts(0.2f);
             if (label.equals("Z1_canonical")) {
-                Assert.assertEquals(0f, cnts[0],0.00001);
-                Assert.assertEquals(45f, cnts[1],0.00001);
+                Assert.assertEquals(45f, cnts[0],0.00001);
+                Assert.assertEquals(495f, cnts[1],0.00001);
             } else if (label.equals("Z1_cryptic")) {
                 Assert.assertEquals(0f, cnts[0],0.00001);
                 Assert.assertEquals(0f, cnts[1],0.00001);
@@ -306,7 +306,7 @@ public class GroupedFDRCalculatorTest {
 
         Assert.assertEquals(0f, groupedFDRCalculator.calcGlobalFDR(0f),0.000001);
         Assert.assertEquals(0f, groupedFDRCalculator.calcGlobalFDR(0.1f),0.000001);
-        Assert.assertEquals(0f, groupedFDRCalculator.calcGlobalFDR(0.2f),0.000001);
+        Assert.assertEquals(9f/63, groupedFDRCalculator.calcGlobalFDR(0.2f),0.001);
         Assert.assertEquals(7f/22, groupedFDRCalculator.calcGlobalFDR(0.5f),0.000001);
         Assert.assertEquals(270.0f/720, groupedFDRCalculator.calcGlobalFDR(1.0f),0.000001);
     }
@@ -345,8 +345,10 @@ public class GroupedFDRCalculatorTest {
                     n += (k<0)?-k:k;
 
                     n = freq*(3-n)*(3-n);
-                    for (int m=0; m<n; m++) groupedFDRCalculator.add(new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                            100, 101, 1001.1, isDecoy, false, null));
+                    for (int m=0; m<n; m++) groupedFDRCalculator.add(
+                            new PeptideSpectrumMatch("spectrumFile",Peptide.parse("PEPTIDE"), prots,
+                                    scoreMap, 1, 1,100, 101, 1001.1,
+                                    isDecoy, false, null));
                 }
             }
         }

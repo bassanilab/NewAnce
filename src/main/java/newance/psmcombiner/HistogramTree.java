@@ -23,14 +23,14 @@ import java.util.Map;
  */
 public class HistogramTree {
 
-    private SmoothedScoreHistogram scoreHistogram;
+    private ScoreHistogram3D scoreHistogram;
     private final List<HistogramTree> children;
     private final HistogramTree parent;
     private final String id;
     private final int level;
     private final String group;
 
-    public HistogramTree(SmoothedScoreHistogram scoreHistogram, String id, String group) {
+    public HistogramTree(ScoreHistogram3D scoreHistogram, String id, String group) {
         this.children = new ArrayList<>();
         this.scoreHistogram = scoreHistogram;
         this.parent = null;
@@ -39,7 +39,7 @@ public class HistogramTree {
         this.group = group;
     }
 
-    public HistogramTree(SmoothedScoreHistogram scoreHistogram, HistogramTree parent, String id, String group, int level) {
+    public HistogramTree(ScoreHistogram3D scoreHistogram, HistogramTree parent, String id, String group, int level) {
         this.children = new ArrayList<>();
         this.scoreHistogram = scoreHistogram;
         this.parent = parent;
@@ -48,7 +48,7 @@ public class HistogramTree {
         this.group = group;
     }
 
-    public HistogramTree addHistogram(SmoothedScoreHistogram scoreHistogram, String id, String group) {
+    public HistogramTree addHistogram(ScoreHistogram3D scoreHistogram, String id, String group) {
 
         HistogramTree histogramTree = new HistogramTree(scoreHistogram, this, id, group,level+1);
         children.add(histogramTree);
@@ -65,7 +65,7 @@ public class HistogramTree {
         return scoreHistogram;
     }
 
-    public void setScoreHistogram(SmoothedScoreHistogram scoreHistogram) {
+    public void setScoreHistogram(ScoreHistogram3D scoreHistogram) {
         this.scoreHistogram = scoreHistogram;
     }
 
@@ -213,20 +213,23 @@ public class HistogramTree {
                 if (!id.equals("root") && !id.equals("Z1") && !id.equals("Z2") && !id.equals("Z3")) {
                     histoFile = new File(histoDir + File.separatorChar + "prior_histo_Z3.txt");
                     if (histoFile.exists()) {
-                        System.out.println("WARNING: histogram file " + histoDir + File.separatorChar + "prior_histo_" + id + ".txt does not exist. Taking prior_histo_Z3.txt instead.");
+                        System.out.println("WARNING: histogram file " + histoDir + File.separatorChar + "prior_histo_" +
+                                id + ".txt does not exist. Taking prior_histo_Z3.txt instead.");
                     } else {
-                        System.out.println("ERROR: histogram file " + histoFile.getAbsolutePath() + " does not exist.  Abort.");
+                        System.out.println("ERROR: histogram file " + histoFile.getAbsolutePath() + " does not exist.  " +
+                                "Abort.");
                         System.exit(1);
                     }
                 } else {
-                    System.out.println("ERROR: histogram file " + histoFile.getAbsolutePath() + " does not exist. Abort.");
+                    System.out.println("ERROR: histogram file " + histoFile.getAbsolutePath() + " does not exist. " +
+                            "Abort.");
                     System.exit(1);
                 }
             }
 
             ScoreHistogram3D scoreHistogram3D = ScoreHistogram3D.read(histoFile);
-            setScoreHistogram(scoreHistogram3D);
-            scoreHistogram3D.setCanCalculateFDR(0);
+            scoreHistogram.add(scoreHistogram3D,(float) params.getAlpha());
+            scoreHistogram.setCanCalculateFDR(0);
         }
 
         for (HistogramTree node : children) {
@@ -270,9 +273,11 @@ public class HistogramTree {
             scoreHistogram.calcLocalFDR(ratio, validParent.getScoreHistogram());
 
             if (validParent.getScoreHistogram().canCalculateFDR()) {
-                System.out.println("Not enough PSMs in group "+id+" to calculate local FDR. Parent histogram "+parent.getId()+" used instead.");
+                System.out.println("Not enough PSMs in group "+id+" to calculate local FDR. " +
+                        "Parent histogram "+parent.getId()+" used instead.");
             } else {
-                System.out.println("Not enough PSMs to calculate local FDR in parent histogram: "+validParent.getId()+". Results may not be reliable. Try importing prior histos.");
+                System.out.println("Not enough PSMs to calculate local FDR in parent histogram: " +
+                        validParent.getId() + ". Results may not be reliable. Try importing prior histos.");
             }
         }
 

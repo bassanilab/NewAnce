@@ -24,7 +24,7 @@ public class RegExpProteinGrouperTest {
         groups.add("canonical");
         groups.add("cryptic");
 
-        RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(regex,groups);
+        ProteinModifGrouper psmGrouper = new ProteinModifGrouper(regex,groups);
 
         TObjectDoubleMap<String> scoreMap = new TObjectDoubleHashMap<>();
         scoreMap.put("xcorr", NewAnceParams.getInstance().getMinXCorr());
@@ -58,7 +58,7 @@ public class RegExpProteinGrouperTest {
         groups.add("lnc");
         groups.add("ere");
 
-        RegExpProteinGrouper psmGrouper = new RegExpProteinGrouper(regex,groups);
+        ProteinModifGrouper psmGrouper = new ProteinModifGrouper(regex,groups);
 
         TObjectDoubleMap<String> scoreMap = new TObjectDoubleHashMap<>();
         scoreMap.put("xcorr", NewAnceParams.getInstance().getMinXCorr());
@@ -113,8 +113,9 @@ public class RegExpProteinGrouperTest {
         prots.add("sp|protein1");
         prots.add("ENSTprotein2");
 
-        PeptideSpectrumMatch peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile", Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,
-                100, 101, 1001.1, false, false, null);
+        PeptideSpectrumMatch peptideSpectrumMatch = new PeptideSpectrumMatch("spectrumFile",
+                Peptide.parse("PEPTIDE"), prots, scoreMap, 1, 1,100, 101,
+                1001.1, false, false, null);
 
         Assert.assertEquals("ere",psmGrouper.apply("",peptideSpectrumMatch));
 

@@ -6,7 +6,7 @@
 
     <groupId>org.expasy.mzjava</groupId>
     <artifactId>NewAnce</artifactId>
-    <version>1.7.2-SNAPSHOT</version>
+    <version>1.7.3-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

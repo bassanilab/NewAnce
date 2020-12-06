@@ -97,11 +97,13 @@ public class NewAnceParams implements Serializable {
     private double maxPEP = 0.1;
     private int nrPEPBins = nrBins3D;
 
+    private double alpha = 0.5;
+
     private int smoothDegree = 1;
 
     private String fdrControlMethod = "combined";
 
-    private String version = "1.7.2";
+    private String version = "1.7.3";
 
     private String cometPsmDir = "";
     private String maxquantPsmDir = "";
@@ -183,6 +185,7 @@ public class NewAnceParams implements Serializable {
         res +=  "maxScore3="+maxPEP+"\n";
         res +=  "nrScore3Bins="+nrPEPBins+"\n";
         res +=  "fdrControlMethod="+fdrControlMethod+"\n";
+        res +=  "alpha="+alpha+"\n";
         res +=  "version="+version+"\n";
         res +=  "cometPsmDir="+cometPsmDir+"\n";
         res +=  "maxquantPsmDir="+maxquantPsmDir+"\n";
@@ -255,15 +258,18 @@ public class NewAnceParams implements Serializable {
         }
 
         if (variableValueMap.containsKey("modifMatchMassTol")) {
-            modifMatchMassTol = getDoubleValue("modifMatchMassTol", variableValueMap.get("modifMatchMassTol"), 0.0, Double.MAX_VALUE);
+            modifMatchMassTol = getDoubleValue("modifMatchMassTol",
+                    variableValueMap.get("modifMatchMassTol"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("cometDecoyProtPrefix")) {
-            cometDecoyProtPrefix = getStringValue("cometDecoyProtPrefix",variableValueMap.get("cometDecoyProtPrefix"));
+            cometDecoyProtPrefix = getStringValue("cometDecoyProtPrefix",
+                    variableValueMap.get("cometDecoyProtPrefix"));
         }
 
         if (variableValueMap.containsKey("excludedProtPattern")) {
-            excludedProtPattern = getPatternValue("excludedProtPattern",variableValueMap.get("excludedProtPattern"));
+            excludedProtPattern = getPatternValue("excludedProtPattern",
+                    variableValueMap.get("excludedProtPattern"));
         }
 
         if (variableValueMap.containsKey("minCharge")) {
@@ -275,11 +281,13 @@ public class NewAnceParams implements Serializable {
         }
 
         if (variableValueMap.containsKey("minPeptideLength")) {
-            minPeptideLength = getIntegerValue("minPeptideLength",variableValueMap.get("minPeptideLength"), 4, 1000);
+            minPeptideLength = getIntegerValue("minPeptideLength",
+                    variableValueMap.get("minPeptideLength"), 4, 1000);
         }
 
         if (variableValueMap.containsKey("maxPeptideLength")) {
-            maxPeptideLength = getIntegerValue("maxPeptideLength",variableValueMap.get("maxPeptideLength"), 4, 1000);
+            maxPeptideLength = getIntegerValue("maxPeptideLength",
+                    variableValueMap.get("maxPeptideLength"), 4, 1000);
         }
 
         if (variableValueMap.containsKey("maxRank")) {
@@ -295,19 +303,23 @@ public class NewAnceParams implements Serializable {
         }
 
         if (variableValueMap.containsKey("smoothDegree")) {
-            smoothDegree = getIntegerValue("smoothDegree",variableValueMap.get("smoothDegree"), 0, 100);
+            smoothDegree = getIntegerValue("smoothDegree",
+                    variableValueMap.get("smoothDegree"), 0, 100);
         }
 
         if (variableValueMap.containsKey("fdrCometThreshold")) {
-            fdrCometThreshold = getDoubleValue("fdrCometThreshold",variableValueMap.get("fdrCometThreshold"), 0.0, Double.MAX_VALUE);
+            fdrCometThreshold = getDoubleValue("fdrCometThreshold",
+                    variableValueMap.get("fdrCometThreshold"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("fdrMaxQuantThreshold")) {
-            fdrMaxQuantThreshold = getDoubleValue("fdrMaxQuantThreshold",variableValueMap.get("fdrMaxQuantThreshold"), 0.0, Double.MAX_VALUE);
+            fdrMaxQuantThreshold = getDoubleValue("fdrMaxQuantThreshold",
+                    variableValueMap.get("fdrMaxQuantThreshold"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("groupingMethod")) {
-            groupingMethod = getStringValue("groupingMethod",variableValueMap.get("groupingMethod"),new HashSet<>(Arrays.asList(new String[]{"fasta","modif","none"})));
+            groupingMethod = getStringValue("groupingMethod",variableValueMap.get("groupingMethod"),
+                    new HashSet<>(Arrays.asList(new String[]{"fasta","modif","famo","none"})));
         }
 
         if (variableValueMap.containsKey("groupNames")) {
@@ -342,12 +354,14 @@ public class NewAnceParams implements Serializable {
         }
 
         if (variableValueMap.containsKey("proteinGroupMapFile")) {
-            proteinGroupMapFile = getFileValue("proteinGroupMapFile", variableValueMap.get("proteinGroupMapFile"));
+            proteinGroupMapFile = getFileValue("proteinGroupMapFile",
+                    variableValueMap.get("proteinGroupMapFile"));
             proteinGroupMap = readProteinGroupMapFile(proteinGroupMapFile);
         }
 
         if (variableValueMap.containsKey("minNrPsmsPerHisto")) {
-            minNrPsmsPerHisto = getIntegerValue("minNrPsmsPerHisto",variableValueMap.get("minNrPsmsPerHisto"), 0, Integer.MAX_VALUE);
+            minNrPsmsPerHisto = getIntegerValue("minNrPsmsPerHisto",
+                    variableValueMap.get("minNrPsmsPerHisto"), 0, Integer.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("outputTag")) {
@@ -355,63 +369,78 @@ public class NewAnceParams implements Serializable {
         }
 
         if (variableValueMap.containsKey("minXCorr")) {
-            minXCorr = getDoubleValue("minXCorr",variableValueMap.get("minXCorr"), 0.0, Double.MAX_VALUE);
+            minXCorr = getDoubleValue("minXCorr",
+                    variableValueMap.get("minXCorr"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("maxXCorr")) {
-            maxXCorr = getDoubleValue("maxXCorr",variableValueMap.get("maxXCorr"), 0.0, Double.MAX_VALUE);
+            maxXCorr = getDoubleValue("maxXCorr",
+                    variableValueMap.get("maxXCorr"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("nrXCorrBins")) {
-            nrXCorrBins = getIntegerValue("nrXCorrBins",variableValueMap.get("nrXCorrBins"), 1, 100000);
+            nrXCorrBins = getIntegerValue("nrXCorrBins",
+                    variableValueMap.get("nrXCorrBins"), 1, 100000);
         }
 
         if (variableValueMap.containsKey("minDeltaCn")) {
-            minDeltaCn = getDoubleValue("minDeltaCn",variableValueMap.get("minDeltaCn"), 0.0, Double.MAX_VALUE);
+            minDeltaCn = getDoubleValue("minDeltaCn",
+                    variableValueMap.get("minDeltaCn"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("maxDeltaCn")) {
-            maxDeltaCn = getDoubleValue("maxDeltaCn",variableValueMap.get("maxDeltaCn"), 0.0, Double.MAX_VALUE);
+            maxDeltaCn = getDoubleValue("maxDeltaCn",
+                    variableValueMap.get("maxDeltaCn"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("nrDeltaCnBins")) {
-            nrDeltaCnBins = getIntegerValue("nrDeltaCnBins",variableValueMap.get("nrDeltaCnBins"), 1, 100000);
+            nrDeltaCnBins = getIntegerValue("nrDeltaCnBins",
+                    variableValueMap.get("nrDeltaCnBins"), 1, 100000);
         }
 
         if (variableValueMap.containsKey("minSpScore")) {
-            minSpScore = getDoubleValue("minSpScore",variableValueMap.get("minSpScore"), 0.0, Double.MAX_VALUE);
+            minSpScore = getDoubleValue("minSpScore",
+                    variableValueMap.get("minSpScore"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("maxSpScore")) {
-            maxSpScore = getDoubleValue("maxSpScore",variableValueMap.get("maxSpScore"), 0.0, Double.MAX_VALUE);
+            maxSpScore = getDoubleValue("maxSpScore",
+                    variableValueMap.get("maxSpScore"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("nrSpScoreBins")) {
-            nrSpScoreBins = getIntegerValue("nrSpScoreBins",variableValueMap.get("nrSpScoreBins"), 1, 100000);
+            nrSpScoreBins = getIntegerValue("nrSpScoreBins",
+                    variableValueMap.get("nrSpScoreBins"), 1, 100000);
         }
 
         if (variableValueMap.containsKey("minScore1")) {
-            minScore = getDoubleValue("minScore1",variableValueMap.get("minScore1"), 0.0, Double.MAX_VALUE);
+            minScore = getDoubleValue("minScore1",
+                    variableValueMap.get("minScore1"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("maxScore1")) {
-            maxScore = getDoubleValue("maxScore1",variableValueMap.get("maxScore1"), 0.0, Double.MAX_VALUE);
+            maxScore = getDoubleValue("maxScore1",
+                    variableValueMap.get("maxScore1"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("nrScore1Bins")) {
-            nrScoreBins = getIntegerValue("nrScore1Bins",variableValueMap.get("nrScore1Bins"), 1, 100000);
+            nrScoreBins = getIntegerValue("nrScore1Bins",
+                    variableValueMap.get("nrScore1Bins"), 1, 100000);
         }
 
         if (variableValueMap.containsKey("minScore2")) {
-            minDeltaScore = getDoubleValue("minScore2",variableValueMap.get("minScore2"), 0.0, Double.MAX_VALUE);
+            minDeltaScore = getDoubleValue("minScore2",
+                    variableValueMap.get("minScore2"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("maxScore2")) {
-            maxDeltaScore = getDoubleValue("maxScore2",variableValueMap.get("maxScore2"), 0.0, Double.MAX_VALUE);
+            maxDeltaScore = getDoubleValue("maxScore2",
+                    variableValueMap.get("maxScore2"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("nrScore2Bins")) {
-            nrDeltaScoreBins = getIntegerValue("nrScore2Bins",variableValueMap.get("nrScore2Bins"), 1, 100000);
+            nrDeltaScoreBins = getIntegerValue("nrScore2Bins",
+                    variableValueMap.get("nrScore2Bins"), 1, 100000);
         }
 
         if (variableValueMap.containsKey("minScore3")) {
@@ -426,8 +455,13 @@ public class NewAnceParams implements Serializable {
             nrPEPBins = getIntegerValue("nrScore3Bins",variableValueMap.get("nrScore3Bins"), 1, 100000);
         }
 
+        if (variableValueMap.containsKey("alpha")) {
+            alpha = getDoubleValue("alpha", variableValueMap.get("alpha"), 0.0, 1.0);
+        }
+
         if (variableValueMap.containsKey("fdrControlMethod")) {
-            fdrControlMethod = getStringValue("fdrControlMethod",variableValueMap.get("fdrControlMethod").trim().toLowerCase(),
+            fdrControlMethod = getStringValue("fdrControlMethod",
+                    variableValueMap.get("fdrControlMethod").trim().toLowerCase(),
             new HashSet<>(Arrays.asList(new String[]{"combined","separate"})));
         }
 
@@ -464,7 +498,8 @@ public class NewAnceParams implements Serializable {
         }
 
         if (variableValueMap.containsKey("readMaxQuantHistos")) {
-            readMaxQuantHistos = getDirectoryValue("readMaxQuantHistos",variableValueMap.get("readMaxQuantHistos"));
+            readMaxQuantHistos = getDirectoryValue("readMaxQuantHistos",
+                    variableValueMap.get("readMaxQuantHistos"));
         }
 
         if (variableValueMap.containsKey("forceHistos")) {
@@ -480,7 +515,8 @@ public class NewAnceParams implements Serializable {
         }
 
         if (variableValueMap.containsKey("doPeptideProteinGrouping")) {
-            doPeptideProteinGrouping = getBooleanValue("doPeptideProteinGrouping",variableValueMap.get("doPeptideProteinGrouping"));
+            doPeptideProteinGrouping = getBooleanValue("doPeptideProteinGrouping",
+                    variableValueMap.get("doPeptideProteinGrouping"));
         }
 
         if (variableValueMap.containsKey("writeParamsFile")) {
@@ -492,19 +528,25 @@ public class NewAnceParams implements Serializable {
         }
 
         if (variableValueMap.containsKey("maxQuantMainScoreMinValue")) {
-            maxQuantMainScoreMinValue = getDoubleValue("maxQuantMainScoreMinValue",variableValueMap.get("maxQuantMainScoreMinValue"), Double.MIN_VALUE, Double.MAX_VALUE);
+            maxQuantMainScoreMinValue = getDoubleValue("maxQuantMainScoreMinValue",
+                    variableValueMap.get("maxQuantMainScoreMinValue"), Double.MIN_VALUE, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("cometMainScoreMinValue")) {
-            cometMainScoreMinValue = getDoubleValue("cometMainScoreMinValue",variableValueMap.get("cometMainScoreMinValue"), Double.MIN_VALUE, Double.MAX_VALUE);
+            cometMainScoreMinValue = getDoubleValue("cometMainScoreMinValue",
+                    variableValueMap.get("cometMainScoreMinValue"), Double.MIN_VALUE, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("maxQuantMainScore")) {
-            maxQuantMainScore = getStringValue("maxQuantMainScore",variableValueMap.get("maxQuantMainScore"),new HashSet<>(Arrays.asList(new String[]{"Score","Delta score","Localization prob","PEP"})));
+            maxQuantMainScore = getStringValue("maxQuantMainScore",
+                    variableValueMap.get("maxQuantMainScore"),
+                    new HashSet<>(Arrays.asList(new String[]{"Score","Delta score","Localization prob","PEP"})));
         }
 
         if (variableValueMap.containsKey("cometMainScore")) {
-            cometMainScore = getStringValue("cometMainScore",variableValueMap.get("cometMainScore"),new HashSet<>(Arrays.asList(new String[]{"xcorr","spscore","deltacn","expect"})));
+            cometMainScore = getStringValue("cometMainScore",
+                    variableValueMap.get("cometMainScore"),
+                    new HashSet<>(Arrays.asList(new String[]{"xcorr","spscore","deltacn","expect"})));
         }
 
         checkVariableValues();
@@ -1077,5 +1119,9 @@ public class NewAnceParams implements Serializable {
 
     public String getReadMaxQuantHistos() {
         return readMaxQuantHistos;
+    }
+
+    public double getAlpha() {
+        return alpha;
     }
 }

@@ -159,7 +159,6 @@ public class CometGroupFDRFilter extends ExecutableOptions {
         }
 
         summaryReportWriter.close();
-
     }
 
     protected void processPSMs(UniProtDB uniProtDB, VariantProtDB variantProtDB) throws IOException {
@@ -251,7 +250,7 @@ public class CometGroupFDRFilter extends ExecutableOptions {
     protected void writeNewAnceInfo() {
 
         String sepLine = "*************************************************************************************************************************";
-        String newanceInfo = "Running NewAnce Version "+params.getVersion();
+        String newanceInfo = "Running NewAnce (Comet only) Version "+params.getVersion();
         int gap = (sepLine.length()-4-newanceInfo.length())/2;
         String gapStr = "**";
         for (int i=0;i<gap;i++) gapStr += " ";
@@ -278,8 +277,9 @@ public class CometGroupFDRFilter extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("outD").required().hasArg().longOpt("outputDir").desc("Output directory for results (required)").build());
         cmdLineOpts.addOption(Option.builder("repH").required(false).hasArg(false).longOpt("reportHistogram").desc("Report histograms to text files").build());
         cmdLineOpts.addOption(Option.builder("rCoH").required(false).hasArg().longOpt("readCometHistograms").desc("Directory where Comet histograms files are placed.").build());
+        cmdLineOpts.addOption(Option.builder("alpha").required(false).hasArg().longOpt("combineHistoWeight").desc("Histograms are alpha*data_histo + (1-alpha)*prior_histo. 0 <0 alpha <= 1. Only used if rCoH option is set.").build());
         cmdLineOpts.addOption(Option.builder("fH").required(false).hasArg(false).longOpt("forceHistograms").desc("Histograms are imported even if enough PSMs are available.").build());
-        cmdLineOpts.addOption(Option.builder("groupM").required(false).hasArg().longOpt("groupingMethod").desc("Method for PSM grouping: fasta or modif or none (default none).").build());
+        cmdLineOpts.addOption(Option.builder("groupM").required(false).hasArg().longOpt("groupingMethod").desc("Method for PSM grouping: fasta, modif, famo (fasta&modif) or none (default none).").build());
         cmdLineOpts.addOption(Option.builder("groupN").required(false).hasArg().longOpt("groupNames").desc("Comma separated list of names of sequence groups in fasta file (e.g. prot,lncRNA,TE ). Will be used as prefixes for output files.").build());
         cmdLineOpts.addOption(Option.builder("groupRE").required(false).hasArg().longOpt("groupRegEx").desc("Comma separated list of regular expression defining sequence groups of fasta headers (e.g. \"sp\\||tr\\|ENSP00\",\"ENST00\",\"SINE_|LINE_|LTR_|DNA_|Retroposon_\" ). Will be used as prefixes for output files.").build());
         cmdLineOpts.addOption(Option.builder("wAll").required(false).hasArg(false).longOpt("writeFullCometExport").desc("If flag is set, all Comet PSMs are written to a tab file.").build());
@@ -330,6 +330,7 @@ public class CometGroupFDRFilter extends ExecutableOptions {
         params.add("forceHistos", getOptionString(line, "fH"));
         params.add("reportHistos", getOptionString(line, "repH"));
         params.add("readCometHistos", getOptionString(line, "rCoH"));
+        params.add("alpha", getOptionString(line, "alpha"));
         params.add("outputDir", getOptionString(line, "outD"));
         params.add("searchFastaFile", getOptionString(line, "seFa"));
         params.add("uniprotFastaFile", getOptionString(line, "upFa"));

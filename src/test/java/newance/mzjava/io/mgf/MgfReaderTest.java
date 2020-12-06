@@ -9,6 +9,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by markusmueller on 20.03.20.
@@ -91,6 +93,26 @@ public class MgfReaderTest {
         Assert.assertEquals("20170913_QEh1_LC1_CHC_SA_HLAIp_OD5P_ctrl_2_R1.2.2.1 File:\"20170913_QEh1_LC1_CHC_SA_HLAIp_OD5P_ctrl_2_R1.raw\", NativeID:\"controllerType=0 controllerNumber=1 scan=2\"",spectrum.getComment());
         Assert.assertEquals(2, spectrum.getScanNumbers().getFirst().getValue());
         Assert.assertEquals(1, spectrum.getPrecursor().getCharge());
+    }
+
+    @Test
+    public void test_pattern() {
+        Pattern titleRegExp = Pattern.compile("(^[\\w\\-]+)\\.(\\d+)\\.\\d+\\.\\d+");
+
+        Assert.assertTrue(titleRegExp.matcher("20170913_QEh1_LC1_CHC_SA_HLAIp_OD5P_ctrl_2_R1.2000.2000.3").find());
+        Assert.assertTrue(titleRegExp.matcher("20170913_QEh1_LC1_CHC_SA_HLAIp_OD5P_ctrl_2_R1.2.2.1").find());
+        Assert.assertFalse(titleRegExp.matcher("20170913_QEh1_LC1_CHC_SA_HLAIp_OD5P_ctrl_2_R1.2.1").find());
+
+        Matcher m = titleRegExp.matcher("20170913_QEh1_LC1_CHC_SA_HLAIp_OD5P_ctrl_2_R1.2020.2020.1");
+        Assert.assertTrue(m.find());
+        Assert.assertEquals("20170913_QEh1_LC1_CHC_SA_HLAIp_OD5P_ctrl_2_R1", m.group(1));
+        Assert.assertEquals(2020, Integer.parseInt(m.group(2)));
+
+        m = titleRegExp.matcher("C3N-02287_C3N-02287-02_HLAI__20191212_COL011-00015-HLAIp_R01.2.2.1");
+        Assert.assertTrue(m.find());
+        Assert.assertEquals("C3N-02287_C3N-02287-02_HLAI__20191212_COL011-00015-HLAIp_R01", m.group(1));
+        Assert.assertEquals(2, Integer.parseInt(m.group(2)));
+
     }
 
 
