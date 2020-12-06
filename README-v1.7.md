@@ -518,7 +518,7 @@ NewAnce writes the PSMs for the protein coding and non-canonical groups to tab d
 
 
 ## NewAnce with Comet only
-This is essentially the same as NewAnce, but only based on Comet Results and no consensus filtering with MaxQuant results is performed. 
+The group-wise FDR calculation is the same as in NewAnce, but only based on Comet Results and no consensus filtering with MaxQuant results is performed. 
 
 ```
 The command line options can be obtained by
