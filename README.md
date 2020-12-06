@@ -31,4 +31,4 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ## Developer
 
-Markus Müller, CHUV/SIB, Lausanne, Switzerland
+Markus Müller, CHUV/SIB, Lausanne, Switzerland (Markus.Muller@chuv.ch, markus.mueller@sib.swiss) 
