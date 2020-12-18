@@ -124,7 +124,7 @@ public abstract class Psm2StringFunction implements BiFunction<String, List<Pept
         return modifNames+"\t"+modifPos+"\t"+modifMass+"\t"+modifAA;
     }
 
-    private String getVariantString(PeptideSpectrumMatch psm) {
+    public String getVariantString(PeptideSpectrumMatch psm) {
 
         String wtSeqStr = psm.getWtSequence();
         if (!psm.isVariant()) return "false\tNA\tNA\tNA\tNA\t"+wtSeqStr;

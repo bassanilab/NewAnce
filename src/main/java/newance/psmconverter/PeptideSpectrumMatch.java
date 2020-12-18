@@ -62,7 +62,8 @@ public class PeptideSpectrumMatch {
             this.firstProteinAC = "";
 
         this.isVariant = isVariant;
-        if (isVariant) this.variants = variants;
+        if (isVariant && variants==null) this.variants = new ArrayList<>();
+        else if (isVariant && variants!=null) this.variants = variants;
         else this.variants = null;
 
         this.peptideStart = -1;
@@ -183,8 +184,11 @@ public class PeptideSpectrumMatch {
     }
 
     public void setSequenceVariants(List<SequenceVariant> variants) {
-        this.variants.clear();
-        if (variants != null) this.variants.addAll(variants);
+
+        if (variants != null) {
+            this.variants.clear();
+            this.variants.addAll(variants);
+        }
         else isVariant = false;
     }
 

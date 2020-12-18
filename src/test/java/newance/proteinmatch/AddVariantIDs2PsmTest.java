@@ -2,6 +2,8 @@ package newance.proteinmatch;
 
 import gnu.trove.map.hash.TObjectDoubleHashMap;
 import newance.mzjava.mol.Peptide;
+import newance.psmcombiner.CometPsm2StringFunction;
+import newance.psmcombiner.Psm2StringFunction;
 import newance.psmconverter.AddVariantIDs2Psm;
 import newance.psmconverter.PeptideSpectrumMatch;
 import org.junit.Assert;
@@ -113,10 +115,6 @@ public class AddVariantIDs2PsmTest {
 
         Peptide peptide = Peptide.parse("QSEDGSHTIQIMY");
 
-        List<SequenceVariant> variants = new ArrayList<>();
-
-        variants.add(new SequenceVariant("ENSP00000379873.1", 365,3,"A",""));
-
         List<String> proteins = new ArrayList<>();
         proteins.add("ENSP00000379873.1");
         proteins.add("ENSP00000366002.5");
@@ -125,7 +123,7 @@ public class AddVariantIDs2PsmTest {
 
         PeptideSpectrumMatch psm = new PeptideSpectrumMatch("Spectrum_file", peptide, proteins,
                 new TObjectDoubleHashMap<>(), 2, 1, 100, 100, 1507.661308,
-                false, true, variants);
+                false, true);
 
 
         List<PeptideSpectrumMatch> psms = new ArrayList<>();
@@ -135,6 +133,110 @@ public class AddVariantIDs2PsmTest {
 
         Assert.assertEquals(1, psm.getVariants().size());
         Assert.assertEquals("rs1136692_0",psm.getVariants().get(0).getInfo());
+
+    }
+
+    @Test
+    public void test_accept2() {
+
+        String[] fastaLines = fastaStr.split("\n");
+
+        VariantProtDB variantProtDB = new VariantProtDB(fastaLines);
+
+        AddVariantIDs2Psm addVariantIDs2Psm = new AddVariantIDs2Psm(variantProtDB);
+
+        Peptide peptide = Peptide.parse("QSEDGSHTLQIMY");
+
+        List<SequenceVariant> variants = new ArrayList<>();
+
+        List<String> proteins = new ArrayList<>();
+        proteins.add("ENSP00000379873.1");
+        proteins.add("ENSP00000366002.5");
+        proteins.add("ENSP00000366005.5");
+        proteins.add("ENSP00000365998.2");
+
+        PeptideSpectrumMatch psm = new PeptideSpectrumMatch("Spectrum_file", peptide, proteins,
+                new TObjectDoubleHashMap<>(), 2, 1, 100, 100, 1507.661308,
+                false, true);
+
+
+        List<PeptideSpectrumMatch> psms = new ArrayList<>();
+        psms.add(psm);
+
+        addVariantIDs2Psm.accept("spec_id", psms);
+
+        Assert.assertEquals(2, psm.getVariants().size());
+        Assert.assertEquals("rs1071743_0",psm.getVariants().get(0).getInfo());
+        Assert.assertEquals("rs1136692_0",psm.getVariants().get(1).getInfo());
+
+    }
+
+
+    @Test
+    public void test_accept3() {
+
+        String[] fastaLines = fastaStr.split("\n");
+
+        VariantProtDB variantProtDB = new VariantProtDB(fastaLines);
+
+        AddVariantIDs2Psm addVariantIDs2Psm = new AddVariantIDs2Psm(variantProtDB);
+
+        Peptide peptide = Peptide.parse("QSEDGSHTLQMMY");
+
+        List<String> proteins = new ArrayList<>();
+        proteins.add("ENSP00000379873.1");
+        proteins.add("ENSP00000366002.5");
+        proteins.add("ENSP00000366005.5");
+        proteins.add("ENSP00000365998.2");
+
+        PeptideSpectrumMatch psm = new PeptideSpectrumMatch("Spectrum_file", peptide, proteins,
+                new TObjectDoubleHashMap<>(), 2, 1, 100, 100, 1507.661308,
+                false, true);
+
+
+        List<PeptideSpectrumMatch> psms = new ArrayList<>();
+        psms.add(psm);
+
+        addVariantIDs2Psm.accept("spec_id", psms);
+
+        Assert.assertEquals(3, psm.getVariants().size());
+        Assert.assertEquals("rs1136695_0",psm.getVariants().get(0).getInfo());
+        Assert.assertEquals("rs1071743_0",psm.getVariants().get(1).getInfo());
+        Assert.assertEquals("rs1136692_0",psm.getVariants().get(2).getInfo());
+
+    }
+
+
+    @Test
+    public void test_accept4() {
+
+        String[] fastaLines = fastaStr.split("\n");
+
+        VariantProtDB variantProtDB = new VariantProtDB(fastaLines);
+
+        AddVariantIDs2Psm addVariantIDs2Psm = new AddVariantIDs2Psm(variantProtDB);
+
+        Peptide peptide = Peptide.parse("QSEDGSHTLQMMY");
+
+        List<String> proteins = new ArrayList<>();
+        proteins.add("ENSP00000379873.1");
+        proteins.add("ENSP00000366002.5");
+        proteins.add("ENSP00000366005.5");
+        proteins.add("ENSP00000365998.2");
+
+        PeptideSpectrumMatch psm = new PeptideSpectrumMatch("Spectrum_file", peptide, proteins,
+                new TObjectDoubleHashMap<>(), 2, 1, 100, 100, 1507.661308,
+                false, true);
+
+
+        List<PeptideSpectrumMatch> psms = new ArrayList<>();
+        psms.add(psm);
+
+        addVariantIDs2Psm.accept("spec_id", psms);
+
+
+        CometPsm2StringFunction psm2StringFunction = new CometPsm2StringFunction(null,null);
+        System.out.println(psm2StringFunction.getVariantString(psm));
 
     }
 }
