@@ -8,19 +8,20 @@ The code has been tested on Linux, Mac, and Windows using Java 1.8. Comet result
 1. [Command line options](#Command-line-options)
 2. [Running NewAnce](#Running-NewAnce)
 3. [Output format](#Output-format)
-4. [Tests](#Tests)
-5. [PDV export](#PDV-export)
-6. [Extend MaxQuant features](#Extend-MaxQuant-features)
-7. [Export score histograms](#Export-score-histograms)
-8. [Spectronaut DIA export](#Spectronaut-DIA-export)
-9. [Match peptides to fasta file](#Match-peptides-to-fasta-file)
+4. [NewAnce with Comet only](#NewAnce-with-Comet-only)
+5. [Tests](#Tests)
+6. [PDV export](#PDV-export)
+7. [Extend MaxQuant features](#Extend-MaxQuant-features)
+8. [Export score histograms](#Export-score-histograms)
+9. [Spectronaut DIA export](#Spectronaut-DIA-export)
+10. [Match peptides to fasta file](#Match-peptides-to-fasta-file)
 
 ## Command line options 
 
 The NewAnce command line options can be obtained by typing
 
 ```
-java -jar NewAnce-1.4.0-SNAPSHOT.jar -h
+java -jar NewAnce-1.7.3-SNAPSHOT.jar -h
 ```
 which write the command line option infor to standard output :
 
@@ -39,7 +40,7 @@ usage: newance.psmcombiner.CometMaxQuantCombiner
  -fdrM,--fdrControlMethod <arg>     Method to control pFDR: combined or separate (default combined).
  -fH,--forceHistograms              Histograms are imported even if enough PSMs are available.
  -groupF,--groupProteinFile <arg>   Tab file with protein group assignments which will override assignment by groupRE
- -groupM,--groupingMethod <arg>     Method for PSM grouping: fasta or modif or none (default none).
+ -groupM,--groupingMethod <arg>     Method for PSM grouping: "fasta", "modif", "famo" (fasta&modif) or "none" (default none).
  -groupN,--groupNames <arg>         Comma separated list of names of sequence groups in fasta file (e.g. prot,lncRNA,TE ). Will be used as prefixes
                                     for output files.
  -groupRE,--groupRegEx <arg>        Comma separated list of regular expression defining sequence groups of fasta headers (e.g.
@@ -135,10 +136,10 @@ If -groupRE cannot capture all protein-group assignments, then the protein group
 ```
  
 ```
--groupM,--groupingMethod <arg>    Method for PSM grouping: fasta or modif or none (default none).
+-groupM,--groupingMethod <arg>    Method for PSM grouping: fasta, modif, famo (fasta&modif) or none (default none).
  
-Protein grouping can be omitted ('none') or based on the fasta headers ('fasta') or PTMs of the peptides ('modif'). -groupRE 
-and -groupN options are only considered if -groupM is set to 'fasta' 
+Protein grouping can be omitted ('none') or based on the fasta headers ('fasta') or PTMs of the peptides ('modif') or both fasta headers and modif ('famo').
+If -groupM == 'famo', then each group defined by the -groupRE and -groupN options is split into modified and nonmodified peptides. -groupRE and -groupN options are only considered if -groupM is set to 'fasta' or 'famo'. 
 ```
 
 ```
@@ -456,13 +457,13 @@ Write NewAnce parameters to specified parameter file.
 The NewAnce command line options can be obtained by typing
 
 ```
-java -jar NewAnce-1.4.0-SNAPSHOT.jar -h
+java -jar NewAnce-1.7.3-SNAPSHOT.jar -h
 ```
 
 The NewAnce version can be obtained by typing
 
 ```
-java -jar NewAnce-1.4.0-SNAPSHOT.jar -v
+java -jar NewAnce-1.7.3-SNAPSHOT.jar -v
 ```
 
 Running NewAnce with 12GB memory
@@ -513,6 +514,75 @@ NewAnce writes the PSMs for the protein coding and non-canonical groups to tab d
 * Localization.prob : MaxQuant Localization probability of PTM (NA if no PTM is present)
 * MaxQuant.lFDR : local FDR for MaxQuant PSMs calculated by NewAnce 
 * MaxQuant.passFDR : true if PSMs passed the MaxQuant FDR filter, false otherwise
+
+
+
+## NewAnce with Comet only
+The group-wise FDR calculation is the same as in NewAnce, but only based on Comet Results and no consensus filtering with MaxQuant results is performed. 
+
+```
+The command line options can be obtained by
+
+java -Xmx12G -cp NewAnce-1.7.3-SNAPSHOT.jar newance.scripts.CometGroupFDRFilter -h
+
+usage: newance.scripts.CometGroupFDRFilter
+ -alpha,--combineHistoWeight <arg>   Histograms are alpha*data_histo + (1-alpha)*prior_histo. 0 <0 alpha <= 1. Only used if rCoH option is set.
+ -coD,--cometPsmDir <arg>            Comet psm root directory (required)
+ -coFDR,--cometFDR <arg>             FDR for filtering Comet PSMs before combination (default value 0.03)
+ -coRE,--cometPsmRegex <arg>         Regular expression of Comet psm files (e.g. \.xml$) (required)
+ -d,--debug                          Debug option
+ -exclP,--excludeProts <arg>         Regular expression of proteins excluded from analysis. If not set no proteins are excluded.
+ -fdrM,--fdrControlMethod <arg>      Method to control pFDR: combined or separate (default combined).
+ -fH,--forceHistograms               Histograms are imported even if enough PSMs are available.
+ -groupF,--groupProteinFile <arg>    Tab file with protein group assignments which will override assignment by groupRE
+ -groupM,--groupingMethod <arg>      Method for PSM grouping: fasta, modif, famo (fasta&modif) or none (default none).
+ -groupN,--groupNames <arg>          Comma separated list of names of sequence groups in fasta file (e.g. prot,lncRNA,TE ). Will be used as prefixes
+                                     for output files.
+ -groupRE,--groupRegEx <arg>         Comma separated list of regular expression defining sequence groups of fasta headers (e.g.
+                                     "sp\||tr\|ENSP00","ENST00","SINE_|LINE_|LTR_|DNA_|Retroposon_" ). Will be used as prefixes for output files.
+ -h,--help                           Help option for command line help
+ -maxDC,--maxDeltaCn <arg>           Maximal Comet DeltaCn in histogram (default value 2500)
+ -maxL,--maxLength <arg>             Maximal length of peptide (default value: 25)
+ -maxR,--maxRank <arg>               Maximal rank of peptide in list of spectrum matches (rank 1 = best) (default value: 1)
+ -maxSP,--maxSpScore <arg>           Maximal Comet SpScore in histogram (default value 1)
+ -maxXC,--maxXCorr <arg>             Maximal Comet XCorr in histogram (default value 5)
+ -maxZ,--maxCharge <arg>             Maximal charge of PSM (default value: 5)
+ -minDC,--minDeltaCn <arg>           Minimal Comet DeltaCn in histogram (default value 0)
+ -minL,--minLength <arg>             Minimal length of peptide (default value: 8)
+ -minPH,--minPsm4Histo <arg>         Minimal number of psms to calculate local FDR in histogram (default value: 100000).
+ -minSP,--minSpScore <arg>           Minimal Comet SpScore in histogram (default value 0)
+ -minXC,--minXCorr <arg>             Minimal Comet XCorr in histogram (default value 0)
+ -minZ,--minCharge <arg>             Minimal charge of PSM (default value: 1)
+ -mod,--modifications <arg>          Comma separated list of peptide modifications used in search (e.g. Cysteinyl:C3H5NO2S,Oxidation:O)
+ -nrDCB,--nrDeltaCnBins <arg>        Number of Comet DeltaCn bins in histogram (default value 40)
+ -nrSPB,--nrSpScoreBins <arg>        Number of Comet SpScore bins in histogram (default value 40)
+ -nrTh,--nrThreads <arg>             Number of threads used by NewAnce (default value: nr of available processors - 2)
+ -nrXCB,--nrXCorrBins <arg>          Number of Comet XCorr bins in histogram (default value 40)
+ -outD,--outputDir <arg>             Output directory for results (required)
+ -outT,--outputTag <arg>             Tag inserted into output file names after prefix.
+ -ppG,--peptideProteinGrouping       Perform peptide protein grouping export.
+ -rCoH,--readCometHistograms <arg>   Directory where Comet histograms files are placed.
+ -repH,--reportHistogram             Report histograms to text files
+ -rP,--readParamFile <arg>           Name of file from which parameters should to read.
+ -seFa,--searchFastaFile <arg>       Fasta file that was used for the search (required for protein grouping export and annotation of variants in the
+                                     Comet results)
+ -smD,--smoothDegree <arg>           Degree of smoothing (0: no smoothing, n: n x smoothing) (default value 1)
+ -spRE,--spectrumFilter <arg>        If this option is set, only spectrum ids that match this regexp are used.  If not set no filtering is performed.
+ -upFa,--uniProtFastaFile <arg>      Fasta file with coding or canonical proteins (e.g. UniProt fasta file)
+ -v,--version                        Version of NewAnce software
+ -wAll,--writeFullCometExport        If flag is set, all Comet PSMs are written to a tab file.
+ -wP,--write2ParamFile               This option is set if parameters should be written to file.
+
+```
+
+```
+Running NewAnce/CometGroupFDRFilter with 12GB memory
+
+
+java -Xmx12G -cp NewAnce-1.7.3-SNAPSHOT.jar newance.scripts.CometGroupFDRFilter -coD 0D5P/lncRNA/Comet -coRE .HLAIp.*pep\.xml$ -fdrM combined -coFDR 0.03 -outD 0D5P/lncRNA/NewAnce -outT 0D5P  -groupM famo -groupRE "sp\||tr\||ENSP00,ENST00" -groupN "prot,lncRNA,ere" -upFa SeqDBs/human_proteome.fasta -seFa SeqDBs/OD5P_peff.fasta -smD 5 -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -wAll -rCoH histos/Comet/Type_I'
+```
+
+
 
 ## Tests
 
