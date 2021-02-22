@@ -469,7 +469,7 @@ java -jar NewAnce-1.7.3-SNAPSHOT.jar -v
 Running NewAnce with 12GB memory
 
 ```
-java -Xmx12G -jar NewAnce-1.4.0-SNAPSHOT.jar -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -mqD 0D5P/lncRNA/MaxQuant -coFDR 0.03 -outD 0D5P/lncRNA/NewAnce -outT 0D5P -groupM fasta -groupRE "sp\||tr\||ENSP00,ENST00" -groupN prot,lncRNA,ere -upFa SeqDBs/human_proteome.fasta -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15
+java -Xmx12G -jar NewAnce-1.7.3-SNAPSHOT.jar -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -mqD 0D5P/lncRNA/MaxQuant -coFDR 0.03 -outD 0D5P/lncRNA/NewAnce -outT 0D5P -groupM fasta -groupRE "sp\||tr\||ENSP00,ENST00" -groupN prot,lncRNA,ere -upFa SeqDBs/human_proteome.fasta -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15
 ```
 
 
@@ -601,13 +601,13 @@ Maximal number of psms written to standard output. If option is not set, all PSM
 Printing CometXMLReaderTest options:
 
 ```
-java -jar -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometXMLReaderTest -h
+java -jar -cp NewAnce-1.7.3-SNAPSHOT.jar newance.testers.CometXMLReaderTest -h
 ```
 
 Running CometXMLReaderTest:
 
 ```
-java -Xmx12G -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometXMLReaderTest -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -maxP 10
+java -Xmx12G -cp NewAnce-1.7.3-SNAPSHOT.jar newance.testers.CometXMLReaderTest -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -maxP 10
 ```
 
 ### 2 Testing MaxQuant msms.txt reader
@@ -625,13 +625,13 @@ Maximal number of psms written to standard output. If option is not set, all PSM
 Printing MaxQuantPsmReaderTest options:
 
 ```
-java -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.MaxQuantPsmReaderTest -h
+java -cp NewAnce-1.7.3-SNAPSHOT.jar newance.testers.MaxQuantPsmReaderTest -h
 ```
 
 Running MaxQuantPsmReaderTest:
 
 ```
-java -Xmx12G -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.MaxQuantPsmReaderTest -mqD 0D5P/lncRNA/MaxQuant -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -maxP 10
+java -Xmx12G -cp NewAnce-1.7.3-SNAPSHOT.jar newance.testers.MaxQuantPsmReaderTest -mqD 0D5P/lncRNA/MaxQuant -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -maxP 10
 ```
 
 ### 3 Testing fasta file reader
@@ -655,13 +655,13 @@ This test reveals how NewAnce reads and interprets the given fasta file
 Printing FastaReaderTest options:
 
 ```
-java -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.FastaReaderTest -h
+java -cp NewAnce-1.7.3-SNAPSHOT.jar newance.testers.FastaReaderTest -h
 ```
 
 Running FastaReaderTest:
 
 ```
-java -Xmx12G -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.FastaReaderTest -fa SeqDBs/uniprot_human_reviewed_proteome_18_12_2018.fasta -maxP 10
+java -Xmx12G -cp NewAnce-1.7.3-SNAPSHOT.jar newance.testers.FastaReaderTest -fa SeqDBs/uniprot_human_reviewed_proteome_18_12_2018.fasta -maxP 10
 ```
 
 ### 4 Testing specific peptides
@@ -673,7 +673,7 @@ peptides to standard output.
 Printing CometMaxQuantScoreCombiner_PeptideTest options:
 
 ```
-java -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometMaxQuantScoreCombiner_PeptideTest -h
+java -cp NewAnce-1.7.3-SNAPSHOT.jar newance.testers.CometMaxQuantScoreCombiner_PeptideTest -h
 ```
 
 Option for PeptideTest additional to NewAnce options:
@@ -687,7 +687,7 @@ Peptide sequences for which more information is requested.
 Running PeptideTest for peptides TPAPRPLGI,VIDYPPIAY, and AQFRVTEA:
 
 ```
-java -Xmx12G -cp NewAnce-1.4.0-SNAPSHOT.jar newance.testers.CometMaxQuantScoreCombiner_PeptideTest -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -mqD 0D5P/lncRNA/MaxQuant -coFDR 0.03 -outD 0D5P/lncRNA/NewAnce -outT 0D5P -protRE sp\||tr\| -protG prot -noncG lncRNA -upFa SeqDBs/human_proteome.fasta -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -pepts [TPAPRPLGI,VIDYPPIAY,AQFRVTEA]
+java -Xmx12G -cp NewAnce-1.7.3-SNAPSHOT.jar newance.testers.CometMaxQuantScoreCombiner_PeptideTest -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -mqD 0D5P/lncRNA/MaxQuant -coFDR 0.03 -outD 0D5P/lncRNA/NewAnce -outT 0D5P -protRE sp\||tr\| -protG prot -noncG lncRNA -upFa SeqDBs/human_proteome.fasta -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -pepts [TPAPRPLGI,VIDYPPIAY,AQFRVTEA]
 ```
 
 ## PDV export
@@ -711,13 +711,13 @@ NewAnce result file containing peptide spectrum matches.
 Printing CreatePDVExport options:
 
 ```
-java -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CreatePDVExport -h
+java -cp NewAnce-1.7.3-SNAPSHOT.jar newance.scripts.CreatePDVExport -h
 ```
 
 Running CreatePDVExport:
 
 ```
-java -Xmx12G -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CreatePDVExport -mgf 0D5P/mgf -naf 0D5P/lncRNA/NewAnce/lncRNA_0D5P_NewAncePSMs.txt
+java -Xmx12G -cp NewAnce-1.7.3-SNAPSHOT.jar newance.scripts.CreatePDVExport -mgf 0D5P/mgf -naf 0D5P/lncRNA/NewAnce/lncRNA_0D5P_NewAncePSMs.txt
 ```
 
 ## Extend MaxQuant features
@@ -747,13 +747,13 @@ NewAnce result file containing peptide spectrum matches.
 Printing AddMaxQuantFeatures options:
 
 ```
-java -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.AddMaxQuantFeatures -h
+java -cp NewAnce-1.7.3-SNAPSHOT.jar newance.scripts.AddMaxQuantFeatures -h
 ```
 
 Running AddMaxQuantFeatures:
 
 ```
-java -Xmx12G -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.AddMaxQuantFeatures -mqD 0D5P/lncRNA/MaxQuant -mqF "[Matches,Intensities,Mass Deviations [Da]]" -naf 0D5P/lncRNA/NewAnce/lncRNA_0D5P_NewAncePSMs.txt
+java -Xmx12G -cp NewAnce-1.7.3-SNAPSHOT.jar newance.scripts.AddMaxQuantFeatures -mqD 0D5P/lncRNA/MaxQuant -mqF "[Matches,Intensities,Mass Deviations [Da]]" -naf 0D5P/lncRNA/NewAnce/lncRNA_0D5P_NewAncePSMs.txt
 ```
 
 ## Export score histograms
@@ -765,13 +765,13 @@ the -readH option in case NewAnce is run with only a few .pep.xml files, which d
 Printing CometHistogramCalculator options:
 
 ```
-java -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CometHistogramCalculator -h
+java -cp NewAnce-1.7.3-SNAPSHOT.jar newance.scripts.CometHistogramCalculator -h
 ```
 
 Running CometHistogramCalculator:
 
 ```
-java -Xmx12G -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.CometHistogramCalculator -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -outD 0D5P/lncRNA/NewAnce/histos -outT prior_histo -spRE .* -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -nrTh 5
+java -Xmx12G -cp NewAnce-1.7.3-SNAPSHOT.jar newance.scripts.CometHistogramCalculator -coD 0D5P/lncRNA/Comet -coRE .*pep.xml$ -outD 0D5P/lncRNA/NewAnce/histos -outT prior_histo -spRE .* -maxR 1 -minZ 1 -maxZ 3 -minL 8 -maxL 15 -nrTh 5
 ```
 
 ## Spectronaut DIA export
@@ -824,12 +824,12 @@ This can be useful if you want to check whether ceratin peptides are part of Uni
 Printing AnnotatePeptides options:
 
 ```
-java -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.AnnotatePeptides -h
+java -cp NewAnce-1.7.3-SNAPSHOT.jar newance.scripts.AnnotatePeptides -h
 ```
 
 Running AnnotatePeptides:
 
 ```
-java -Xmx12G -cp NewAnce-1.4.0-SNAPSHOT.jar newance.scripts.AnnotatePeptides -fa SeqDBs/human_proteome.fasta -col PeptideSequence -p 0D5P/tmp/peptides.txt 
+java -Xmx12G -cp NewAnce-1.7.3-SNAPSHOT.jar newance.scripts.AnnotatePeptides -fa SeqDBs/human_proteome.fasta -col PeptideSequence -p 0D5P/tmp/peptides.txt 
 ```
 
