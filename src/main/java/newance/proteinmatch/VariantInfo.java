@@ -104,41 +104,29 @@ public class VariantInfo {
                                             String varSimpleStr,List<SequenceVariant> variants) {
 
         int pos = 0;
-        int pos2 = varSimpleStr.indexOf(' ');
+        int pos2 = varSimpleStr.indexOf(')')+1;
 
-        while (pos2>0) {
-            pos = (pos==0)?0:pos+1;
+        while (pos>-1) {
             if (pos2-pos > 5)
                 variants.add(SequenceVariant.parseSimpleVariantString(proteinID, proteinLength,
                         varSimpleStr.substring(pos,pos2)));
-            pos = pos2;
-            pos2 = varSimpleStr.indexOf(' ',pos+1);
+            pos = varSimpleStr.indexOf('(',pos+1);;
+            pos2 = varSimpleStr.indexOf(')',pos+1)+1;
         }
-
-        pos = (pos==0)?0:pos+1;
-        if (varSimpleStr.length()-pos > 5)
-            variants.add(SequenceVariant.parseSimpleVariantString(proteinID, proteinLength,
-                    varSimpleStr.substring(pos,varSimpleStr.length())));
     }
 
     private static void parseComplexVariants(String proteinID, int proteinLength,
                                              String varComplexStr,List<SequenceVariant> variants) {
 
         int pos = 0;
-        int pos2 = varComplexStr.indexOf(' ');
+        int pos2 = varComplexStr.indexOf(')')+1;
 
-        while (pos2>0) {
-            pos = (pos==0)?0:pos+1;
+        while (pos>-1) {
             if (pos2-pos > 5)
                 variants.add(SequenceVariant.parseComplexVariantString(proteinID, proteinLength,
                         varComplexStr.substring(pos,pos2)));
-            pos = pos2;
-            pos2 = varComplexStr.indexOf(' ',pos+1);
+            pos = varComplexStr.indexOf('(',pos+1);;
+            pos2 = varComplexStr.indexOf(')',pos+1)+1;
         }
-
-        pos = (pos==0)?0:pos+1;
-        if (varComplexStr.length()-pos > 5)
-            variants.add(SequenceVariant.parseComplexVariantString(proteinID, proteinLength,
-                    varComplexStr.substring(pos,varComplexStr.length())));
     }
 }

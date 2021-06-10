@@ -131,7 +131,7 @@ public class SequenceVariant {
     // (205|R|rs4970490_0) : protein length is 204 => R is inserted at end
     public static SequenceVariant parseSimpleVariantString(String proteinID, int proteinLength, String peffString) {
 
-        String mutationStr = peffString.trim().substring(1,peffString.indexOf(')'));
+        String mutationStr = peffString.trim().substring(peffString.indexOf('(')+1,peffString.indexOf(')'));
 
         int pos1 = mutationStr.indexOf('|');
         int pos2 = mutationStr.indexOf('|',pos1+1);
@@ -149,7 +149,7 @@ public class SequenceVariant {
     // (117|119|GL|rs10578519_3)
     public static SequenceVariant parseComplexVariantString(String proteinID, int proteinLength, String peffString) {
 
-        String mutationStr = peffString.trim().substring(1,peffString.indexOf(')'));
+        String mutationStr = peffString.trim().substring(peffString.indexOf('(')+1,peffString.indexOf(')'));
 
         int pos1 = mutationStr.indexOf('|');
         int pos2 = mutationStr.indexOf('|',pos1+1);

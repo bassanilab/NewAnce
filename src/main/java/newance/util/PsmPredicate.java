@@ -59,6 +59,11 @@ public class PsmPredicate implements Serializable {
             if (psm.getScore(scoreName) > minPsmScore) return false;
         }
 
+        // !!!!temporary fix, need to be included in command line options
+        if (psm.getScoreMap().containsKey("spscore")) {
+            if (psm.getScore("spscore") < 100.0) return false;
+        }
+
         if (psm.getRank() > this.maxRank) return false;
 
         String peptide = psm.getSequence();
