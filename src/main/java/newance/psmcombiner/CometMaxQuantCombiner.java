@@ -362,6 +362,7 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("rCoH").required(false).hasArg().longOpt("readCometHistograms").desc("Directory where Comet histograms files are placed.").build());
         cmdLineOpts.addOption(Option.builder("rMqH").required(false).hasArg().longOpt("readMaxQuantHistograms").desc("Directory where MaxQuant histograms files are placed.").build());
         cmdLineOpts.addOption(Option.builder("fH").required(false).hasArg(false).longOpt("forceHistograms").desc("Histograms are imported even if enough PSMs are available.").build());
+        cmdLineOpts.addOption(Option.builder("alpha").required(false).hasArg().longOpt("combineHistoWeight").desc("Histograms are alpha*data_histo + (1-alpha)*prior_histo. 0 <0 alpha <= 1. Only used if rCoH or rMqH option is set.").build());
         cmdLineOpts.addOption(Option.builder("groupM").required(false).hasArg().longOpt("groupingMethod").desc("Method for PSM grouping: fasta, modif, famo (fasta&modif) or none (default none).").build());
         cmdLineOpts.addOption(Option.builder("groupN").required(false).hasArg().longOpt("groupNames").desc("Comma separated list of names of sequence groups in fasta file (e.g. prot,lncRNA,TE ). Will be used as prefixes for output files.").build());
         cmdLineOpts.addOption(Option.builder("groupRE").required(false).hasArg().longOpt("groupRegEx").desc("Comma separated list of regular expression defining sequence groups of fasta headers (e.g. \"sp\\||tr\\|ENSP00\",\"ENST00\",\"SINE_|LINE_|LTR_|DNA_|Retroposon_\" ). Will be used as prefixes for output files.").build());
@@ -401,6 +402,12 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("minPEP").required(false).hasArg().longOpt("minPEP").desc("Minimal MaxQuant PEP in histogram (default value 0)").build());
         cmdLineOpts.addOption(Option.builder("maxPEP").required(false).hasArg().longOpt("maxPEP").desc("Maximal MaxQuant PEP in histogram (default value 2500)").build());
         cmdLineOpts.addOption(Option.builder("nrPEPB").required(false).hasArg().longOpt("nrPEPBins").desc("Number of MaxQuant PEP bins in histogram (default value 40)").build());
+        cmdLineOpts.addOption(Option.builder("minXCPSM").required(false).hasArg().longOpt("minXCorrPSM").desc("Minimal Comet xcorr for PSM (default value 0.8)").build());
+        cmdLineOpts.addOption(Option.builder("minSPPSM").required(false).hasArg().longOpt("minSpScorePSM").desc("Minimal Comet spscore for PSM (default value 50)").build());
+        cmdLineOpts.addOption(Option.builder("minDCPSM").required(false).hasArg().longOpt("minDeltaCnPSM").desc("Minimal Comet deltacn for PSM (default value 0)").build());
+        cmdLineOpts.addOption(Option.builder("minScorePSM").required(false).hasArg().longOpt("minScorePSM").desc("Minimal MaxQuant score for PSM (default value 10)").build());
+        cmdLineOpts.addOption(Option.builder("minDSPSM").required(false).hasArg().longOpt("minDeltaScorePSM").desc("Minimal MaxQuant DeltaScore for PSM (default value 0)").build());
+        cmdLineOpts.addOption(Option.builder("minPEPPSM").required(false).hasArg().longOpt("minPEPPSM").desc("Minimal MaxQuant PEP for PSM (default value 0)").build());
         cmdLineOpts.addOption(Option.builder("wP").required(false).hasArg(false).longOpt("write2ParamFile").desc("This option is set if parameters should be written to file.").build());
         cmdLineOpts.addOption(Option.builder("rP").required(false).hasArg().longOpt("readParamFile").desc("Name of file from which parameters should to read.").build());
         cmdLineOpts.addOption(Option.builder("d").required(false).hasArg(false).longOpt("debug").desc("Debug option").build());
@@ -423,6 +430,7 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         params.add("debug", getOptionString(line, "d"));
         params.add("forceHistos", getOptionString(line, "fH"));
         params.add("reportHistos", getOptionString(line, "repH"));
+        params.add("alpha", getOptionString(line, "alpha"));
         params.add("readCometHistos", getOptionString(line, "rCoH"));
         params.add("readMaxQuantHistos", getOptionString(line, "rMqH"));
         params.add("outputDir", getOptionString(line, "outD"));
@@ -461,6 +469,12 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         params.add("minPEP", getOptionString(line, "minPEP"));
         params.add("maxPEP", getOptionString(line, "maxPEP"));
         params.add("nrPEPBins", getOptionString(line, "nrPEPB"));
+        params.add("minXCorrPSM", getOptionString(line, "minXCPSM"));
+        params.add("minSpScorePSM", getOptionString(line, "minSPPSM"));
+        params.add("minDeltaCnPSM", getOptionString(line, "minDCPSM"));
+        params.add("minScorePSM",getOptionString(line, "minScorePSM"));
+        params.add("minDeltaScorePSM", getOptionString(line, "minDSPSM"));
+        params.add("minPEPPSM", getOptionString(line, "minPEPPSM"));
         params.add("nrThreads", getOptionString(line, "nrTh"));
         params.add("smoothDegree", getOptionString(line, "smD"));
         params.add("fdrControlMethod", getOptionString(line, "fdrM"));

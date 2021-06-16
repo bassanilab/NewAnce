@@ -41,8 +41,7 @@ public class PepXMLParserTest {
 
         NewAnceParams params = NewAnceParams.getInstance();
 
-        PsmPredicate psmPredicate = new PsmPredicate(params.getMinCharge(), params.getMaxCharge(), params.getMinPeptideLength(), params.getMaxPeptideLength(), params.getMaxRank(),
-                params.getCometMainScore(), params.getCometMainScoreMinValue(), PsmPredicate.ScoreOrder.LARGER);
+        PsmPredicate psmPredicate = new PsmPredicate(params);
 
         PeptideSpectrumMatchList peptideSpectrumMatchList = new PeptideSpectrumMatchList(new SpectrumKeyFunctionImpl(), psmPredicate, psmMap);
 
@@ -61,8 +60,7 @@ public class PepXMLParserTest {
 
         NewAnceParams params = NewAnceParams.getInstance();
 
-        PsmPredicate psmPredicate = new PsmPredicate(params.getMinCharge(), params.getMaxCharge(), params.getMinPeptideLength(), params.getMaxPeptideLength(), params.getMaxRank(),
-                params.getMaxQuantMainScore(), params.getMaxQuantMainScoreMinValue(), PsmPredicate.ScoreOrder.LARGER);
+        PsmPredicate psmPredicate = new PsmPredicate(params);
 
         PeptideSpectrumMatchList peptideSpectrumMatchList = new PeptideSpectrumMatchList(new SpectrumKeyFunctionImpl(), psmPredicate, psmMap);
 

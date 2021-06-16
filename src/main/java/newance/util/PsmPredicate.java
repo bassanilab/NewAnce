@@ -11,6 +11,7 @@ You should have received a copy of the GNU General Public License along with thi
 package newance.util;
 
 import com.google.common.base.Preconditions;
+import gnu.trove.map.TObjectDoubleMap;
 import newance.psmconverter.PeptideMatchDataWrapper;
 
 import java.io.Serializable;
@@ -21,60 +22,34 @@ import java.io.Serializable;
 
 public class PsmPredicate implements Serializable {
 
-    public enum ScoreOrder {LARGER,SMALLER};
+    private final NewAnceParams params;
 
-    private final int minCharge;
-    private final int maxCharge;
-    private final int minPeptideLength;
-    private final int maxPeptideLength;
-    private final String scoreName;
-    private final double minPsmScore;
-    private final int maxRank;
-    private final ScoreOrder order;
-
-    public PsmPredicate(int minCharge, int maxCharge,
-                        int minPeptideLength, int maxPeptideLength, int maxRank,
-                        String scoreName, double minPsmScore, ScoreOrder order) {
-        Preconditions.checkArgument(minPeptideLength <= maxPeptideLength);
-        Preconditions.checkArgument(minCharge <= maxCharge);
-        Preconditions.checkArgument(maxRank >= 0);
-
-        this.minCharge = minCharge;
-        this.maxCharge = maxCharge;
-        this.minPeptideLength = minPeptideLength;
-        this.maxPeptideLength = maxPeptideLength;
-        this.scoreName = scoreName;
-        this.minPsmScore = minPsmScore;
-        this.maxRank = maxRank;
-        this.order = order;
+    public PsmPredicate(NewAnceParams params) {
+        this.params = params;
     }
 
     public boolean check(PeptideMatchDataWrapper psm, int charge) {
 
-        if (!psm.getScoreMap().containsKey(this.scoreName)) return false;
+        TObjectDoubleMap<String> scoreMap = psm.getScoreMap();
 
-        if (order==ScoreOrder.LARGER) {
-            if (psm.getScore(scoreName) < minPsmScore) return false;
-        } else {
-            if (psm.getScore(scoreName) > minPsmScore) return false;
-        }
+        if (psm.getRank() > params.getMaxRank()) return false;
 
-        // !!!!temporary fix, need to be included in command line options
-        if (psm.getScoreMap().containsKey("spscore")) {
-            if (psm.getScore("spscore") < 100.0) return false;
-        }
+        if (charge<params.getMinCharge()) return false;
+        if (charge>params.getMaxCharge()) return false;
 
-        if (psm.getRank() > this.maxRank) return false;
+        if (scoreMap.containsKey("spscore") && scoreMap.get("spscore")<params.getMinSpScorePSM()) return false;
+        if (scoreMap.containsKey("xcorr") && scoreMap.get("xcorr")<params.getMinXCorrPSM()) return false;
+        if (scoreMap.containsKey("deltacn") && scoreMap.get("deltacn")<params.getMinDeltaCnPSM()) return false;
+        if (scoreMap.containsKey("Score") && scoreMap.get("Score")<params.getMinScorePSM()) return false;
+        if (scoreMap.containsKey("Delta score") && scoreMap.get("Delta score")<params.getMinDeltaScorePSM()) return false;
+        if (scoreMap.containsKey("PEP") && scoreMap.get("PEP")>params.getMinPEPPSM()) return false;
 
         String peptide = psm.getSequence();
-        if (peptide.length() < this.minPeptideLength) {
+        if (peptide.length() < params.getMinPeptideLength()) {
             return false;
-        } else if (peptide.length() > this.maxPeptideLength) {
+        } else if (peptide.length() > params.getMaxPeptideLength()) {
             return false;
         }
-
-        if (charge<minCharge) return false;
-        if (charge>maxCharge) return false;
 
         return true;
     }

@@ -75,6 +75,14 @@ public class NewAnceParams implements Serializable {
 
     private int nrBins3D = 40;
 
+    // minimal scores for PSM to be considered (may be different from minimal histo scores
+    private double minXCorrPSM = 1.0;
+    private double minDeltaCnPSM = 0.0;
+    private double minSpScorePSM = 50.0;
+    private double minScorePSM = 0.0;
+    private double minDeltaScorePSM = 0.0;
+    private double minPEPPSM = 0.3;
+
     //Comet histo data
     private double minXCorr = 0.0;
     private double maxXCorr = 5.0;
@@ -175,15 +183,21 @@ public class NewAnceParams implements Serializable {
         res +=  "minSpScore="+minSpScore+"\n";
         res +=  "maxSpScore="+maxSpScore+"\n";
         res +=  "nrSpScoreBins="+nrSpScoreBins+"\n";
-        res +=  "minScore1="+minScore+"\n";
-        res +=  "maxScore1="+maxScore+"\n";
-        res +=  "nrScore1Bins="+nrScoreBins+"\n";
-        res +=  "minScore2="+minDeltaScore+"\n";
-        res +=  "maxScore2="+maxDeltaScore+"\n";
-        res +=  "nrScore2Bins="+nrDeltaScoreBins+"\n";
-        res +=  "minScore3="+minPEP+"\n";
-        res +=  "maxScore3="+maxPEP+"\n";
-        res +=  "nrScore3Bins="+nrPEPBins+"\n";
+        res +=  "minScore="+minScore+"\n";
+        res +=  "maxScore="+maxScore+"\n";
+        res +=  "nrScoreBins="+nrScoreBins+"\n";
+        res +=  "minDeltaScore="+minDeltaScore+"\n";
+        res +=  "maxDeltaScore="+maxDeltaScore+"\n";
+        res +=  "nrDeltaScoreBins="+nrDeltaScoreBins+"\n";
+        res +=  "minPEP="+minPEP+"\n";
+        res +=  "maxPEP="+maxPEP+"\n";
+        res +=  "nrPEPBins="+nrPEPBins+"\n";
+        res +=  "minXCorrPSM="+minXCorrPSM+"\n";
+        res +=  "minSpScorePSM="+minSpScorePSM+"\n";
+        res +=  "minDeltaCnPSM="+minDeltaCnPSM+"\n";
+        res +=  "minScorePSM="+minScorePSM+"\n";
+        res +=  "minDeltaScorePSM="+minDeltaScorePSM+"\n";
+        res +=  "minPEPPSM="+minPEPPSM+"\n";
         res +=  "fdrControlMethod="+fdrControlMethod+"\n";
         res +=  "alpha="+alpha+"\n";
         res +=  "version="+version+"\n";
@@ -413,46 +427,70 @@ public class NewAnceParams implements Serializable {
                     variableValueMap.get("nrSpScoreBins"), 1, 100000);
         }
 
-        if (variableValueMap.containsKey("minScore1")) {
-            minScore = getDoubleValue("minScore1",
-                    variableValueMap.get("minScore1"), 0.0, Double.MAX_VALUE);
+        if (variableValueMap.containsKey("minScore")) {
+            minScore = getDoubleValue("minScore",
+                    variableValueMap.get("minScore"), 0.0, Double.MAX_VALUE);
         }
 
-        if (variableValueMap.containsKey("maxScore1")) {
-            maxScore = getDoubleValue("maxScore1",
-                    variableValueMap.get("maxScore1"), 0.0, Double.MAX_VALUE);
+        if (variableValueMap.containsKey("maxScore")) {
+            maxScore = getDoubleValue("maxScore",
+                    variableValueMap.get("maxScore"), 0.0, Double.MAX_VALUE);
         }
 
-        if (variableValueMap.containsKey("nrScore1Bins")) {
-            nrScoreBins = getIntegerValue("nrScore1Bins",
-                    variableValueMap.get("nrScore1Bins"), 1, 100000);
+        if (variableValueMap.containsKey("nrScoreBins")) {
+            nrScoreBins = getIntegerValue("nrScoreBins",
+                    variableValueMap.get("nrScoreBins"), 1, 100000);
         }
 
-        if (variableValueMap.containsKey("minScore2")) {
-            minDeltaScore = getDoubleValue("minScore2",
-                    variableValueMap.get("minScore2"), 0.0, Double.MAX_VALUE);
+        if (variableValueMap.containsKey("minDeltaScore")) {
+            minDeltaScore = getDoubleValue("minDeltaScore",
+                    variableValueMap.get("minDeltaScore"), 0.0, Double.MAX_VALUE);
         }
 
-        if (variableValueMap.containsKey("maxScore2")) {
-            maxDeltaScore = getDoubleValue("maxScore2",
-                    variableValueMap.get("maxScore2"), 0.0, Double.MAX_VALUE);
+        if (variableValueMap.containsKey("maxDeltaScore")) {
+            maxDeltaScore = getDoubleValue("maxDeltaScore",
+                    variableValueMap.get("maxDeltaScore"), 0.0, Double.MAX_VALUE);
         }
 
-        if (variableValueMap.containsKey("nrScore2Bins")) {
-            nrDeltaScoreBins = getIntegerValue("nrScore2Bins",
-                    variableValueMap.get("nrScore2Bins"), 1, 100000);
+        if (variableValueMap.containsKey("nrDeltaScoreBins")) {
+            nrDeltaScoreBins = getIntegerValue("nrDeltaScoreBins",
+                    variableValueMap.get("nrDeltaScoreBins"), 1, 100000);
         }
 
-        if (variableValueMap.containsKey("minScore3")) {
-            minPEP = getDoubleValue("minScore3",variableValueMap.get("minScore3"), 0.0, Double.MAX_VALUE);
+        if (variableValueMap.containsKey("minPEP")) {
+            minPEP = getDoubleValue("minPEP",variableValueMap.get("minPEP"), 0.0, Double.MAX_VALUE);
         }
 
-        if (variableValueMap.containsKey("maxScore3")) {
-            maxPEP = getDoubleValue("maxScore3",variableValueMap.get("maxScore3"), 0.0, Double.MAX_VALUE);
+        if (variableValueMap.containsKey("maxPEP")) {
+            maxPEP = getDoubleValue("maxPEP",variableValueMap.get("maxPEP"), 0.0, Double.MAX_VALUE);
         }
 
-        if (variableValueMap.containsKey("nrScore3Bins")) {
-            nrPEPBins = getIntegerValue("nrScore3Bins",variableValueMap.get("nrScore3Bins"), 1, 100000);
+        if (variableValueMap.containsKey("nrPEPBins")) {
+            nrPEPBins = getIntegerValue("nrPEPBins",variableValueMap.get("nrPEPBins"), 1, 100000);
+        }
+
+        if (variableValueMap.containsKey("minXCorrPSM")) {
+            minXCorrPSM = getDoubleValue("minXCorrPSM",variableValueMap.get("minXCorrPSM"), 0.0, Double.MAX_VALUE);
+        }
+
+        if (variableValueMap.containsKey("minSpScorePSM")) {
+            minSpScorePSM = getDoubleValue("minSpScorePSM",variableValueMap.get("minSpScorePSM"), 0.0, Double.MAX_VALUE);
+        }
+
+        if (variableValueMap.containsKey("minDeltaCnPSM")) {
+            minDeltaCnPSM = getDoubleValue("minDeltaCnPSM",variableValueMap.get("minDeltaCnPSM"), 0.0, Double.MAX_VALUE);
+        }
+
+        if (variableValueMap.containsKey("minScorePSM")) {
+            minScorePSM= getDoubleValue("minScorePSM",variableValueMap.get("minScorePSM"), 0.0, Double.MAX_VALUE);
+        }
+
+        if (variableValueMap.containsKey("minDeltaScorePSM")) {
+            minDeltaScorePSM = getDoubleValue("minDeltaScorePSM",variableValueMap.get("minDeltaScorePSM"), 0.0, Double.MAX_VALUE);
+        }
+
+        if (variableValueMap.containsKey("minPEPPSM")) {
+            minPEPPSM = getDoubleValue("minPEPPSM",variableValueMap.get("minPEPPSM"), 0.0, Double.MAX_VALUE);
         }
 
         if (variableValueMap.containsKey("alpha")) {
@@ -1123,5 +1161,29 @@ public class NewAnceParams implements Serializable {
 
     public double getAlpha() {
         return alpha;
+    }
+
+    public double getMinXCorrPSM() {
+        return minXCorrPSM;
+    }
+
+    public double getMinDeltaCnPSM() {
+        return minDeltaCnPSM;
+    }
+
+    public double getMinSpScorePSM() {
+        return minSpScorePSM;
+    }
+
+    public double getMinScorePSM() {
+        return minScorePSM;
+    }
+
+    public double getMinDeltaScorePSM() {
+        return minDeltaScorePSM;
+    }
+
+    public double getMinPEPPSM() {
+        return minPEPPSM;
     }
 }

@@ -39,8 +39,7 @@ public class MaxQuantMSMSConverter extends SinglePsmFileConverter {
 
         final Map<String, List<PeptideSpectrumMatch>> psmMap = new HashMap<>();
 
-        PsmPredicate psmPredicate = new PsmPredicate(params.getMinCharge(), params.getMaxCharge(), params.getMinPeptideLength(), params.getMaxPeptideLength(), params.getMaxRank(),
-                params.getMaxQuantMainScore(), params.getMaxQuantMainScoreMinValue(), PsmPredicate.ScoreOrder.LARGER);
+        PsmPredicate psmPredicate = new PsmPredicate(params);
 
         PeptideSpectrumMatchList peptideSpectrumMatchList = new PeptideSpectrumMatchList(new SpectrumKeyFunctionImpl(), psmPredicate, psmMap);
 

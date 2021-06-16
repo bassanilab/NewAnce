@@ -309,6 +309,12 @@ public class CometGroupFDRFilter extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("minDC").required(false).hasArg().longOpt("minDeltaCn").desc("Minimal Comet DeltaCn in histogram (default value 0)").build());
         cmdLineOpts.addOption(Option.builder("maxDC").required(false).hasArg().longOpt("maxDeltaCn").desc("Maximal Comet DeltaCn in histogram (default value 2500)").build());
         cmdLineOpts.addOption(Option.builder("nrDCB").required(false).hasArg().longOpt("nrDeltaCnBins").desc("Number of Comet DeltaCn bins in histogram (default value 40)").build());
+        cmdLineOpts.addOption(Option.builder("minXCPSM").required(false).hasArg().longOpt("minXCorrPSM").desc("Minimal Comet xcorr for PSM (default value 0.8)").build());
+        cmdLineOpts.addOption(Option.builder("minSPPSM").required(false).hasArg().longOpt("minSpScorePSM").desc("Minimal Comet spscore for PSM (default value 50)").build());
+        cmdLineOpts.addOption(Option.builder("minDCPSM").required(false).hasArg().longOpt("minDeltaCnPSM").desc("Minimal Comet deltacn for PSM (default value 0)").build());
+        cmdLineOpts.addOption(Option.builder("minScorePSM").required(false).hasArg().longOpt("minScorePSM").desc("Minimal MaxQuant score for PSM (default value 10)").build());
+        cmdLineOpts.addOption(Option.builder("minDSPSM").required(false).hasArg().longOpt("minDeltaScorePSM").desc("Minimal MaxQuant DeltaScore for PSM (default value 0)").build());
+        cmdLineOpts.addOption(Option.builder("minPEPPSM").required(false).hasArg().longOpt("minPEPPSM").desc("Minimal MaxQuant PEP for PSM (default value 0)").build());
         cmdLineOpts.addOption(Option.builder("wP").required(false).hasArg(false).longOpt("write2ParamFile").desc("This option is set if parameters should be written to file.").build());
         cmdLineOpts.addOption(Option.builder("rP").required(false).hasArg().longOpt("readParamFile").desc("Name of file from which parameters should to read.").build());
         cmdLineOpts.addOption(Option.builder("d").required(false).hasArg(false).longOpt("debug").desc("Debug option").build());
@@ -357,6 +363,12 @@ public class CometGroupFDRFilter extends ExecutableOptions {
         params.add("nrDeltaCnBins", getOptionString(line, "nrDCB"));
         params.add("minSpScore", getOptionString(line, "minSP"));
         params.add("maxSpScore", getOptionString(line, "maxSP"));
+        params.add("minXCorrPSM", getOptionString(line, "minXCPSM"));
+        params.add("minSpScorePSM", getOptionString(line, "minSPPSM"));
+        params.add("minDeltaCnPSM", getOptionString(line, "minDCPSM"));
+        params.add("minScorePSM",getOptionString(line, "minScorePSM"));
+        params.add("minDeltaScorePSM", getOptionString(line, "minDSPSM"));
+        params.add("minPEPPSM", getOptionString(line, "minPEPPSM"));
         params.add("nrSpScoreBins", getOptionString(line, "nrSPB"));
         params.add("smoothDegree", getOptionString(line, "smD"));
         params.add("fdrControlMethod", getOptionString(line, "fdrM"));
