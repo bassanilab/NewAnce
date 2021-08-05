@@ -20,6 +20,7 @@ import newance.mzjava.ms.io.mgf.MgfWriter;
 import newance.mzjava.ms.io.mgf.MsConvertTitleParser;
 import newance.mzjava.ms.peaklist.DoublePeakList;
 import newance.mzjava.ms.peaklist.PeakList;
+import newance.mzjava.ms.peaklist.peakfilter.NPeaksPerSlidingWindowFilter;
 import newance.mzjava.ms.spectrum.MsnSpectrum;
 import newance.mzjava.ms.spectrum.PepFragAnnotation;
 import newance.util.ExecutableOptions;
@@ -43,6 +44,7 @@ public class AddPeptideFragInfo extends ExecutableOptions {
     private Set<IonType> ionTypes;
     private boolean includeH2Oloss;
     private boolean includeH3Nloss;
+    private int nrPeaksPerWindow;
     private final Set<String> peptides;
     private final Map<String,Double> bestScoringPSM;
     private final Map<String,Map<String,Peptide>> spectrumPSMMap;
@@ -58,6 +60,7 @@ public class AddPeptideFragInfo extends ExecutableOptions {
         this.bestScoringPSM = new HashMap<>();
         this.peptideSpectrumMap = new HashMap<>();
         this.peptides = new HashSet();
+        this.nrPeaksPerWindow = -1;
 
 
         createOptions();
@@ -73,6 +76,7 @@ public class AddPeptideFragInfo extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("wl").longOpt("waterloss").desc("Include water loss on S, T, D, E").build());
         cmdLineOpts.addOption(Option.builder("al").longOpt("ammoniumloss").desc("Include ammonium loss on Q, K, R, N").build());
         cmdLineOpts.addOption(Option.builder("it").hasArg().longOpt("iontypes").desc("Which fragment ions to include (default: aby)").build());
+        cmdLineOpts.addOption(Option.builder("np").hasArg().longOpt("nrPeaksWindow").desc("Retain only np highest peaks in 20Da window").build());
         cmdLineOpts.addOption(Option.builder("p").hasArg().longOpt("peptides").desc("Annotations for all these peptides will be provided. " +
                 "Otherwise all peptides in the newance file will be processed.").build());
         cmdLineOpts.addOption(Option.builder("h").required(false).hasArg(false).longOpt("help").desc("Help option for command line help").build());
@@ -89,9 +93,19 @@ public class AddPeptideFragInfo extends ExecutableOptions {
         includeH2Oloss = checkBooleanOption(line,"wl");
         includeH3Nloss = checkBooleanOption(line,"al");
 
-        String itStr = getOptionString(line,"it");
+        String npStr = getOptionString(line,"np");
+        if (!npStr.isEmpty()) {
+            nrPeaksPerWindow = Integer.parseInt(npStr);
+        }
 
-        if (itStr.isEmpty() || !(itStr.contains("a") || itStr.contains("b") || itStr.contains("y"))) {
+
+        String itStr = getOptionString(line,"it");
+        if (itStr.isEmpty()) {
+            ionTypes = EnumSet.noneOf(IonType.class);
+            ionTypes.add(IonType.a);
+            ionTypes.add(IonType.b);
+            ionTypes.add(IonType.y);
+        } else if (!(itStr.contains("a") || itStr.contains("b") || itStr.contains("y"))) {
             throw new ParseException("No valid ion types in -it option: "+ itStr);
         } else {
 
@@ -210,6 +224,10 @@ public class AddPeptideFragInfo extends ExecutableOptions {
         PeakList<PepFragAnnotation> peakList = new DoublePeakList<>(1);
         peakList.addPeaksNoAnnotations(spectrum);
         peakList.setPrecursor(spectrum.getPrecursor());
+
+        if (nrPeaksPerWindow>0)
+            peakList.apply(new NPeaksPerSlidingWindowFilter<PepFragAnnotation>(nrPeaksPerWindow,  20.0, 1.2));
+
         annotator.annotate(peakList, peptide);
 
         String peptStr = peptide.toString();

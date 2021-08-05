@@ -32,6 +32,9 @@ public class PsmPredicate implements Serializable {
 
         TObjectDoubleMap<String> scoreMap = psm.getScoreMap();
 
+        if (psm.getSequence().equals("LSSSSQHGPSY")){
+            System.out.println(psm.toPeptide());
+        }
         if (psm.getRank() > params.getMaxRank()) return false;
 
         if (charge<params.getMinCharge()) return false;

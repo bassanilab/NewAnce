@@ -79,6 +79,8 @@ public class CometPEFFPepXmlReader {
             parse(new NamespaceRewriteDelegate(XMLInputFactory.newFactory().createXMLStreamReader(new FileInputStream(file), "UTF-8")),
                     peptideSpectrumMatchList);
         } catch (XMLStreamException | JAXBException | FileNotFoundException e) {
+
+
             throw new IllegalStateException(e);
         }
     }

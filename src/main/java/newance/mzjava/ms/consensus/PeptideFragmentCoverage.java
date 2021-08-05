@@ -103,7 +103,7 @@ public class PeptideFragmentCoverage {
                 List<PepFragAnnotation> annots = spectrum.getAnnotations(i);
                 for (PepFragAnnotation annot : annots) {
                     IonType ionType = annot.getIonType();
-                    String fragSeq = annot.getFragment().toString();
+                    String fragSeq = annot.getFragment().toSymbolString();
                     if (ionType==IonType.a || ionType==IonType.b) {
                         int pos = fragSeq.length()-1;
                         peptideFrags.get(pos).add(annot);
