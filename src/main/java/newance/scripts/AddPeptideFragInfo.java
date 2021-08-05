@@ -159,7 +159,7 @@ public class AddPeptideFragInfo extends ExecutableOptions {
         readNewAnceFile();
         createSpectrumPSMMap();
 
-        System.out.println("Spectrum\tPeptide\tBestSpScore\tSequenceCovereage\tSpectrumCoverage\t" +
+        System.out.println("Spectrum\tPeptide\tBestSpScore\tSequenceCoverage\tSpectrumCoverage\t" +
                 "PeptideAnnotShort\tPeptideAnnot\tPeptideAnnotLong");
         for (String mgfName : spectrumPSMMap.keySet()) {
             annotateMatchedPeptides(mgfName, spectrumPSMMap.get(mgfName));
