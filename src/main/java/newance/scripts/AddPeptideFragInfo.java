@@ -10,8 +10,8 @@ You should have received a copy of the GNU General Public License along with thi
 
 package newance.scripts;
 
+import java.util.Map.Entry;
 import com.google.common.collect.Lists;
-import javafx.util.Pair;
 import newance.mzjava.mol.*;
 import newance.mzjava.mol.modification.AbsoluteTolerance;
 import newance.mzjava.ms.consensus.PeptideFragmentCoverage;
@@ -39,6 +39,33 @@ import java.util.*;
 
 public class AddPeptideFragInfo extends ExecutableOptions {
 
+    private class StringPair implements Entry<String, String> {
+
+        String key;
+        String value;
+
+        StringPair(String key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        @Override
+        public String getKey() {
+            return key;
+        }
+
+        @Override
+        public String getValue() {
+            return value;
+        }
+
+        @Override
+        public String setValue(String value) {
+            this.value = value;
+            return value;
+        }
+    }
+
     private File mgfDir;
     private File newAnceResultFile;
     private Set<IonType> ionTypes;
@@ -48,7 +75,7 @@ public class AddPeptideFragInfo extends ExecutableOptions {
     private final Set<String> peptides;
     private final Map<String,Double> bestScoringPSM;
     private final Map<String,Map<String,Peptide>> spectrumPSMMap;
-    private final Map<String,Pair<String,String>> peptideSpectrumMap;
+    private final Map<String,StringPair> peptideSpectrumMap;
     private final Map<String,File> mgfFileMap;
     private PeptideFragmentAnnotator annotator;
 
@@ -146,7 +173,7 @@ public class AddPeptideFragInfo extends ExecutableOptions {
         for (String p : peptideSpectrumMap.keySet()) {
             Peptide peptide = Peptide.parse(p);
 
-            Pair<String,String> spectrumInfo = peptideSpectrumMap.get(p);
+            Entry<String,String> spectrumInfo = peptideSpectrumMap.get(p);
             spectrumPSMMap.putIfAbsent(spectrumInfo.getKey(),new HashMap<>());
             spectrumPSMMap.get(spectrumInfo.getKey()).put(spectrumInfo.getValue(),peptide);
         }
@@ -276,7 +303,7 @@ public class AddPeptideFragInfo extends ExecutableOptions {
                 if (!bestScoringPSM.containsKey(peptideStr) || spscore > bestScoringPSM.get(peptideStr)) {
 
                     bestScoringPSM.put(peptideStr, spscore);
-                    peptideSpectrumMap.put(peptideStr,new Pair(msmsFileName,spectrum));
+                    peptideSpectrumMap.put(peptideStr,new StringPair(msmsFileName,spectrum));
                 }
              }
 
