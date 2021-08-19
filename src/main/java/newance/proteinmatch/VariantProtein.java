@@ -101,7 +101,7 @@ public class VariantProtein extends FastaProtein {
         variants.clear();
 
         String s = new String(sequence);
-        if (s.contains(variantSeq)) return variants;
+        if (matchMS(variantSeq)>=0) return variants;
 
         char startCh = variantSeq.charAt(0);
         char[] variantChars = variantSeq.toCharArray();
@@ -147,7 +147,8 @@ public class VariantProtein extends FastaProtein {
             }
 
             // if no variant match
-            if (sequence[si] != variantChars[vi]) return false;
+            if (sequence[si] != 'I' && sequence[si] != 'L' && sequence[si] != variantChars[vi]) return false;
+            if ((sequence[si] == 'I' || sequence[si] == 'L') && (variantChars[vi] != 'I' && variantChars[vi] != 'L')) return false;
 
             vi++;
             si++;

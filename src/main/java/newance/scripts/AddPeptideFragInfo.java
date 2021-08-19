@@ -14,6 +14,8 @@ import java.util.Map.Entry;
 import com.google.common.collect.Lists;
 import newance.mzjava.mol.*;
 import newance.mzjava.mol.modification.AbsoluteTolerance;
+import newance.mzjava.mol.modification.Modification;
+import newance.mzjava.mol.modification.NameModificationResolver;
 import newance.mzjava.ms.consensus.PeptideFragmentCoverage;
 import newance.mzjava.ms.io.mgf.MgfReader;
 import newance.mzjava.ms.io.mgf.MgfWriter;
@@ -24,6 +26,7 @@ import newance.mzjava.ms.peaklist.peakfilter.NPeaksPerSlidingWindowFilter;
 import newance.mzjava.ms.spectrum.MsnSpectrum;
 import newance.mzjava.ms.spectrum.PepFragAnnotation;
 import newance.util.ExecutableOptions;
+import newance.util.NewAnceParams;
 import newance.util.StringFileWriter;
 import org.apache.commons.cli.*;
 import org.apache.commons.io.FilenameUtils;
@@ -78,6 +81,7 @@ public class AddPeptideFragInfo extends ExecutableOptions {
     private final Map<String,StringPair> peptideSpectrumMap;
     private final Map<String,File> mgfFileMap;
     private PeptideFragmentAnnotator annotator;
+    private final NameModificationResolver resolver;
 
     public AddPeptideFragInfo(String version) {
 
@@ -88,6 +92,8 @@ public class AddPeptideFragInfo extends ExecutableOptions {
         this.peptideSpectrumMap = new HashMap<>();
         this.peptides = new HashSet();
         this.nrPeaksPerWindow = -1;
+
+        this.resolver = new NameModificationResolver(NewAnceParams.getInstance().getModifications());
 
 
         createOptions();
@@ -171,7 +177,7 @@ public class AddPeptideFragInfo extends ExecutableOptions {
     private void createSpectrumPSMMap() {
 
         for (String p : peptideSpectrumMap.keySet()) {
-            Peptide peptide = Peptide.parse(p);
+            Peptide peptide = Peptide.parse(p, resolver);
 
             Entry<String,String> spectrumInfo = peptideSpectrumMap.get(p);
             spectrumPSMMap.putIfAbsent(spectrumInfo.getKey(),new HashMap<>());

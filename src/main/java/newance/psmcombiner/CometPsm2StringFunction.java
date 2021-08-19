@@ -37,12 +37,16 @@ public class CometPsm2StringFunction extends Psm2StringFunction {
     @Override
     public String getScoreString(PeptideSpectrumMatch psm) {
 
-        float lfdr = groupedFDRCalculator.getLocalFDR(psm);
-        String lfdrStr = (groupedFDRCalculator ==null)?"":String.format("%.5f",lfdr);
+        String lfdrStr = "NA";
+        String pass = "NA";
+        if (groupedFDRCalculator != null) {
+            float lfdr = groupedFDRCalculator.getLocalFDR(psm);
+            lfdrStr = String.format("%.5f",lfdr);
+
+            if (grpThresholdMap!=null) pass = (lfdr<=grpThresholdMap.get(psm.getGroup()))?"true":"false";
+        }
         String expectStr = String.format("%.5f",psm.getScore("expect"));
         String mdStr = String.format("%.5f",psm.getScore("mass_diff"));
-        String pass = "NA";
-        if (grpThresholdMap!=null) pass = (lfdr<=grpThresholdMap.get(psm.getGroup()))?"true":"false";
 
         return  psm.getScore("xcorr")+"\t"+psm.getScore("deltacn")+"\t"+
                 psm.getScore("spscore")+"\t"+expectStr+"\t+"+mdStr+"\t"+

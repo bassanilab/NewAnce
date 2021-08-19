@@ -58,7 +58,7 @@ public class AddVariantIDs2Psm implements BiConsumer<String,List<PeptideSpectrum
                     psm.setVariant(false);
                 }
             } else {
-                int start = protein.getSequence().indexOf(seq);
+                int start = protein.matchMS(seq);
                 psm.setPeptideStart(start);
                 if (psm.isDecoy())
                     psm.setWtSequence(reverse(protein.getWTSequence(start, seq.length(),10)));

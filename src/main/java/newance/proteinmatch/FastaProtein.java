@@ -60,4 +60,15 @@ public class FastaProtein {
         return String.copyValueOf(sequence, start, length);
     }
 
+    public int matchMS(String peptideSeq) {
+
+        String proteinSeq = new String(sequence);
+        if (peptideSeq.indexOf('I')>0 || peptideSeq.indexOf('L')>0) {
+            peptideSeq = peptideSeq.replace('I','L');
+            proteinSeq = proteinSeq.replace('I','L');
+        }
+
+        return proteinSeq.indexOf(peptideSeq);
+    }
+
 }
