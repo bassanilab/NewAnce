@@ -320,4 +320,53 @@ public class AddVariantIDs2PsmTest {
 
     }
 
+
+    @Test
+    public void test_accept8() {
+
+        String fastaEntry = ">sp|Q9H0D6|XRN2_HUMAN 5'-3' exoribonuclease 2 OS=Homo sapiens OX=9606 GN=XRN2 PE=1 SV=1\n"+
+                "MGVPAFFRWLSRKYPSIIVNCVEEKPKECNGVKIPVDASKPNPNDVEFDNLYLDMNGIIH\n"+
+                "PCTHPEDKPAPKNEDEMMVAIFEYIDRLFSIVRPRRLLYMAIDGVAPRAKMNQQRSRRFR\n"+
+                "ASKEGMEAAVEKQRVREEILAKGGFLPPEEIKERFDSNCITPGTEFMDNLAKCLRYYIAD\n"+
+                "RLNNDPGWKNLTVILSDASAPGEGEHKIMDYIRRQRAQPNHDPNTHHCLCGADADLIMLG\n"+
+                "LATHEPNFTIIREEFKPNKPKPCGLCNQFGHEVKDCEGLPREKKGKHDELADSLPCAEGE\n"+
+                "FIFLRLNVLREYLERELTMASLPFTFDVERSIDDWVFMCFFVGNDFLPHLPSLEIRENAI\n"+
+                "DRLVNIYKNVVHKTGGYLTESGYVNLQRVQMIMLAVGEVEDSIFKKRKDDEDSFRRRQKE\n"+
+                "KRKRMKRDQPAFTPSGILTPHALGSRNSPGSQVASNPRQAAYEMRMQNNSSPSISPNTSF\n"+
+                "TSDGSPSPLGGIKRKAEDSDSEPEPEDNVRLWEAGWKQRYYKNKFDVDAADEKFRRKVVQ\n"+
+                "SYVEGLCWVLRYYYQGCASWKWYYPFHYAPFASDFEGIADMPSDFEKGTKPFKPLEQLMG\n"+
+                "VFPAASGNFLPPSWRKLMSDPDSSIIDFYPEDFAIDLNGKKYAWQGVALLPFVDERRLRA\n"+
+                "ALEEVYPDLTPEETRRNSLGGDVLFVGKHHPLHDFILELYQTGSTEPVEVPPELCHGIQG\n"+
+                "KFSLDEEAILPDQIVCSPVPMLRDLTQNTVVSINFKDPQFAEDYIFKAVMLPGARKPAAV\n"+
+                "LKPSDWEKSSNGRQWKPQLGFNRDRRPVHLDQAAFRTLGHVMPRGSGTGIYSNAAPPPVT\n"+
+                "YQGNLYRPLLRGQAQIPKLMSNMRPQDSWRGPPPLFQQQRFDRGVGAEPLLPWNRMLQTQ\n"+
+                "NAAFQPNQYQMLAGPGGYPPRRDDRGGRQGYPREGRKYPLPPPSGRYNWN";
+
+        String[] fastaLines = fastaEntry.split("\n");
+
+        VariantProtDB variantProtDB = new VariantProtDB(fastaLines);
+
+        AddVariantIDs2Psm addVariantIDs2Psm = new AddVariantIDs2Psm(variantProtDB);
+
+        Peptide peptide = Peptide.parse("IDRIVNIY");
+
+        List<String> proteins = new ArrayList<>();
+        proteins.add("sp|Q9H0D6|XRN2_HUMAN");
+
+        PeptideSpectrumMatch psm = new PeptideSpectrumMatch("Spectrum_file", peptide, proteins,
+                new TObjectDoubleHashMap<>(), 2, 1, 100, 100, 1507.661308,
+                false, false);
+
+
+        List<PeptideSpectrumMatch> psms = new ArrayList<>();
+        psms.add(psm);
+
+        addVariantIDs2Psm.accept("spec_id", psms);
+
+        Assert.assertEquals("LPSLEIRENAIDRLVNIYKNVVHKTGGY", psm.getWtSequence());
+
+    }
+
+
+
 }
