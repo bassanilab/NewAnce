@@ -365,7 +365,6 @@ public class AddVariantIDs2PsmTest {
 
         Assert.assertEquals("LPSLEIRENAIDRLVNIYKNVVHKTGGY", psm.getWtSequence());
 
-
     }
 
 
