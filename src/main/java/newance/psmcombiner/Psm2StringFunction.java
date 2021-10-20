@@ -77,7 +77,7 @@ public abstract class Psm2StringFunction implements BiFunction<String, List<Pept
 
     }
 
-    private String getModifString(Peptide peptide)  {
+    protected String getModifString(Peptide peptide)  {
 
         if (!peptide.hasModifications()) return "NA\tNA\tNA\tNA";
 

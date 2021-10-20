@@ -68,6 +68,7 @@ public class NewAnceParams implements Serializable {
     private String proteinGroupMapFile = "";
     private Map<String,Set<String>> proteinGroupMap = new HashMap<>();
     private boolean reportAllPSM = false;
+    private boolean outputPsql = false;
 
     private int minNrPsmsPerHisto = 100000;
 
@@ -221,6 +222,7 @@ public class NewAnceParams implements Serializable {
         res +=  "groupNames="+iterableStringToString(groupNames)+"\n";
         res +=  "groupRegExs="+iterablePatternToString(groupRegExs)+"\n";
         res +=  "reportAllPSM="+ reportAllPSM +"\n";
+        res +=  "outputPsql="+outputPsql+"\n";
         res +=  "writeParamsFile="+writeParamsFile+"\n";
 
         return res;
@@ -361,6 +363,10 @@ public class NewAnceParams implements Serializable {
 
         if (variableValueMap.containsKey("reportAllPSM")) {
             reportAllPSM = getBooleanValue("reportAllPSM",variableValueMap.get("reportAllPSM"));
+        }
+
+        if (variableValueMap.containsKey("outputPsql")) {
+            outputPsql = getBooleanValue("outputPsql",variableValueMap.get("outputPsql"));
         }
 
         if (variableValueMap.containsKey("spectrumRegExp")) {
@@ -1039,6 +1045,8 @@ public class NewAnceParams implements Serializable {
     public boolean reportAllPSM() {
         return reportAllPSM;
     }
+
+    public boolean isOutputPsql() {return outputPsql;}
 
     public double getFdrMaxQuantThreshold() {
         return fdrMaxQuantThreshold;

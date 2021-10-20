@@ -13,10 +13,7 @@ package newance.scripts;
 import newance.proteinmatch.OccamRazorSpectrumCounter;
 import newance.proteinmatch.UniProtDB;
 import newance.proteinmatch.VariantProtDB;
-import newance.psmcombiner.CometPsm2StringFunction;
-import newance.psmcombiner.GroupedFDRCalculator;
-import newance.psmcombiner.SpectrumAccumulator;
-import newance.psmcombiner.SummaryReportWriter;
+import newance.psmcombiner.*;
 import newance.psmconverter.CometMultiplePepXMLFileConverter;
 import newance.psmconverter.PeptideSpectrumMatch;
 import newance.util.*;
@@ -208,7 +205,13 @@ public class CometGroupFDRFilter extends ExecutableOptions {
                                    GroupedFDRCalculator groupedFDRCalculator,
                                    Map<String, Float> grpThresholdMap, String filename)  {
 
-        final CometPsm2StringFunction stringFunction = new CometPsm2StringFunction(groupedFDRCalculator,grpThresholdMap);
+        final Psm2StringFunction stringFunction;
+
+        if (params.isOutputPsql()){
+            stringFunction = new CometPsm2PsqlStringFunction(groupedFDRCalculator,grpThresholdMap);
+        } else{
+            stringFunction = new CometPsm2StringFunction(groupedFDRCalculator,grpThresholdMap);
+        }
 
         StringFileWriter writer =
                 new StringFileWriter(params.getOutputDir() + File.separator +filename, stringFunction);
@@ -275,6 +278,7 @@ public class CometGroupFDRFilter extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("coRE").required().hasArg().longOpt("cometPsmRegex").desc("Regular expression of Comet psm files (e.g. \\.xml$) (required)").build());
         cmdLineOpts.addOption(Option.builder("coFDR").required(false).hasArg().longOpt("cometFDR").desc("FDR for filtering Comet PSMs before combination (default value 0.03)").build());
         cmdLineOpts.addOption(Option.builder("outD").required().hasArg().longOpt("outputDir").desc("Output directory for results (required)").build());
+        cmdLineOpts.addOption(Option.builder("outPsql").required(false).hasArg(false).longOpt("outputPsql").desc("Output format (table) that supports direct import into PostgreSQL.").build());
         cmdLineOpts.addOption(Option.builder("repH").required(false).hasArg(false).longOpt("reportHistogram").desc("Report histograms to text files").build());
         cmdLineOpts.addOption(Option.builder("rCoH").required(false).hasArg().longOpt("readCometHistograms").desc("Directory where Comet histograms files are placed.").build());
         cmdLineOpts.addOption(Option.builder("alpha").required(false).hasArg().longOpt("combineHistoWeight").desc("Histograms are alpha*data_histo + (1-alpha)*prior_histo. 0 <0 alpha <= 1. Only used if rCoH option is set.").build());
@@ -320,6 +324,7 @@ public class CometGroupFDRFilter extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("d").required(false).hasArg(false).longOpt("debug").desc("Debug option").build());
         cmdLineOpts.addOption(Option.builder("h").required(false).hasArg(false).longOpt("help").desc("Help option for command line help").build());
         cmdLineOpts.addOption(Option.builder("v").required(false).hasArg(false).longOpt("version").desc("Version of NewAnce software").build());
+
     }
 
     @Override
@@ -338,6 +343,7 @@ public class CometGroupFDRFilter extends ExecutableOptions {
         params.add("readCometHistos", getOptionString(line, "rCoH"));
         params.add("alpha", getOptionString(line, "alpha"));
         params.add("outputDir", getOptionString(line, "outD"));
+        params.add("outputPsql", getOptionString(line, "outPsql"));
         params.add("searchFastaFile", getOptionString(line, "seFa"));
         params.add("uniprotFastaFile", getOptionString(line, "upFa"));
         params.add("doPeptideProteinGrouping", getOptionString(line, "ppG"));
@@ -376,6 +382,7 @@ public class CometGroupFDRFilter extends ExecutableOptions {
         params.add("groupNames", getOptionString(line, "groupN"));
         params.add("groupRegExs", getOptionString(line, "groupRE"));
         params.add("reportAllPSM", getOptionString(line, "wAll"));
+
 
         params.finalize();
 
