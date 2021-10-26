@@ -36,6 +36,31 @@ public class CometPsm2PsqlStringFunction extends Psm2StringFunction {
     }
 
     @Override
+    protected String getSpecIDHeader() {
+
+        return "Injection\tSpectrum\tScanNr\tCharge\tRT\tNeutralMass";
+    }
+
+
+    @Override
+    protected String getSpecIDString(String specID, PeptideSpectrumMatch psm) {
+
+        String[] specID_parts = specID.split("\\.")[0].split("-");
+        String injectionID = "";
+        for (int i =1; i<specID_parts.length;i++){
+            if (specID_parts[i].length() > 7 && specID_parts[i].startsWith("20")){
+                injectionID = String.join("-", Arrays.copyOfRange(specID_parts, i, specID_parts.length));
+                break;
+            }
+        }
+        String rt = String.format("%.5f",psm.getRetentionTime());
+        String mass = String.format("%.5f",psm.getNeutralPrecMass());
+
+        return injectionID+"\t"+specID+"\t"+psm.getScanNr()+"\t"+psm.getCharge()+"\t"+rt+"\t"+mass;
+
+    }
+
+    @Override
     public String getScoreString(PeptideSpectrumMatch psm) {
 
         float lfdr = groupedFDRCalculator.getLocalFDR(psm);
