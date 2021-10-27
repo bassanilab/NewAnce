@@ -17,11 +17,13 @@ import newance.proteinmatch.SequenceVariant;
 import newance.psmconverter.PeptideSpectrumMatch;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * @author Emma Ricart
+ * OUTPUT for psql: array format changed + extra column + decoys filtered
  */
 
 public class CometPsm2PsqlStringFunction extends Psm2StringFunction {
@@ -33,6 +35,21 @@ public class CometPsm2PsqlStringFunction extends Psm2StringFunction {
     public CometPsm2PsqlStringFunction(GroupedFDRCalculator groupedFDRCalculator, Map<String, Float> grpThresholdMap) {
         this.groupedFDRCalculator = groupedFDRCalculator;
         this.grpThresholdMap = grpThresholdMap;
+    }
+
+    @Override
+    public String apply(String specID, List<PeptideSpectrumMatch> peptideSpectrumMatchData) {
+
+        String txt = "";
+        for (PeptideSpectrumMatch psm : peptideSpectrumMatchData) {
+            if (!psm.isDecoy()){
+                if (!txt.isEmpty()) txt += "\n";
+                txt += getSpecIDString(specID, psm) + "\t" + getPSMString(psm) + "\t" + getScoreString(psm);
+            }
+        }
+
+        if (!txt.equals("")) return txt;
+        return null;
     }
 
     @Override
