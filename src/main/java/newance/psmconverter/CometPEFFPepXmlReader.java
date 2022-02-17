@@ -107,6 +107,7 @@ public class CometPEFFPepXmlReader {
                 SpectrumInfo spectrumInfo = new SpectrumInfo(spectrumID);
                 spectrumInfo.setScanNumber((int) query.getStartScan());
 
+
                 spectrumInfo.setPrecursorNeutralMass(query.getPrecursorNeutralMass().doubleValue());
                 spectrumInfo.setCharge(query.getAssumedCharge().intValue());
                 spectrumInfo.setIndex((int) query.getIndex());
