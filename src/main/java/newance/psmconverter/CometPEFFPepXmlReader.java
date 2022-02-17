@@ -100,7 +100,11 @@ public class CometPEFFPepXmlReader {
 
                 MsmsPipelineAnalysis.MsmsRunSummary.SpectrumQuery query = jb.getValue();
 
-                SpectrumInfo spectrumInfo = new SpectrumInfo(query.getSpectrum());
+                String spectrumID = "";
+                if (NewAnceParams.getInstance().isSpectrumNativeID()) spectrumID = query.getSpectrumNativeID();
+                else spectrumID  = query.getSpectrum();
+
+                SpectrumInfo spectrumInfo = new SpectrumInfo(spectrumID);
                 spectrumInfo.setScanNumber((int) query.getStartScan());
 
                 spectrumInfo.setPrecursorNeutralMass(query.getPrecursorNeutralMass().doubleValue());

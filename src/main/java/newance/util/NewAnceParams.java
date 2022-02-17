@@ -69,6 +69,7 @@ public class NewAnceParams implements Serializable {
     private Map<String,Set<String>> proteinGroupMap = new HashMap<>();
     private boolean reportAllPSM = false;
     private boolean outputPsql = false;
+    private boolean spectrumNativeID = false;
 
     private int minNrPsmsPerHisto = 100000;
 
@@ -224,6 +225,7 @@ public class NewAnceParams implements Serializable {
         res +=  "reportAllPSM="+ reportAllPSM +"\n";
         res +=  "outputPsql="+outputPsql+"\n";
         res +=  "writeParamsFile="+writeParamsFile+"\n";
+        res +=  "spectrumNativeID="+spectrumNativeID+"\n";
 
         return res;
     }
@@ -591,6 +593,10 @@ public class NewAnceParams implements Serializable {
             cometMainScore = getStringValue("cometMainScore",
                     variableValueMap.get("cometMainScore"),
                     new HashSet<>(Arrays.asList(new String[]{"xcorr","spscore","deltacn","expect"})));
+        }
+
+        if (variableValueMap.containsKey("spectrumNativeID")) {
+            spectrumNativeID = getBooleanValue("spectrumNativeID",variableValueMap.get("spectrumNativeID"));
         }
 
         checkVariableValues();
@@ -1193,5 +1199,9 @@ public class NewAnceParams implements Serializable {
 
     public double getMinPEPPSM() {
         return minPEPPSM;
+    }
+
+    public boolean isSpectrumNativeID() {
+        return spectrumNativeID;
     }
 }

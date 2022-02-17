@@ -76,7 +76,7 @@ public class ProteinModifGrouper extends PsmGrouper {
                      if (isModif) grp = grp+modifTag;
                      psm.setGroup(grp);
                      return grp;
-                }
+                 }
             }
         }
 

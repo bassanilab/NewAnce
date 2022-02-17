@@ -319,6 +319,7 @@ public class CometGroupFDRFilter extends ExecutableOptions {
         cmdLineOpts.addOption(Option.builder("minScorePSM").required(false).hasArg().longOpt("minScorePSM").desc("Minimal MaxQuant score for PSM (default value 10)").build());
         cmdLineOpts.addOption(Option.builder("minDSPSM").required(false).hasArg().longOpt("minDeltaScorePSM").desc("Minimal MaxQuant DeltaScore for PSM (default value 0)").build());
         cmdLineOpts.addOption(Option.builder("minPEPPSM").required(false).hasArg().longOpt("minPEPPSM").desc("Minimal MaxQuant PEP for PSM (default value 0)").build());
+        cmdLineOpts.addOption(Option.builder("snid").required(false).hasArg(false).longOpt("spectrumNativeID").desc("Use spectrumNativeID tag in pep.xml file to read spectrum id").build());
         cmdLineOpts.addOption(Option.builder("wP").required(false).hasArg(false).longOpt("write2ParamFile").desc("This option is set if parameters should be written to file.").build());
         cmdLineOpts.addOption(Option.builder("rP").required(false).hasArg().longOpt("readParamFile").desc("Name of file from which parameters should to read.").build());
         cmdLineOpts.addOption(Option.builder("d").required(false).hasArg(false).longOpt("debug").desc("Debug option").build());
@@ -382,6 +383,7 @@ public class CometGroupFDRFilter extends ExecutableOptions {
         params.add("groupNames", getOptionString(line, "groupN"));
         params.add("groupRegExs", getOptionString(line, "groupRE"));
         params.add("reportAllPSM", getOptionString(line, "wAll"));
+        params.add("spectrumNativeID", getOptionString(line, "snid"));
 
 
         params.finalize();
