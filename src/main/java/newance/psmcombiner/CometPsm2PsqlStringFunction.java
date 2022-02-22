@@ -66,7 +66,7 @@ public class CometPsm2PsqlStringFunction extends Psm2StringFunction {
         String[] specID_parts = specID_parts0[specID_parts0.length-4].split("-");
         String injectionID = "";
         for (int i =1; i<specID_parts.length;i++){
-            if (specID_parts[i].length() > 7 && specID_parts[i].startsWith("20")){
+            if (specID_parts[i].length() > 8 ){
                 injectionID = String.join("-", Arrays.copyOfRange(specID_parts, i, specID_parts.length));
                 break;
             }
