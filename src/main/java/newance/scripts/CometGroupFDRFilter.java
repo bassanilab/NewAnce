@@ -188,6 +188,7 @@ public class CometGroupFDRFilter extends ExecutableOptions {
         writeGroupHistoTree(groupedFDRCalculator.printTree(grplFDRThresholdMap), false);
     }
 
+
     protected void writeGroupHistoTree(String grpStatisticsInfo, boolean append) {
 
         String paramsFileName = params.getOutputDir() + File.separator + params.getOutputTag()+"_NewAnceStatistics.txt";
