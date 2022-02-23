@@ -250,7 +250,6 @@ public class CometGroupFDRFilter extends ExecutableOptions {
         }
     }
 
-
     protected void writeNewAnceInfo() {
 
         String sepLine = "*************************************************************************************************************************";
