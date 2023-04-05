@@ -47,7 +47,24 @@ public class StringFileWriter implements Consumer<String> {
         }
         catch (IOException e) {
             writer = null;
-            System.out.println("Cannot writeHistograms to file "+filename+"!");
+            System.out.println("Cannot write to file "+filename+"!");
+        }
+    }
+
+    public StringFileWriter(File outputFile, Psm2StringFunction stringFunction) {
+        this.fileName = outputFile.getAbsolutePath();
+        this.stringFunction = stringFunction;
+        this.writtenStrings = new HashSet<>();
+        this.uniqueStrings = false;
+
+        try {
+            writer = new BufferedWriter(new FileWriter(outputFile));
+            String header = stringFunction.getHeader();
+            if (!header.isEmpty()) writer.write(header+"\n");
+        }
+        catch (IOException e) {
+            writer = null;
+            System.out.println("Cannot write to file "+this.fileName+"!");
         }
     }
 
@@ -65,7 +82,7 @@ public class StringFileWriter implements Consumer<String> {
         }
         catch (IOException e) {
             writer = null;
-            System.out.println("Cannot writeHistograms to file "+filename+"!");
+            System.out.println("Cannot write to file "+filename+"!");
         }
     }
 
@@ -80,7 +97,7 @@ public class StringFileWriter implements Consumer<String> {
             if (writer!=null) writer.write(s+"\n");
         }
         catch (IOException e) {
-            System.out.println("Cannot writeHistograms to file " + fileName);
+            System.out.println("Cannot write to file " + fileName);
         }
     }
 

@@ -125,7 +125,7 @@ public class NewAnceParams implements Serializable {
     private String readMaxQuantHistos = "";
     private boolean forceHistos = false;
     private String searchFastaFile = "";
-    private String uniprotFastaFile= "";
+    private String uniprotFastaFile = "";
     private boolean doPeptideProteinGrouping = false;
     private boolean writeParamsFile = false;
     private String readParamsFile = "";

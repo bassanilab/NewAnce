@@ -202,7 +202,6 @@ public class CometGroupFDRFilter extends ExecutableOptions {
         }
     }
 
-
     protected void writePSMTabFile(ConcurrentHashMap<String, List<PeptideSpectrumMatch>>  psms,
                                    GroupedFDRCalculator groupedFDRCalculator,
                                    Map<String, Float> grpThresholdMap, String filename)  {

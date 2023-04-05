@@ -89,7 +89,7 @@ public class AnnotatePeptides extends ExecutableOptions {
 
     private void processPeptides(){
 
-        for (String peptide : peptides) {
+        for (String peptide: peptides) {
             System.out.println("Processing peptide "+peptide+" ...");
             if (!matches.containsKey(peptide))
                 matches.put(peptide, uniProtDB.findPeptide(peptide));
@@ -129,7 +129,7 @@ public class AnnotatePeptides extends ExecutableOptions {
 
             int index = -1;
             int i = 0;
-            for (String field : fields) {
+            for (String field: fields) {
                 if (field.equalsIgnoreCase(columnName)) {
                     index = i;
                     break;
