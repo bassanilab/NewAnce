@@ -122,8 +122,6 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
             maxquantGrplFDRThresholdMap.put(grp,maxquantlFDRThreshold);
         }
 
-        reportPSMs();
-
         String sumFileName = params.getOutputDir() +File.separator+params.getOutputTag()+"_SummaryReport.txt";
         SummaryReportWriter summaryReportWriter = new SummaryReportWriter(sumFileName, true);
 
@@ -149,6 +147,8 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
         }
 
         summaryReportWriter.close();
+
+        reportPSMs();
     }
 
     protected void controlFDRSeparate() {
@@ -157,8 +157,6 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
                 cometGroupedFDRCalculator.calcGroupLocalFDRThreshold((float)params.getFdrCometThreshold());
         maxquantGrplFDRThresholdMap =
                 maxquantGroupedFDRCalculator.calcGroupLocalFDRThreshold((float)params.getFdrMaxQuantThreshold());
-
-        reportPSMs();
 
         String sumFileName = params.getOutputDir() +File.separator+params.getOutputTag()+"_SummaryReport.txt";
         SummaryReportWriter summaryReportWriter = new SummaryReportWriter(sumFileName, true);
@@ -186,6 +184,7 @@ public class CometMaxQuantCombiner extends ExecutableOptions {
 
         summaryReportWriter.close();
 
+        reportPSMs();
     }
 
     protected void processPSMs(UniProtDB uniProtDB, VariantProtDB variantProtDB,
