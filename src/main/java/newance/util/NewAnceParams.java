@@ -33,8 +33,8 @@ public class NewAnceParams implements Serializable {
     // (this will change in future versions, where the mapping will be done by mass and amino acid)
 
     private String modificationStr = "Cysteinyl:C3H5NO2S,Oxidation:O,Carbamidomethyl:C2H3NO,Phospho:HO3P,Deamidated:H-1N-1O," +
-            "Ammonia-loss:H-3N-1,Acetyl:C2H2O,Methyl:CH2,Dimethyl:C2H4,Trimethyl:C3H6,Amidated:H-1,Glu->pyro-Glu:H-2O-1," +
-            "Propionyl:C3H4O,Pyro-carbamidomethyl:C2O";
+            "Ammonia-loss:H-3N-1,Acetyl:C2H2O,Methyl:CH2,Dimethyl:C2H4,Trimethyl:C3H6,Amidated:H-1,Glu->pyro-Glu:H-3N-1," +
+            "Propionyl:C3H4O,Pyro-carbamidomethyl:C2O,Carbamyl:HCNO,Dehydrated:H-2O-1";
 
     private Set<Modification> modifications = null;
 
