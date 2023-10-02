@@ -13,9 +13,13 @@ package newance.psmconverter;
 import newance.mzjava.mol.modification.AbsoluteTolerance;
 import newance.mzjava.mol.modification.ModListModMatchResolver;
 import newance.mzjava.mol.modification.Modification;
+import newance.psmcombiner.CometPsm2PsqlStringFunction;
+import newance.psmcombiner.CometPsm2StringFunction;
 import newance.psmcombiner.GroupedFDRCalculator;
+import newance.psmcombiner.Psm2StringFunction;
 import newance.util.NewAnceParams;
 import newance.util.PsmPredicate;
+import newance.util.StringFileWriter;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -32,10 +36,11 @@ import java.util.regex.Pattern;
  */
 public class PepXMLParserTest {
 
+    @Test
     @Ignore
     public void testPeptXMLParser() throws IOException, XMLStreamException, JAXBException {
 
-        String psmFile = "/Users/markusmueller/Documents/data/0D5P/lncRNA/complete/Comet/20170913_QEh1_LC1_CHC_SA_HLAIp_OD5P_DAC_2_R2.pep.xml";
+        String psmFile = "/Users/markusmueller/Documents/data/NewAnce/0D5P/lncRNA/Comet/mgf/20170913_QEh1_LC1_CHC_SA_HLAIp_OD5P_DAC_1_R1.pep.xml";
 
         final Map<String, List<PeptideSpectrumMatch>> psmMap = new HashMap<>();
 
@@ -50,8 +55,20 @@ public class PepXMLParserTest {
 
         CometPEFFPepXmlReader psmReader = new CometPEFFPepXmlReader( null, true, modMatchResolver);
         psmReader.parse(new File(psmFile), peptideSpectrumMatchList);
+
+        final Psm2StringFunction stringFunction = new CometPsm2StringFunction(null,null);
+
+        for (String specID : psmMap.keySet()) {
+            for (PeptideSpectrumMatch psm : psmMap.get(specID)) {
+                if (psm.isVariant()) {
+                    System.out.println(stringFunction.apply(specID, psmMap.get(specID)));
+                }
+            }
+
+        }
     }
 
+    @Test
     @Ignore
     public void testMaxQuantParser() {
         String msmsFile = "/Users/markusmueller/Documents/data/0D5P/lncRNA/complete/MaxQuant/msms.txt";
@@ -69,6 +86,7 @@ public class PepXMLParserTest {
 
     }
 
+    @Test
     @Ignore
     public void testListFiles() throws IOException {
         File dir = new File("/Users/markusmueller/Documents/data/0D5P/lncRNA/complete");

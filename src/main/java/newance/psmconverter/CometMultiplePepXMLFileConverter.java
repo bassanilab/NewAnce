@@ -86,7 +86,8 @@ public class CometMultiplePepXMLFileConverter extends MultiplePsmFileConverter {
             try {
                 latch.await();
 
-                psms.putAll(psmBuffer);
+                if (groupedFDRCalculator!=null) groupedFDRCalculator.addAll(psmBuffer);
+                if (!reportHistosOnly) psms.putAll(psmBuffer);
 
             } catch (InterruptedException e) {
                 e.printStackTrace();

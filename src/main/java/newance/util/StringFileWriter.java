@@ -28,8 +28,8 @@ import java.util.function.Consumer;
 
 public class StringFileWriter implements Consumer<String> {
 
-    private final String fileName;
-    private BufferedWriter writer;
+    private String fileName;
+    private BufferedWriter writer = null;
     private final Psm2StringFunction stringFunction;
     private final Set<String> writtenStrings;
     private final boolean uniqueStrings;
@@ -86,6 +86,15 @@ public class StringFileWriter implements Consumer<String> {
         }
     }
 
+    public StringFileWriter(Psm2StringFunction stringFunction, boolean uniqueStrings) {
+        this.stringFunction = stringFunction;
+        this.writtenStrings = new HashSet<>();
+        this.uniqueStrings = uniqueStrings;
+
+        String header = stringFunction.getHeader();
+        if (!header.isEmpty()) System.out.print(header+"\n");
+    }
+
     @Override
     public void accept(String s) {
 
@@ -95,6 +104,7 @@ public class StringFileWriter implements Consumer<String> {
 
         try {
             if (writer!=null) writer.write(s+"\n");
+            else System.out.println(s+"\n");
         }
         catch (IOException e) {
             System.out.println("Cannot write to file " + fileName);

@@ -19,6 +19,9 @@ public class NameModificationResolverTest {
         Assert.assertEquals("Cysteinyl", resolver.resolve("Cysteinyl").get().getLabel());
         Assert.assertEquals("Oxidation", resolver.resolve("Oxidation").get().getLabel());
         Assert.assertEquals("Acetyl", resolver.resolve("Acetyl").get().getLabel());
+        Assert.assertEquals("Glu->pyro-Glu", resolver.resolve("Glu->pyro-Glu").get().getLabel());
+        Assert.assertEquals("Gln->pyro-Glu", resolver.resolve("Gln->pyro-Glu").get().getLabel());
+        Assert.assertEquals("Carbamyl", resolver.resolve("Carbamyl").get().getLabel());
     }
 
     @Test
@@ -30,6 +33,9 @@ public class NameModificationResolverTest {
         Assert.assertEquals(119, resolver.resolve("Cysteinyl").get().getMolecularMass(), 0.1);
         Assert.assertEquals(16, resolver.resolve("Oxidation").get().getMolecularMass(), 0.1);
         Assert.assertEquals(42, resolver.resolve("Acetyl").get().getMolecularMass(), 0.1);
+        Assert.assertEquals(-18, resolver.resolve("Glu->pyro-Glu").get().getMolecularMass(), 0.1);
+        Assert.assertEquals(-17, resolver.resolve("Gln->pyro-Glu").get().getMolecularMass(), 0.1);
+        Assert.assertEquals(43, resolver.resolve("Carbamyl").get().getMolecularMass(), 0.1);
         Assert.assertEquals("Cysteinyl", resolver.resolve("Cysteinyl").get().getLabel());
         Assert.assertEquals("Oxidation", resolver.resolve("Oxidation").get().getLabel());
         Assert.assertEquals("Acetyl", resolver.resolve("Acetyl").get().getLabel());

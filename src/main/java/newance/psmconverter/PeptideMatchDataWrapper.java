@@ -362,7 +362,6 @@ public class PeptideMatchDataWrapper  {
 
                         sideChainModMap.put(index, modOpt.get());
                     } else {
-
                         throw new UnresolvableModificationMatchException(modMatch);
                     }
                 }

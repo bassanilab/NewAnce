@@ -10,7 +10,7 @@ public class UnresolvableModificationMatchException extends RuntimeException {
 
     public UnresolvableModificationMatchException(ModificationMatch match) {
 
-        super("ModificationMatch " + match.getMassShift() + " does not map a known modification");
+        super("ModificationMatch " + match.toString() + " does not map a known modification");
 
         this.match = match;
     }

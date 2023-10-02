@@ -11,6 +11,7 @@ You should have received a copy of the GNU General Public License along with thi
 package newance.psmconverter;
 
 import newance.mzjava.mol.Peptide;
+import newance.mzjava.mol.modification.UnresolvableModificationMatchException;
 import newance.util.PsmPredicate;
 import newance.util.SpectrumFilter;
 import newance.util.NewAnceParams;
@@ -86,16 +87,21 @@ public class PeptideSpectrumMatchList {
         int rank = searchResult.getRank();
         boolean isVariant = searchResult.isVariant();
 
-        Peptide peptide = searchResult.toPeptide();
+        try {
+            Peptide peptide = searchResult.toPeptide();
 
-        PeptideSpectrumMatch psm = new PeptideSpectrumMatch(spectrumFile, peptide, protACs,
-                searchResult.getScoreMap(),spectrumInfo.getCharge(),rank, rt,
-                scanNr, precMass, isDecoy, isVariant);
+            PeptideSpectrumMatch psm = new PeptideSpectrumMatch(spectrumFile, peptide, protACs,
+                    searchResult.getScoreMap(),spectrumInfo.getCharge(),rank, rt,
+                    scanNr, precMass, isDecoy, isVariant);
 
 
-        psmMap.putIfAbsent(key,new ArrayList<>());
+            psmMap.putIfAbsent(key,new ArrayList<>());
 
-        psmMap.get(key).add(psm);
+            psmMap.get(key).add(psm);
+
+        } catch(UnresolvableModificationMatchException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public boolean isValidProtein(List<String> proteins) {
